@@ -1,0 +1,52 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
+
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{mathmacros} % My own macros
+\setcitestyle{square,numbers} % natbib
+\setlength{\marginparwidth}{3.1cm} % For todonotes
+
+
+\pgfplotsset{compat=1.13}
+\usetikzlibrary{external}
+\tikzexternalize
+\tikzsetexternalprefix{figures/}
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+% \usepackage[margin=2.5cm]{geometry}
+\usepackage{breqn}
+% \usepackage{todo}
+
+\usepackage{subfiles}
+\def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
+
+\title{Stochastic control strategies applied to a retail
+  pricing problem}
+\author{Asbj{\o}rn Nilsen Riseth}
+\date{\today}
+
+\begin{document}
+\maketitle
+\listoftodos[Notes]
+
+\def\biblio{}
+\def\listoftodos{}
+
+\subfile{abstract}
+\subfile{introduction}
+%\subfile{bellman_control}
+%\subfile{control_comparison}
+% \subfile{expected_utility}
+% \subfile{conclusion}
+
+% Bibliography:
+\clearpage
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+
+\end{document}

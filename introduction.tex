@@ -1,0 +1,124 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+\listoftodos[Notes]
+
+\section{Introduction}
+
+\begin{itemize}
+\item Introduction
+  \begin{itemize}
+  \item Motivation: Retail pricing, deplete stock, maximise revenue
+  \item References: Revenue management book. Bertsimas demand-learning
+  \item Many heuristics or approximations, investigate how well they
+    do
+  \item Won't go into costs
+  \item Risk-aversion. Expected utility
+  \end{itemize}
+\item Problem formulation and optimal control
+  \begin{itemize}
+  \item Definition, in words and in mathematics
+  \item Dynamic programming principle, Bellman-equation
+  \item Plot policies
+  \item Plot distribution of profits
+  \item Plot pricing curves: average + quantiles
+  \end{itemize}
+\item Approximations
+  \begin{itemize}
+  \item Partially observed system becomes intractable
+    quickly (see Bertsimas)
+  \item The practical setting, many dimensions to take into account
+    and model
+  \item Introduce lookahead: certainty equivalent and extension
+  \item Theoretical results from Bertsekas, do they fit with these methods?
+  \item Comparison of profits
+  \item Comparison of price trajectories?
+  \end{itemize}
+\item Model miss-specification
+  \begin{itemize}
+  \item Model won't be 100\% correct. How stable are these methods to miss-specification
+  \item Compare CEC with Bellman: mean, variance, distribution
+    miss-specification
+  \item Compare lookahead with multiple scenarios when we have mean miss-specification
+  \item (Shall we argue for Bellman robustness as with parabolic equations?)
+  \end{itemize}
+\item Risk-aversion
+  \begin{itemize}
+  \item Motivation: product manager judged on profit over whole
+    period. Company judged on quarterly/yearly profits/revenues, below worse
+    than above expected?
+  \item Reformulate with revenue as state
+  \item CARA:~revenue does not make a difference. Show
+  \item CRRA:~increasing price with increasing revenue. Run
+    experiments with $T=2$ or $T=3$
+  \item Quadratic:~opposite behaviour. Just mention
+  \item These are all expected due to (C/D/I)ARA
+  \end{itemize}
+\item Conclusion
+  \begin{itemize}
+  \item Approximations used in industry. Understanding how well they
+    perform is important
+  \item Forward: more products. Time dependence. Constraints
+  \end{itemize}
+\end{itemize}
+
+The process of pricing products in order to control demand and
+maximize revenues has been undertaken for centuries. In recent
+decades, data- and model-driven approaches have become increasingly
+popular in order to advise on and automate the process for companies.
+There are several success stories from early adopters, for example in
+the airline industry.\todo{Reference}
+For retailers with billions of pounds in revenues, small
+improvements to their revenue-management processes have values worth millions.
+Unsold items add up to thousands of tonnes of waste per year, so
+a better control of the demand for products is advantageous
+for both retailers and the environment.
+
+We are interested in strategies to dynamically set the prices of products, and
+formulate the problem as a stochastic optimal control problem.
+Product stock levels $X_t$ are controlled by a pricing process
+$\alpha_t$, and evolve according to a dynamic system with disturbances
+$W_t$:
+\begin{equation}
+X_{t+1}=f_{t+1}(X_t,\alpha_t,W_{t+1})
+\end{equation}
+The goal is to find $\alpha$ which maximises total revenues over a
+given time horizon $T$, and
+minimises the costs of unsold stock.\todo{Write down problem?}
+The solution to this problem can be found by solving the associated
+Bellman equation. In practical applications, it is almost always
+intractable to solve the control problem to optimality.
+Thus, algorithms based on approximations and heuristics are employed.
+There are several proposed approximations in the
+literature\todo{Mention a few?}, although most of the domain knowledge is kept within
+respective commercial actors.
+Many of these algorithms are justified solely on practical grounds, or
+from asymptotic results.\todo{References}
+In this paper, we will consider three\todo{double-check} approximations,
+and look at their performance on a one-product system.
+We show see that the optimal controller is more robust
+miss-specification of the model uncertainty in the system.
+Hence, the use of approximations puts more pressure on the
+demand forecasting process.
+
+We have organised the paper as follows:\todo{Write this out}
+\begin{itemize}
+\item Section 2: Mathematical formulation of the problem, an algorithm
+  to solve it based on Bellman's equation, and an example with pricing rules.
+\item Section 3: Discussion of some approximations (list them), and
+  comparison with the bellman controller in the example
+\item Section 4: What happens when the model is not correct?
+\item (MAYBE) Section 5: Risk-averse. Formulation, impact
+  (exponential, power, quadratic)
+\item Section 6: Conclusion
+\end{itemize}
+
+\todo[inline]{Write about risk-averse formulations if we want to include it?}
+
+\biblio
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
