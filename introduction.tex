@@ -12,7 +12,7 @@
   \item References: Revenue management book. Bertsimas demand-learning
   \item Many heuristics or approximations, investigate how well they
     do
-  \item Won't go into costs
+  \item Won't go into computational costs
   \item Risk-aversion. Expected utility
   \end{itemize}
 \item Problem formulation and optimal control
@@ -76,15 +76,19 @@ for both retailers and the environment.
 
 We are interested in strategies to dynamically set the prices of products, and
 formulate the problem as a stochastic optimal control problem.
-Product stock levels $X_t$ are controlled by a pricing process
+Product stock levels $S_t$ are controlled by a pricing process
 $\alpha_t$, and evolve according to a dynamic system with disturbances
 $W_t$:
 \begin{equation}
-X_{t+1}=f_{t+1}(X_t,\alpha_t,W_{t+1})
+S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1})
 \end{equation}
 The goal is to find $\alpha$ which maximises total revenues over a
 given time horizon $T$, and
-minimises the costs of unsold stock.\todo{Write down problem?}
+minimises the costs of unsold stock:
+\begin{equation}
+  \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
+  + \overline{U}(S_T)\right]
+\end{equation}
 The solution to this problem can be found by solving the associated
 Bellman equation. In practical applications, it is almost always
 intractable to solve the control problem to optimality.

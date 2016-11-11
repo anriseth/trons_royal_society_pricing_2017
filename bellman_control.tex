@@ -1,0 +1,195 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+
+\listoftodos[Notes]
+
+\section{The optimal control problem}
+The overarching goal in the paper is to consider solutions to a retail
+pricing problem.
+\begin{mydef}[Pricing problem, informal]
+  Given a stock of a product and a future terminal time,
+  dynamically set the price
+  of the product in order to maximise revenue and minimise the cost of
+  unsold stock.
+\end{mydef}
+In this section, we define the optimal control pricing problem,
+describe the optimality conditions given by the Bellman equation and
+solve it numerically for an example system.
+
+Consider a system over discrete time points $t=0,\dots,T$, with state
+$S$ and policy process $\alpha$ that takes values in an
+interval $A\subset\mathbb R_+$.
+The state $S_t$ denotes the stock of product at time $t$, and
+$\alpha_t$ the price for the product in the time period from $t$ to
+$t+1$. We model the sales of the product according to a demand
+function $Q:A\to\mathbb R_+$ that is bounded, continuous and decreasing.
+Randomness in the system to capture exogenous influences on demand, is
+modelled in a multiplicative fashion by a Markovian stochastic process
+$(W)_t$ taking non-negative values. See for example
+\citet[Ch.~7]{talluri2006theory} for a discussion of
+popular demand models and modelling of uncertainty.
+
+For a given pricing process $\alpha$, the dynamics of
+the system evolves from some initial state $S_0=s>0$, according to the
+recursion
+\begin{equation}\label{eq:stock_dynamics}
+  S_{t+1}^\alpha=S_t^\alpha-\min(Q(\alpha_t)W_{t+1},S_t^\alpha),\qquad t=0,\dots,T-1.
+\end{equation}
+The function $f(s,a,w)=\min(Q(a)w,s)$ denotes the unit sales per
+period at price $a$,
+starting with stock $s$, and exogenous influences
+characterised by $w$.
+
+The revenue accrued over period $t\to t+1$ is $\alpha_t(S_t^\alpha-S_{t+1}^\alpha)$.
+A cost of remaining stock at time $T$ is modelled by a cost per unit
+stock $C\geq 0$.\footnote{In some situations, unsold items at time $T$
+  may be sold at some ``salvage price'', in which case we could allow
+  $C<0$}
+Let $\mathcal A$ denote the set of feasible processes that take values
+in $A$.
+Define the value of having stock $s$ at time $t\leq T$
+by the \emph{value function}
+\begin{align}
+  v(t,s)&=\max_{\alpha\in\mathcal A} J(t,s,\alpha),\quad\text{where}\\
+  J(t,s,\alpha)&=
+                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1} \alpha_t\min(Q(\alpha_\tau)W_{\tau+1},S_\tau^\alpha) -
+                 CS_T^\alpha \mid S_t^\alpha = s
+                 \right].
+\end{align}
+This leads us to the following mathematical formulation of the pricing
+problem:
+\begin{mydef}
+  Given an initial stock $s>0$ and a cost per unit unsold stock $C\geq
+  0$, find $\alpha\in\mathcal A$ such that
+  \begin{equation}
+    J(0,s,\alpha) = v(0,s).
+  \end{equation}
+\end{mydef}
+
+\subsection{The deterministic case}
+First, let us assume the system is deterministic, with
+$W\equiv 1$.
+Then the pricing problem is a classic finite-dimensional optimisation
+problem
+\begin{equation}
+  v(t,s)=\max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
+    a_t+C)Q(\mathbf a_t)-Cs\right\},
+  \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}Q(\mathbf a_t)\leq s.
+\end{equation}
+The optimal choice here is to choose $\mathbf a_t=a^*\in A$ for each
+$t$, where $a^*$ solves
+\begin{equation}
+  \max_{a\in A} \left\{(a+C)Q(a)\right\},\quad\text{s.t.}\quad
+  Q(a)\leq \frac{s}{t}.
+\end{equation}
+
+We solve the problem for two families of demand functions popular in
+the literature, see e.g.~\citep[Ch.~7]{talluri2006theory}.
+Let $\mathcal P_A$ be the projection operator onto the interval $A$.
+If $Q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
+the optimal policy $\alpha_t=a(t,S_t^\alpha)$ for the deterministic
+problem is given by the function
+\begin{equation}
+  a(t,s)=\mathcal P_A \left[ \max\left(
+      \frac{q_1}{q_2}-\frac{s}{q_2(T-t)},\frac{1}{2}\left(\frac{q_1}{q_2}-C
+      \right) \right) \right].
+\end{equation}
+In the case when $Q(a)=q_1e^{-q_2a}$, the policy function is
+\begin{equation}
+  a(t,s)=\mathcal P_A\left[
+    \max\left( \frac{1}{q_2}\log\left( \frac{T-t}{q_1s}\right),
+      \frac{1}{q_2}-C  \right)\right].
+\end{equation}
+These policy functions are suboptimal in the stochastic control
+setting, and we wish to compare them and other methods to the optimal
+policy, which can be found by solving the \emph{Bellman equation}.
+
+\subsection{The Bellman equation}
+We assume $\alpha\in\mathcal A$ is Markovian,\todo{
+  do I need to justify that the optimal policy is Markovian?}
+meaning that
+there exists a function $a$ such that $\alpha_t(\omega) =
+a(t,S_t^\alpha(\omega))$ for each $\omega$ in the underlying probability space.
+Then,
+an approach to find the value function above is to use the Dynamic
+Programming principle, which states that $v$ can be defined
+recursively in the following way:
+\begin{align}\label{eq:dynamic_programming_discrete}
+  v(t,s)&=\max_{a\in A}\mathbb E_{W}\left[
+          af(s,a,W_{t+1})
+          +v(t+1,s-f(s,a,W_{t+1}))\right].
+\end{align}
+Thus, the value function is the solution to the backwards-in-time
+recursive relation~\eqref{eq:dynamic_programming_discrete} with
+terminal value $v(T,s)=-Cs$, and the optimal policy
+function $a(t,s)$ is given by the argmax for each $t,s$.
+The recursion is called the \emph{Bellman equation}, and a discussion
+of its validity can be found for example in \citet{bertsekas2005dynamic}.
+
+We implement the following algorithm to solve the optimal control
+problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
+\begin{enumerate}
+\item Create grid $s_1,\dots,s_K$, and arrays $v^K\in\mathbb R^{K\times(T+1)}$,
+  $\alpha^K\in\mathbb R^{K\times T}$
+\item Set $Iv^K(s)=-Cs$
+\item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$
+\item For $t = T-1,\dots,0$
+  \begin{enumerate}
+  \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ af(s,a,W_{t+1})
+      +Iv^K(s-f(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
+  \item Set $\alpha^K[i,t]$ to the maximiser above
+  \item Set $Iv^K(s) = Interpolate(s, {(s_i)}_i,{(v^K[i,t])}_i)$
+  \end{enumerate}
+\item Return $v^K,\alpha^K$
+\end{enumerate}
+
+\subsection{Example system}\label{sec:bellman_example_markdown}
+For the rest of the paper, we consider a given non-dimensionalised
+system, in such a way that stock levels lie in $[0,1]$ and the price
+interval $A=[0,1]$.
+Let the demand function be given by
+\begin{equation}
+  Q(a)=\frac{1}{3}e^{2-3a}.
+\end{equation}
+We assume the exogenous disturbance process is a sequence of
+i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
+$\gamma^2$, where $0<\gamma<<1$.\footnote{Set $W_t\sim 0.5+X$, where
+  $X\sim Beta(\alpha,\beta)$, and
+  $\alpha=\beta=\frac{1}{8\gamma^2}-\frac{1}{2}$.}
+
+Set $\gamma = 5\times 10^{-2}$, $C=1$ and $T=3$.
+The solution to the Bellman equation, and the corresponding optimal
+pricing policy is shown in \Cref{fig:markdown_bellman}.
+Note\todo{move to plot of simulated prices} that for the open loop,
+deterministic version of the control problem, with
+$W\equiv 1$, the optimal policy is the constant function
+$\alpha\equiv \frac{2}{3}$.
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{./img/markdown_value_bellman}
+  \end{subfigure}%
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{./img/markdown_controls_bellman}
+  \end{subfigure}
+  \caption{The value function and corresponding
+    optimal control function for the markdown problem.
+    The kink in the value function near stock levels 0.2
+    correspond to when the pricing policy hits the upper bound 1.
+  }\label{fig:markdown_bellman}
+  \todo[inline]{Redo with Beta-distribution instead of normal}
+  \todo[inline]{Include $t=0$ curves as well}
+\end{figure}
+
+\todo[inline]{Compare against certainty equivalent controller}
+\todo[inline]{Plot pricing curves from simulations: mean and quantiles}
+
+\biblio
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
