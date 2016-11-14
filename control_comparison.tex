@@ -36,7 +36,12 @@ solve the Bellman equation efficiently can be much more complicated
 than other methods.
 Finally, the dimensions of the state space, policy space and exogenous
 information space can quickly make a numerical solution to the Bellman
-equation intractable.
+equation intractable. An explosion of dimensions can happen very
+quickly, even for one product problems. In
+\citep{bertsimas2001dynamic}, the authors model a very simple
+one-product demand function with uncertainty in the function
+parameters, and present an eight-dimensional dynamic programming
+solution to the problem.
 Much of the focus in the research community has therefore been in
 developing tractable algorithms with comparable performance to the
 optimal policies, see for example
@@ -63,7 +68,33 @@ Then, we look at lookahead policies that take into account the
 variability of the future trajectories, and see that these produce
 results that are more similar to the optimal Bellman controller.
 
-\subsection{The certainty equivalent controller}
+\subsection{The Certainty Equivalent Controller}
+A popular, tractable algorithm for solving stochastic optimal control
+problems is the Certainty Equivalent Controller(CEC), also known as Model
+Predictive Control in the engineering community.
+The algorithm is particularly practical, because the optimisation
+problem is reduced to a classic deterministic problem that can
+be sent to existing, commercial or open-source solvers and that can
+solve very large systems.
+At each decision-point, a deterministic optimization problem for the
+remaining decision-horizon is solved, but only the current decision is
+implemented whilst the rest are discarded.
+For each time $t=0,\dots,T-1$, the CEC algorithm for the pricing
+problem calculates the current price using the following steps:
+\begin{enumerate}
+\item Observe state $\hat s$.
+\item Create a point estimate $w_{t+1},\dots,w_T$ of ${(W)}_{t+1}^T$.
+\item Carry out the optimization.
+  \begin{equation}
+    \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}\mathbf
+      a_\tau Q(S_\tau^{\mathbf a},\mathbf
+      a_\tau,w_{\tau})-CS_T^{\mathbf a}\right\},
+    \quad \text{s.t.}\quad S_t^{\mathbf a}=\hat s.
+  \end{equation}
+\item Implement the price corresponding to the maximizer $\mathbf
+  a_t\in A$ above.
+\end{enumerate}
+
 \todo[inline]{First write the general update on-line formula, then
   say that we can find a closed form solution}
 
@@ -73,7 +104,7 @@ Then the pricing problem is a classic finite-dimensional optimisation
 problem
 \begin{equation}
   v(t,s)=\max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
-    a_t+C)q(\mathbf a_t)-Cs\right\},
+    a_\tau+C)q(\mathbf a_\tau)-Cs\right\},
   \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
 \end{equation}
 The optimal choice here is to choose $\mathbf a_t=a^*\in A$ for each
