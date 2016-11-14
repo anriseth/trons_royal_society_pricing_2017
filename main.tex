@@ -13,8 +13,9 @@
 
 \pgfplotsset{compat=1.13}
 \usetikzlibrary{external}
-\tikzexternalize
-\tikzsetexternalprefix{figures/}
+\usetikzlibrary{pgfplots.statistics}
+%\tikzexternalize
+%\tikzsetexternalprefix{figures/}
 \makeatletter
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \makeatother
@@ -40,7 +41,7 @@
 \subfile{abstract}
 \subfile{introduction}
 \subfile{bellman_control}
-%\subfile{control_comparison}
+\subfile{control_comparison}
 % \subfile{expected_utility}
 % \subfile{conclusion}
 

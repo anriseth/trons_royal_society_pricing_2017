@@ -23,7 +23,7 @@ interval $A\subset\mathbb R_+$.
 The state $S_t$ denotes the stock of product at time $t$, and
 $\alpha_t$ the price for the product in the time period from $t$ to
 $t+1$. We model the sales of the product according to a demand
-function $Q:A\to\mathbb R_+$ that is bounded, continuous and decreasing.
+function $q:A\to\mathbb R_+$ that is bounded, continuous and decreasing.
 Randomness in the system to capture exogenous influences on demand, is
 modelled in a multiplicative fashion by a Markovian stochastic process
 $(W)_t$ taking non-negative values. See for example
@@ -34,9 +34,9 @@ For a given pricing process $\alpha$, the dynamics of
 the system evolves from some initial state $S_0=s>0$, according to the
 recursion
 \begin{equation}\label{eq:stock_dynamics}
-  S_{t+1}^\alpha=S_t^\alpha-\min(Q(\alpha_t)W_{t+1},S_t^\alpha),\qquad t=0,\dots,T-1.
+  S_{t+1}^\alpha=S_t^\alpha-\min(q(\alpha_t)W_{t+1},S_t^\alpha),\qquad t=0,\dots,T-1.
 \end{equation}
-The function $f(s,a,w)=\min(Q(a)w,s)$ denotes the unit sales per
+The function $Q(s,a,w)=\min(q(a)w,s)$ denotes the unit sales per
 period at price $a$,
 starting with stock $s$, and exogenous influences
 characterised by $w$.
@@ -53,57 +53,24 @@ by the \emph{value function}
 \begin{align}
   v(t,s)&=\max_{\alpha\in\mathcal A} J(t,s,\alpha),\quad\text{where}\\
   J(t,s,\alpha)&=
-                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1} \alpha_t\min(Q(\alpha_\tau)W_{\tau+1},S_\tau^\alpha) -
-                 CS_T^\alpha \mid S_t^\alpha = s
+                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
+                 \alpha_tQ(S_\tau^\alpha,\alpha_\tau,W_{\tau+1})
+                 - CS_T^\alpha \mid S_t^\alpha = s
                  \right].
 \end{align}
 This leads us to the following mathematical formulation of the pricing
 problem:
-\begin{mydef}
+\begin{mydef}[Pricing problem]
   Given an initial stock $s>0$ and a cost per unit unsold stock $C\geq
   0$, find $\alpha\in\mathcal A$ such that
   \begin{equation}
     J(0,s,\alpha) = v(0,s).
   \end{equation}
 \end{mydef}
+This stochastic optimal control problem can be solved by
+considering the optimality conditions that arise from the Dynamic
+Programming principle, also known as the Bellman equation.
 
-\subsection{The deterministic case}
-First, let us assume the system is deterministic, with
-$W\equiv 1$.
-Then the pricing problem is a classic finite-dimensional optimisation
-problem
-\begin{equation}
-  v(t,s)=\max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
-    a_t+C)Q(\mathbf a_t)-Cs\right\},
-  \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}Q(\mathbf a_t)\leq s.
-\end{equation}
-The optimal choice here is to choose $\mathbf a_t=a^*\in A$ for each
-$t$, where $a^*$ solves
-\begin{equation}
-  \max_{a\in A} \left\{(a+C)Q(a)\right\},\quad\text{s.t.}\quad
-  Q(a)\leq \frac{s}{t}.
-\end{equation}
-
-We solve the problem for two families of demand functions popular in
-the literature, see e.g.~\citep[Ch.~7]{talluri2006theory}.
-Let $\mathcal P_A$ be the projection operator onto the interval $A$.
-If $Q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
-the optimal policy $\alpha_t=a(t,S_t^\alpha)$ for the deterministic
-problem is given by the function
-\begin{equation}
-  a(t,s)=\mathcal P_A \left[ \max\left(
-      \frac{q_1}{q_2}-\frac{s}{q_2(T-t)},\frac{1}{2}\left(\frac{q_1}{q_2}-C
-      \right) \right) \right].
-\end{equation}
-In the case when $Q(a)=q_1e^{-q_2a}$, the policy function is
-\begin{equation}
-  a(t,s)=\mathcal P_A\left[
-    \max\left( \frac{1}{q_2}\log\left( \frac{T-t}{q_1s}\right),
-      \frac{1}{q_2}-C  \right)\right].
-\end{equation}
-These policy functions are suboptimal in the stochastic control
-setting, and we wish to compare them and other methods to the optimal
-policy, which can be found by solving the \emph{Bellman equation}.
 
 \subsection{The Bellman equation}
 We assume $\alpha\in\mathcal A$ is Markovian,\todo{
@@ -112,13 +79,13 @@ meaning that
 there exists a function $a$ such that $\alpha_t(\omega) =
 a(t,S_t^\alpha(\omega))$ for each $\omega$ in the underlying probability space.
 Then,
-an approach to find the value function above is to use the Dynamic
+an approach to finding the value function above is to use the Dynamic
 Programming principle, which states that $v$ can be defined
 recursively in the following way:
 \begin{align}\label{eq:dynamic_programming_discrete}
   v(t,s)&=\max_{a\in A}\mathbb E_{W}\left[
-          af(s,a,W_{t+1})
-          +v(t+1,s-f(s,a,W_{t+1}))\right].
+          aQ(s,a,W_{t+1})
+          +v(t+1,s-Q(s,a,W_{t+1}))\right].
 \end{align}
 Thus, the value function is the solution to the backwards-in-time
 recursive relation~\eqref{eq:dynamic_programming_discrete} with
@@ -136,8 +103,8 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
 \item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$
 \item For $t = T-1,\dots,0$
   \begin{enumerate}
-  \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ af(s,a,W_{t+1})
-      +Iv^K(s-f(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
+  \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ aQ(s,a,W_{t+1})
+      +Iv^K(s-Q(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
   \item Set $\alpha^K[i,t]$ to the maximiser above
   \item Set $Iv^K(s) = Interpolate(s, {(s_i)}_i,{(v^K[i,t])}_i)$
   \end{enumerate}
@@ -150,40 +117,151 @@ system, in such a way that stock levels lie in $[0,1]$ and the price
 interval $A=[0,1]$.
 Let the demand function be given by
 \begin{equation}
-  Q(a)=\frac{1}{3}e^{2-3a}.
+  q(a)=\frac{1}{3}e^{2-3a}.
 \end{equation}
 We assume the exogenous disturbance process is a sequence of
 i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
-$\gamma^2$, where $0<\gamma<<1$.\footnote{Set $W_t\sim 0.5+X$, where
-  $X\sim Beta(\alpha,\beta)$, and
-  $\alpha=\beta=\frac{1}{8\gamma^2}-\frac{1}{2}$.}
+$\gamma^2$. That is, we set $W_t\sim \frac{1}{2}+X$, where
+$X\sim Beta(\alpha,\beta)$, and
+$\alpha=\beta=\frac{1}{8\gamma^2}-\frac{1}{2}$.
 
 Set $\gamma = 5\times 10^{-2}$, $C=1$ and $T=3$.
 The solution to the Bellman equation, and the corresponding optimal
 pricing policy is shown in \Cref{fig:markdown_bellman}.
-Note\todo{move to plot of simulated prices} that for the open loop,
-deterministic version of the control problem, with
-$W\equiv 1$, the optimal policy is the constant function
-$\alpha\equiv \frac{2}{3}$.
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
   \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{./img/markdown_value_bellman}
+    \begin{tikzpicture}[scale=0.8]
+      \begin{axis}[
+        xlabel={$s$},
+        ylabel={$v(t,s)$},
+        title={Value function},
+        legend cell align=left,
+        legend pos=north west
+        ]
+        \addplot+[mark=none] table[x index = 0,y index = 1,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=0$};
+        \addplot+[mark=none] table[x index = 0,y index = 2,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=1$};
+        \addplot+[mark=none] table[x index = 0,y index = 3,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=2$};
+      \end{axis}
+    \end{tikzpicture}
+    % \includegraphics[width=\textwidth]{./img/markdown_value_bellman}
   \end{subfigure}%
   \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{./img/markdown_controls_bellman}
+    \begin{tikzpicture}[scale=0.8]
+      \begin{axis}[
+        xlabel={$s$},
+        ylabel={$a(t,s)$},
+        title={Policy function},
+        legend cell align=left,
+        ]
+        \addplot+[mark=none] table[x index = 0,y index = 5,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=0$};
+        \addplot+[mark=none] table[x index = 0,y index = 6,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=1$};
+        \addplot+[mark=none] table[x index = 0,y index = 7,col sep=comma]
+        {./data/markdown_bellman_det_val_policy.csv};
+        \addlegendentry{$t=2$};
+      \end{axis}
+    \end{tikzpicture}
+    % \includegraphics[width=\textwidth]{./img/markdown_controls_bellman}
   \end{subfigure}
   \caption{The value function and corresponding
-    optimal control function for the markdown problem.
-    The kink in the value function near stock levels 0.2
+    optimal control function for the pricing problem.
+    The kink in the value function
     correspond to when the pricing policy hits the upper bound 1.
   }\label{fig:markdown_bellman}
-  \todo[inline]{Redo with Beta-distribution instead of normal}
-  \todo[inline]{Include $t=0$ curves as well}
+\end{figure}
+Let us now investigate the behaviour of the optimal pricing policy
+$\alpha$ and
+the outcome of following this policy.
+Define a random variable $P^\alpha$, which for each realisation
+represents the total profit,
+\begin{equation}
+  P^\alpha = \sum_{t=0}^T\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
+\end{equation}
+If $a(t,s)$ is the function found when solving the Bellman equation,
+then $\alpha$ is a stochastic process defined for each event $\omega$
+from the underlying probability space, with
+$\alpha_t(\omega)=a(t,S_t^\alpha(\omega))$.
+By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
+estimate the random variables $\alpha_t$ and $P^\alpha$.
+The plots in \Cref{fig:bellman_simulation} show the results of
+simulating the system 1000 times.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[t]{0.5\textwidth}
+    \begin{tikzpicture}[scale=0.8]
+      \begin{axis}[
+        ylabel={Price},
+        xlabel={\phantom{$P^\alpha$}},
+        title={$\alpha_t$, simulated values},
+        boxplot/draw direction=y,
+        xtick={1,2,3},
+        xticklabels={$t=0$, $t=1$, $t=2$},
+        %ymin=0.6,ymax=0.75
+        ]
+        \addplot+[boxplot] table[y index=0,col sep=comma]
+        {./data/markdown_bellman_det_policies.csv};
+        \addplot+[boxplot] table[y index=1,col sep=comma]
+        {./data/markdown_bellman_det_policies.csv};
+        \addplot+[boxplot] table[y index=2,col sep=comma]
+        {./data/markdown_bellman_det_policies.csv};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\textwidth}
+    \begin{tikzpicture}[scale=0.8]
+      \begin{axis}[
+        xlabel=$P^\alpha$,
+        ylabel=Count,
+        title={Realised profit},
+        legend cell align=left
+        ]
+        \addplot[blue,hist={data=x,bins=40}] table [y index = 0, col
+        sep=comma]
+        {./data/markdown_bellman_det_vals.csv};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}%
+  % \begin{subfigure}[b]{0.5\textwidth}
+  %   \begin{tikzpicture}[scale=0.8]
+  %     \begin{axis}[
+  %       title={$\alpha_t^C$, simulated values},
+  %       boxplot/draw direction=y,
+  %       xtick={1,2,3},
+  %       xticklabels={$t=0$, $t=1$, $t=2$},
+  %       ymin=0.6,ymax=0.75
+  %       ]
+  %       \addplot+[boxplot] table[y index=3,col sep=comma]
+  %       {./data/markdown_bellman_det_policies.csv};
+  %       \addplot+[boxplot] table[y index=4,col sep=comma]
+  %       {./data/markdown_bellman_det_policies.csv};
+  %       \addplot+[boxplot] table[y index=5,col sep=comma]
+  %       {./data/markdown_bellman_det_policies.csv};
+  %     \end{axis}
+  %   \end{tikzpicture}
+  % \end{subfigure}%
+  \caption{Simulations of the pricing system, started at $S_0=1$ % TODO: subscript _0 causes issues with label re-run warnings
+    and
+    controlled by the optimal policy $\alpha$ seen in
+    \Cref{fig:markdown_bellman}.
+    The left figure shows a box plot that represents the distribution of
+    realised prices, and the right is a histogram of the profit over
+    the pricing period. As we see, the variance of the prices increase
+    in time, reflecting the wider range of remaining stock at these times.
+  }\label{fig:bellman_simulation}
 \end{figure}
 
-\todo[inline]{Compare against certainty equivalent controller}
-\todo[inline]{Plot pricing curves from simulations: mean and quantiles}
+\todo[inline]{Do we need some sort of ``concluding'' remarks here?}
 
 \biblio
 \end{document}
