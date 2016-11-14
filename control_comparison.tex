@@ -19,6 +19,8 @@
 \listoftodos
 
 \section{Suboptimal approximations}
+\todo[inline]{Should parts of this introductory discussion go into the
+  Introduction section?}
 There are many reasons for practitioners to look for suboptimal
 approximations to the stochastic control problem, rather than
 computing the optimal policy functions for the whole decision period.
@@ -66,9 +68,15 @@ example system in this paper, it turns out that we can solve
 this approximation analytically.
 Then, we look at lookahead policies that take into account the
 variability of the future trajectories, and see that these produce
-results that are more similar to the optimal Bellman controller.
+results that are more similar to the optimal Bellman policy.
+Numerical comparison experiments between the different policies are
+made on the example pricing problem introduced in \Cref{bellman_example_markdown}.
 
 \subsection{The Certainty Equivalent Controller}
+\todo[inline]{It would be interesting if  we could plot the $L^2$ norm
+  difference between $a^B$ and $a^C$ for a wide range of parameters.
+  Then maybe do a $P^\alpha$ comparison for some of them.
+}
 A popular, tractable algorithm for solving stochastic optimal control
 problems is the Certainty Equivalent Controller(CEC), also known as Model
 Predictive Control in the engineering community.
@@ -84,7 +92,7 @@ problem calculates the current price using the following steps:
 \begin{enumerate}
 \item Observe state $\hat s$.
 \item Create a point estimate $w_{t+1},\dots,w_T$ of ${(W)}_{t+1}^T$.
-\item Carry out the optimization.
+\item Solve the optimization problem
   \begin{equation}
     \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}\mathbf
       a_\tau Q(S_\tau^{\mathbf a},\mathbf
@@ -95,43 +103,50 @@ problem calculates the current price using the following steps:
   a_t\in A$ above.
 \end{enumerate}
 
-\todo[inline]{First write the general update on-line formula, then
-  say that we can find a closed form solution}
-
-First, let us assume the system is deterministic, with
+For the one-product pricing problem, we can simplify the optimization
+problem and in some cases get analytical solutions for the policy function.
+First, let us consider the point forecast
 $W\equiv 1$.
-Then the pricing problem is a classic finite-dimensional optimisation
-problem
+Then we can rewrite the maximisation problem like this:
 \begin{equation}
-  v(t,s)=\max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
+  \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
     a_\tau+C)q(\mathbf a_\tau)-Cs\right\},
   \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
 \end{equation}
-The optimal choice here is to choose $\mathbf a_t=a^*\in A$ for each
-$t$, where $a^*$ solves
+The optimal choice here is to choose $\mathbf a_\tau=a^*\in A$ for each
+$t$, where $a^*=a^C(t,s)$ is given by the policy function
 \begin{equation}
-  \max_{a\in A} \left\{(a+C)q(a)\right\},\quad\text{s.t.}\quad
-  q(a)\leq \frac{s}{t}.
+  a^C(t,s)=\argmax_{a\in A} \left\{(a+C)q(a)\right\},\quad\text{s.t.}\quad
+  q(a)\leq \frac{s}{T-t}.
 \end{equation}
-
-We solve the problem for two families of demand functions popular in
-the literature, see e.g.~\citep[Ch.~7]{talluri2006theory}.
 Let $\mathcal P_A$ be the projection operator onto the interval $A$.
+Let us consider two families of demand functions that are
+popular in the literature, see e.g.~\citep[Ch.~7]{talluri2006theory}.
 If $q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
-the optimal policy $\alpha_t=a(t,S_t^\alpha)$ for the deterministic
+the optimal policy $\alpha_t=a^C(t,S_t^\alpha)$ for the deterministic
 problem is given by the function
 \begin{equation}
-  a(t,s)=\mathcal P_A \left[ \max\left(
+  a^C(t,s)=\mathcal P_A \left[ \max\left(
       \frac{q_1}{q_2}-\frac{s}{q_2(T-t)},\frac{1}{2}\left(\frac{q_1}{q_2}-C
       \right) \right) \right].
 \end{equation}
 In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
 \begin{equation}
-  a(t,s)=\mathcal P_A\left[
+  a^C(t,s)=\mathcal P_A\left[
     \max\left( \frac{1}{q_2}\log\left( \frac{T-t}{q_1s}\right),
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
 
+The example system in \Cref{sec:bellman_example_markdown} has a demand
+function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
+$q_2=3$. We can therefore compare the optimal Bellman policy with the
+pricing policy that a CEC algorithm would implement.
+Denote the Bellman policy function by $a^B$, and consider
+$a^B(t,s)-a^C(t,s)$ for each $t=0,\dots,T-1$. The plot in
+\Cref{fig:bellman_det_policy_difference} shows this difference, which
+shows that both policies reach the upper bound in $A$ for small values
+of $s$, but in general the Bellman policy is pricing the products
+lower than the CEC policy would do.
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
@@ -152,15 +167,51 @@ In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
       \addlegendentry{$t=2$};
     \end{axis}
   \end{tikzpicture}
-  \caption{Comparison of the certainty equivalent controller $a^C$ and
-    the optimal Bellman controller $a^B$, compare with
+  \caption{Comparison of the CEC policy $a^C$ and
+    the optimal Bellman policy $a^B$, compare with
     \Cref{fig:markdown_bellman}.
     We see that the $a^C$ sets
-    higher prices than the Bellman controller, until they both reach the
+    higher prices than the Bellman policy function, until they both reach the
     boundary price $a_{max}=1$.
   }\label{fig:bellman_det_policy_difference}
-  \todo[inline]{Reference this}
-  \todo[inline]{Move this to comparison place?}
+\end{figure}
+
+What is more important than how the policy function works, is how it
+impacts the goal of the decision-process. Thus, we would like to see
+how the two policy processes $\alpha^B$ and $\alpha^C$ perform.
+One way to evaluate their performance is to look at
+the distribution of the profits $P^{\alpha^B}$ and $P^{\alpha^C}$.
+We remind the reader that
+$P^\alpha =
+\sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
+From the definition of the Bellman policy function, we should have
+that $\mathbb E_W[P^{\alpha^B}]\geq \mathbb E_W[P^{\alpha^C}]$.
+However, marginalising a random variable with the expectation operator
+loses a lot of information which can be of value.
+An approximation of the distribution of
+$P^{\alpha^B}-P^{\alpha^C}$ based on 1000 realisations of the
+underlying $W$ can be seen in \Cref{fig:bellman_det_vals}.
+Indeed the experiment shows that the expected value of following the
+Bellman policy is better, but from the plot we can see that
+in more than half of the cases, the CEC policy outperforms the optimal
+policy $\alpha^B$.
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel=$P^{\alpha^B}-P^{\alpha^C}$,
+      ylabel=Count,
+      title={Simulations of Bellman and CEC policy},
+      ]
+      %\addplot[blue,hist={bins=30}] table [y expr =
+      %{(\thisrowno{0}-\thisrowno{1})/\thisrowno{0}},col sep=comma]
+      \addplot[blue,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
+      {./data/markdown_bellman_det_vals.csv};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{TODO}\label{fig:bellman_det_vals}
+  \todo[inline]{Show relative difference
+    $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
 \end{figure}
 
 % \subsection{Lookahead policies}
