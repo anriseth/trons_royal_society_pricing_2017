@@ -1,8 +1,19 @@
 \documentclass[main.tex]{subfiles}
 
+% This code shows which label has been changed when latex complains
+%\makeatletter
+% \def\@testdef #1#2#3{%
+%   \def\reserved@a{#3}\expandafter \ifx \csname #1@#2\endcsname
+%  \reserved@a  \else
+% \typeout{^^Jlabel #2 changed:^^J%
+% \meaning\reserved@a^^J%
+% \expandafter\meaning\csname #1@#2\endcsname^^J}%
+% \@tempswatrue \fi}
+%\makeatother
+
 \begin{document}
 
-\listoftodos[Notes]
+\listoftodos
 
 \section{The optimal control problem}
 The overarching goal in the paper is to consider solutions to a retail
