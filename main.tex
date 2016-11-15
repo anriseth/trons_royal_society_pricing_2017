@@ -14,8 +14,8 @@
 \pgfplotsset{compat=1.13}
 \usetikzlibrary{external}
 \usetikzlibrary{pgfplots.statistics}
-%\tikzexternalize
-%\tikzsetexternalprefix{figures/}
+\tikzexternalize
+\tikzsetexternalprefix{figures/}
 \makeatletter
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \makeatother
@@ -33,7 +33,7 @@
 
 \begin{document}
 \maketitle
-\listoftodos[Notes]
+\listoftodos
 
 \def\biblio{}
 \def\listoftodos{}
@@ -42,7 +42,7 @@
 \subfile{introduction}
 \subfile{bellman_control}
 \subfile{control_comparison}
-% \subfile{model_uncertainty}
+\subfile{model_uncertainty}
 % \subfile{expected_utility}
 % \subfile{conclusion}
 
