@@ -2,23 +2,12 @@
 \usepgfplotslibrary{statistics}
 
 \begin{document}
-\pgfmathdeclarefunction{gauss}{3}{%
-  \pgfmathparse{1/(#3*sqrt(2*pi))*exp(-((#1-#2)^2)/(2*#3^2))}%
-}
-
-\pgfmathdeclarefunction{gamma}{1}{%
-  \pgfmathparse{2.506628274631*sqrt(1/#1)+ 0.20888568*(1/#1)^(1.5)+
-    0.00870357*(1/#1)^(2.5)- (174.2106599*(1/#1)^(3.5))/25920-
-    (715.6423511*(1/#1)^(4.5))/1244160)*exp((-ln(1/#1)-1)*#1)}%
-}
-
-\pgfmathdeclarefunction{gammapdf}{3}{%
-  \pgfmathparse{1/(#3^#2)*1/(gamma(#2))*#1^(#2-1)*exp(-#1/#3)}%
-}
 
 \listoftodos
 
 \section{Suboptimal approximations}
+\todo[inline]{Investigate Bertsekas paper regarding approximations (at
+  least for CEC), and see if we get the same results}
 \todo[inline]{Should parts of this introductory discussion go into the
   Introduction section?}
 There are many reasons for practitioners to look for suboptimal
@@ -70,7 +59,7 @@ Then, we look at lookahead policies that take into account the
 variability of the future trajectories, and see that these produce
 results that are more similar to the optimal Bellman policy.
 Numerical comparison experiments between the different policies are
-made on the example pricing problem introduced in \Cref{bellman_example_markdown}.
+made on the example pricing problem introduced in \Cref{sec:bellman_example_markdown}.
 
 \subsection{The Certainty Equivalent Controller}
 \todo[inline]{It would be interesting if  we could plot the $L^2$ norm
@@ -137,6 +126,7 @@ In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
 
+\subsubsection{Example system}
 The example system in \Cref{sec:bellman_example_markdown} has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
@@ -201,449 +191,152 @@ policy $\alpha^B$.
     \begin{axis}[
       xlabel=$P^{\alpha^B}-P^{\alpha^C}$,
       ylabel=Count,
-      title={Simulations of Bellman and CEC policy},
+      title={Simulations of Bellman and CEC policies},
       ]
-      %\addplot[blue,hist={bins=30}] table [y expr =
-      %{(\thisrowno{0}-\thisrowno{1})/\thisrowno{0}},col sep=comma]
+      % \addplot[blue,hist={bins=30}] table [y expr =
+      % {(\thisrowno{0}-\thisrowno{1})/\thisrowno{0}},col sep=comma]
       \addplot[blue,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
       {./data/markdown_bellman_det_vals.csv};
     \end{axis}
   \end{tikzpicture}
-  \caption{TODO}\label{fig:bellman_det_vals}
+  \caption{This shows the distribution from 1000 samples of
+    the profit of following the Bellman and CEC policy. Bars with
+    positive value represent samples where Bellman performed best.
+    The mean $\mathbb E_W[P^{\alpha^B}-P^{\alpha^C}]\approx 3.8\times
+    10^{-3}$ confirms that Bellman is better on average, as expected.
+    Importantly, in more than half the samples the suboptimal policy
+    outperforms the Bellman policy.
+  }\label{fig:bellman_det_vals}
   \todo[inline]{Show relative difference
     $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
 \end{figure}
 
-% \subsection{Lookahead policies}
-% We will now describe a suboptimal approach to the optimal control
-% problem, popular for control problems where the frequency of decisions
-% is not too high. The approach is often referred to as \emph{Rolling
-%   Horizon Policies}, and is a type of
-% \emph{Lookahead Policy} as defined in \citet[Ch.~6]{powell2011approximate}.
-% When calculating the optimal policy for the entire control
-% period $t=0,\dots,T$, one can calculate (sub-)optimal policies over a given \emph{control
-%   horizon} whilst forecasting the system behaviour over a given
-% \emph{prediction horizon}.
-% These policies are then implemented, and before the system reaches the
-% end of the control horizon, the process is repeated.
+\subsection{Lookahead policies}
+The Certainty Equivalent Control policy is a special case of
+a set of rolling horizon, or lookahead policies, as defined in
+\citep[Ch.~6]{powell2011approximate}.
+In a general setting, these methods
+calculate calculate (sub-)optimal policies over a given \emph{control
+horizon} whilst forecasting the system behaviour over a given
+\emph{prediction horizon}.
+These policies are then implemented, and before the system reaches the
+end of the control horizon, the process is repeated.
 
-% For the current work, all decisions will be made \emph{on-line}. This means
-% that the rolling horizon process is carried out at each time step, and
-% only the control calculated for that time-step will be implemented to
-% the system. The control and prediction horizons will both be equal to
-% the remaining time of the control problem, so at each time $t$, the
-% control horizon will be $t,\dots,T-1$ and the prediction horizon
-% $t,\dots,T$.
+For the current work, all decisions will be made \emph{on-line}. This means
+that the rolling horizon process is carried out at each time step, and
+only the decision calculated for that time-step will be implemented to
+the system. The control and prediction horizons will both be equal to
+the remaining time of the control problem, so at each time $t$, the
+control horizon will be $t,\dots,T-1$ and the prediction horizon
+$t,\dots,T$.
+In our implementation, we make two approximations.
+First, that the expectation operator is replaced by
+an average over $N_t$ samples from $(W_{t+1},\dots,W_T)$.
+Second, that
+the policy function can ``see into the future'', meaning that
+the value at time $\tau$ is calculated based on
+the current state, but also on realised values of $(W_{\tau+1},\dots W_{T})$.
+Thus, at time $t$, the pricing algorithm is as follows:
+\begin{enumerate}
+\item Observe state $\hat s$
+\item Pick or draw $N_t$ samples $W^{(i)}$, $i=1,\dots,N_t$ from the
+  underlying probability space.
+\item Solve the optimization problem
+  \begin{dmath}
+    \max_{\substack{a_0\in A\\a_{t+1:T-1}^{(i)}\in A^{T-{t+1}}}}
+    \frac{1}{N_t}\sum_{i=1}^{N_t}\left[
+    a_0Q(\hat s,a_0,W_{t+1}^{(i)})
+    +\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
+    -C S_T^{(i)}\right]
+  \end{dmath}
+  \begin{itemize}
+  \item $S^{(i)}$ corresponds to the
+    controlled process in scenario $i$, starting at $S_t^{(i)}=\hat s$.
+  \item The decision variables $a_{t+1:T-1}^{(i)}$ are meant to
+    approximate the value the optimal policy $\alpha$ would have taken
+    if $W^{(i)}$ is drawn from the underlying probability space.
+  \end{itemize}
+\item Implement the controller corresponding to the maximiser $a_0\in
+  A$ above.
+\end{enumerate}
+Note that if $N_t=1$, then this lookahead policy is the same as the CEC policy.
+The number of decision variables increases linearly in $N_t$, and
+so does the cost of calculating the objective.
 
-% The optimal rolling horizon strategy will be to, for each time step
-% $t$,
-% \begin{enumerate}
-% \item Observe state $\hat x$ at time $t$
-% \item Calculate $v(t,\hat x)$, with the maximising control
-%   $\hat \alpha\in\mathcal A(t,\hat x)$
-% \item Implement the control $\hat\alpha_t$
-% \end{enumerate}
-% This approach will yield the same optimal control process
-% as the global maximiser $\alpha^*\in\mathcal A(0,X_0)$ of
-% $v(0,X_0)$ in \Cref{eq:value_function_discrete}.\footnote{Provided
-%   that the true underlying probability measure is dominated by our
-%   choice of probability measure. This ensures that any observed state
-%   $\hat x$ has been ``considered'' by $\alpha^*$.}
-% For any practical application, the rolling horizon strategy will
-% compute sub-optimal policies from subsets of $\mathcal A(t,\hat x)$,
-% based on approximations of the objective function in $v(t,\hat x)$.
-% In this document we consider open-loop controllers, and approximate
-% the expectation operator by considering one or more scenarios drawn from
-% the underlying probability space.
-% Thus, at time $t$, the controller carries out the following:
-% \begin{enumerate}
-% \item Observe state $\hat x$
-% \item Pick or draw $N_t$ scenarios $\omega^{(i)}$, $i=1,\dots,N_t$ from the
-%   underlying probability space.
-% \item Carry out the optimization
-%   \begin{align}
-%     \max_{\substack{a\in A(t,\hat x)\\a_{t+1:T-1}^{(i)}}}
-%     \frac{1}{N_t}\sum_{i=1}^{N_t}\left[ U(t+1,\hat x, a,\omega_{t+1}^{(i)})
-%     +\sum_{s=t+1}^{T-1}U(s+1,X_s^{(i)}, a_s^{(i)},\omega_{s+1}^{(i)})
-%     + \overline{U}(X_T^{(i)})\right]
-%   \end{align}
-%   \begin{itemize}
-%   \item $X^{(i)}$ corresponds to the
-%     controlled process in scenario $i$, starting at $X_t^{(i)}=\hat x$.
-%   \item The decision variables $a_{t+1:T-1}^{(i)}$ are constrained by
-%     the implicitly defined sets
-%     $A(s,X_s^{(i)})$
-%   \end{itemize}
-% \item Implement the controller corresponding to the maximiser $a\in
-%   A(t,\hat x)$ above.
-% \end{enumerate}
-% This algorithm turns the infinite-dimensional optimisation problem
-% in \Cref{eq:value_function_discrete} into a sequence of
-% finite-dimensional optimisation problems that can be solved with any
-% existing appropriate solver. Note that the control values $a^{(i)}$
-% know the future trajectory of the system, so they are cheating by
-% looking into the future.
-% Also note that the number of decision
-% variables increases linearly in $N_t$.
-% If $N_t=1$, we call this Lookahead policy \emph{Certainty Equivalent
-%   Control}.
-% It also shares many of the features of \emph{Model Predictive
-%   Control}, popular in the process engineering industry.
+\subsubsection{Example system}
+To investigate the performance of the suboptimal lookahead
+policies, we apply it to the system described in
+\Cref{sec:bellman_example_markdown} and compare it to the performance
+of the optimal Bellman policy in the same way as we did to the CEC
+policy. We draw the same number of samples $N$ from $W$ for each
+decision time $t$, thus $N_t=N$. Denote the resulting policy process
+by $\alpha^{L_N}$. Numerical results comparing $P^{\alpha^{L_N}}$ with the
+Bellman policy are shown in \Cref{fig:markdown_bellman_mpc_5_20_100}
+for $N=5,20,100$. The simulations are run 1000 times each to get
+approximate distributions for the $P^\alpha$s.
+As $N$ increases, the behaviour of the lookahead policies become more
+similar to the Bellman policy, and as a result the spread of differences in the
+profits $P^\alpha$ decreases.
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{tikzpicture}%[trim axis left]
+      \begin{axis}[
+        width=\textwidth,
+        xlabel=$P^{\alpha^B}-P^{\alpha^{L_N}}$,
+        ylabel=Count,
+        title={Simulations of Bellman and Lookahead controls},
+        xmin=-0.02,
+        xmax=0.045,
+        ymax=450,
+        ]
+        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{0}-\thisrowno{3},col sep=comma]
+        {./data/markdown_bellman_mpc_5_20_100.csv};
+        \addlegendentry{$N=5$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\\[1em]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{tikzpicture}%[trim axis left]
+      \begin{axis}[
+        width=\textwidth,
+        xlabel=$P^{\alpha^B}-P^{\alpha^{L_N}}$,
+        ylabel=Count,
+        xmin=-0.02,
+        xmax=0.045,
+        ymax=450,
+        ]
+        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{1}-\thisrowno{4},col sep=comma]
+        {./data/markdown_bellman_mpc_5_20_100.csv};
+        \addlegendentry{$N=20$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}%
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=\textwidth,
+        xlabel=$P^{\alpha^B}-P^{\alpha^{L_N}}$,
+        xmin=-0.02,
+        xmax=0.045,
+        ymax=450,
+        ]
+        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{2}-\thisrowno{5},col sep=comma]
+        {./data/markdown_bellman_mpc_5_20_100.csv};
+        \addlegendentry{$N=100$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}
+  \caption{The difference in value using a Bellman policy and a
+  lookahead policy with $N$ future scenarios.
+  The histograms show the result from 1000 individual
+  simulations of the system.
+  As $N$ increases, the differences between the lookahead policy and
+  the optimal Bellman controller decreases. For each $N$, the Bellman
+  policy achieves a higher mean outcome over the 1000 simulations.
+}\label{fig:markdown_bellman_mpc_5_20_100}
+\end{figure}
 
-% \subsection{Example: Rolling horizon performance}
-% To investigate the performance of the suboptimal rolling horizon
-% controller, we apply it to the system described in
-% \Cref{sec:bellman_example_markdown} and compare it to the performance
-% of the optimal Bellman controller. The initial state is set to $X_0=1$.
-% We draw 1000 samples from the underlying probability distribution of
-% $\omega$, apply the control strategies on the system, and calculate
-% the total value as described by the objective function for each trajectory.
-% For each simulation $i=1,\dots,1000$, the value of the
-% resulting Bellman and Rolling horizon controllers are denoted by
-% $V_B^{(i)}$ and $V_L^{(i)}$ respectively.
-% % A distribution  of the $V_B^{(i)}$ is shown in
-% % \Cref{fig:markdown_bellman_values}. The mean of the $V_B^{(i)}$s
-% % is within $10^{-4}$ of the approximated value function
-% % $v(0,X_0)$, calculated using the Bellman equation~\eqref{eq:dynamic_programming_discrete}.
-% % \begin{figure}[htbp]
-% %   \centering
-% %   \begin{tikzpicture}
-% %     \begin{axis}[
-% %       xlabel=$V_B$,
-% %       ylabel=Count,
-% %       title={Simulations of Bellman controlled trajectories},
-% %       legend cell align=left
-% %       ]
-% %       \addplot[blue,hist={data=x,bins=40}] file {./data/markdown_bellman_values.dat};
-% %     \end{axis}
-% %   \end{tikzpicture}
-% %   \caption{Histogram showing the spread of $V_B$ from 1000 simulated trajectories using
-% %     the optimal Bellman controller.}\label{fig:markdown_bellman_values}
-% % \end{figure}
-% We expect the mean of the $V_B^{(i)}$ to be higher than $V_L^{(i)}$,
-% as the Bellman controllers are optimal. This may not be true for each
-% realisation of $\omega$, and from the experiments we observe that this
-% is indeed correct. In \Cref{fig:markdown_bellman_mpc_1_20_100}, a
-% fitted
-% distribution to the 1000 outcomes $V_B^{(i)}-V_L^{(i)}$ is plotted for
-% rolling horizon controllers with $N_t=N=1,20,100$ scenarios.
-
-% \noindent\textbf{Some remarks:}
-
-% 1) In the case of $N=1$, the Certainty Equivalent Control (CEC), we chose
-% to set $\omega^{(1)} = \mathbb
-% E[\omega]$, so the on-line decision only considered the ``most
-% likely'' scenario.
-
-% 2) For the current, simple example, calculating the optimal control
-% policy off-line using the Bellman equation was much faster than the
-% optimizations that had to be done for rolling horizon with $N=20,100$.
-
-% 3) The performance of the CEC
-% varies a lot, and does actually outperform the Bellman control in
-% fifty percent of the simulations. This comes at a higher price, as
-% the under-performance is much higher in many cases. This
-% ``disregard'' of the stochasticity in the system seem to have
-% created a ``high-risk, high-reward'' controller.
-
-% \begin{figure}[htbp]
-%   \centering
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         xlabel=$V_B-V_L$,
-%         ylabel=Count,
-%         title={Simulations of Bellman and Lookahead controls},
-%         xmin=-0.006,
-%         xmax=0.022,
-%         ymax=530
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 0,col sep=comma]
-%         {./data/markdown_bellman_mpc_1_20_100.csv};
-%         \addlegendentry{$N=1$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\\[1em]
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         xlabel=$V_B-V_L$,
-%         ylabel=Count,
-%         xmin=-0.006,
-%         xmax=0.022,
-%         ymax=530
-%         % title={Simulations of Bellman and Lookahead controls}
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 1,col sep=comma]
-%         {./data/markdown_bellman_mpc_1_20_100.csv};
-%         \addlegendentry{$N=20$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         xlabel=$V_B-V_L$,
-%         xmin=-0.006,
-%         xmax=0.022,
-%         ymax=530
-%         % title={Simulations of Bellman and Lookahead controls}
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 2,col sep=comma]
-%         {./data/markdown_bellman_mpc_1_20_100.csv};
-%         \addlegendentry{$N=100$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}
-%   \caption{The difference in value using a Bellman controller and a
-%     lookahead control policy with $N$ future scenarios.
-%     The histograms show the result from 1000 individual
-%     simulations of the system.
-%     As $N$ increases, the differences between the lookahead policy and
-%     the optimal Bellman controller decreases. For each $N$, the Bellman
-%     controller achieves a higher mean outcome over the 1000 simulations.
-%   }\label{fig:markdown_bellman_mpc_1_20_100}
-% \end{figure}
-
-% \subsection{Model uncertainty, or miss-specification}\label{sec:markdown_miss_specification}
-% It is difficult to correctly model the true underlying disturbance
-% $\omega^\dagger$, and the performance of the controller should be
-% tested to different types of model miss-specifications.
-% Say the controllers are calculated based on
-% a system disturbance $\omega\sim \mathcal N(1,0.05^2)$, and consider
-% two cases where the true disturbance is different:
-% \begin{enumerate}
-% \item Mean miss-specification, $\omega^\dagger\sim \mathcal
-%   N(0.95,0.05^2)$.
-% \item Standard deviation miss-specification, $\omega^\dagger\sim
-%   \mathcal N(1,0.1^2)$.
-% \end{enumerate}
-% We simulate the system for both of these cases 1000 times each,
-% and check the performance of the optimal Bellman controller and the
-% Certainty Equivalent Controller. The results are shown in
-% \Cref{fig:markdown_bellman_mpc_1_20_100}.
-% The relative performance of the CEC is drastically reduced when the
-% assumed mean is wrong, i.e.\ when a poor quality forecast is taken as
-% the truth.
-
-% \begin{figure}[htbp]
-%   \centering
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         legend pos=north west,
-%         xlabel=$V_B$,
-%         ylabel=Count,
-%         title={Mean miss-specification},
-%         xmin=0.52, xmax=0.71,
-%         ymax=150,
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 0,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\mathbb E[\omega^\dagger]=0.95$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\hfill
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         legend pos=north west,
-%         xlabel=$V_B$,
-%         title={Deviation miss-specification},
-%         xmin=0.52, xmax=0.71,
-%         ymax=150
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 1,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\mbox{std}[\omega^\dagger]=0.1$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\\[1em]
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         % legend style={at={(0.5,0.97)}, anchor=north},
-%         xlabel=$V_B-V_L$,
-%         ylabel=Count,
-%         xmin=-0.007, xmax=0.025,
-%         ymax=500
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 4,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\mathbb E[\omega^\dagger]=0.95$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\hfill
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         % legend style={at={(0.5,0.97)}, anchor=north},
-%         xlabel=$V_B-V_L$,
-%         xmin=-0.007, xmax=0.025,
-%         ymax=500
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 5,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\mbox{std}[\omega^\dagger]=0.1$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}
-%   \caption{Performance of the Bellman controller and Certainty
-%     Equivalent Controller (N = 1) under model miss-specification of
-%     $\omega$. Compare with \Cref{fig:markdown_bellman_mpc_1_20_100}.
-%     The controllers are calculated under the assumption that
-%     the system disturbance is $\omega\sim\mathcal N(1,0.05^2)$, instead
-%     of the true disturbance~$\omega^\dagger$.
-%     The CEC performance is very dependent on mean miss-specification,
-%     as expected.
-%   }\label{fig:markdown_bellman_mpc_model_misspecification}
-% \end{figure}
-
-% \subsubsection{Higher-order model uncertainty}
-% The model approximation of the two first moments of the underlying
-% disturbance is likely to be more accurate than for higher moments.
-% It can therefore be interesting to see how the different control
-% policies deal with model uncertainty of higher moments.
-% We consider affine transformations of a $\chi^2_5$ distribution with five degrees of
-% freedom, that have the \emph{same mean and standard deviation as the model
-%   distribution $\omega$}. A comparison of the probability density
-% functions can be seen in \Cref{fig:chisq_transformed}.
-
-% \begin{figure}[htbp]
-%   \centering
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         no markers, domain=0.9:1.25, samples=200,
-%         xmin=0.75, xmax=1.25,
-%         xlabel=$w$, ylabel=Density,
-%         legend cell align=left,
-%         title={Positive skewness}
-%         ]
-%         \addplot+[thick] {gammapdf(max((x-0.921)/0.0158,
-%           0),2.5,2)/0.0158};
-%         \addlegendentry{$\omega_1^{\dagger}$};
-%         \addlegendentry{$\omega$};
-%         \addplot+[thick,dashed,domain=0.75:1.25] {gauss(x,1.0,0.05)};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         no markers, domain=0.75:1.1, samples=200,
-%         xmin=0.75, xmax=1.25,
-%         xlabel=$w$, ylabel=Density,
-%         legend cell align=left,
-%         title={Negative skewness}
-%         ]
-%         \addplot+[thick] {gammapdf(max((1.079-x)/0.0158,
-%           0),2.5,2)/0.0158};
-%         \addlegendentry{$\omega_2^{\dagger}$};
-%         \addlegendentry{$\omega$};
-%         \addplot+[thick,dashed,domain=0.75:1.25] {gauss(x,1.0,0.05)};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}
-%   \caption{Probability density comparisons between
-%     the model disturbance $\omega$ and a true underlying
-%     model. A larger positive tail on the left ($\omega_1^\dagger$) and
-%     a larger negative tail on the right ($\omega_2^\dagger$).
-%   }\label{fig:chisq_transformed}
-% \end{figure}
-% We again simulate the system with the Bellman and CEC controllers 1000
-% times, and compare the outomes. The results are shown in
-% \cref{fig:markdown_bellman_mpc_chi2}. We see that in the two cases considered,
-% the relative performance of the CEC controller does not change much
-% compared to the case where the assumed uncertainty $\omega$ is the same as
-% the true uncertainty $\omega^\dagger$.
-
-% \begin{figure}[htbp]
-%   \centering
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         legend pos=north west,
-%         xlabel=$V_B$,
-%         ylabel=Count,
-%         title={Skewness under-specification},
-%         xmin=0.58, xmax=0.69,
-%         ymax=150,
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 2,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\omega_1^\dagger$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\hfill
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         legend pos=north west,
-%         xlabel=$V_B$,
-%         title={Skewness over-specification},
-%         xmin=0.58, xmax=0.69,
-%         ymax=150
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 3,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\omega_2^\dagger$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\\[1em]
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}[trim axis left]
-%       \begin{axis}[
-%         width=\textwidth,
-%         % legend style={at={(0.5,0.97)}, anchor=north},
-%         xlabel=$V_B-V_L$,
-%         ylabel=Count,
-%         xmin=-0.006, xmax=0.022,
-%         ymax=600
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 6,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\omega_1^\dagger$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}\hfill
-%   \begin{subfigure}[b]{0.5\textwidth}
-%     \begin{tikzpicture}
-%       \begin{axis}[
-%         width=\textwidth,
-%         % legend style={at={(0.5,0.97)}, anchor=north},
-%         xlabel=$V_B-V_L$,
-%         xmin=-0.006, xmax=0.022,
-%         ymax=600
-%         ]
-%         \addplot[blue,hist={bins=40}] table [y index = 7,col sep=comma]
-%         {./data/markdown_bellman_mpc_model_misspecification.csv};
-%         \addlegendentry{$\omega_2^\dagger$};
-%       \end{axis}
-%     \end{tikzpicture}
-%   \end{subfigure}
-%   \caption{Performance of Bellman and CEC when the true system disturbances
-%     are transformations $\omega_1^\dagger,\omega_2^\dagger$ of
-%     a $\chi_5^2$ distribution. Compare to
-%     \Cref{fig:markdown_bellman_values,fig:markdown_bellman_mpc_1_20_100}.
-%     The relative performance of CEC compared to Bellman does not
-%     change much,
-%     although we see a slight deterioration for the under-estimation of
-%     skewness (left) and a slight improvement when the skewness has
-%     been over-estimated (right).
-%   }\label{fig:markdown_bellman_mpc_chi2}
-% \end{figure}
 
 % \subsection{Discussion}
 % The Bellman controller is easy to calculate for small-sized problems,

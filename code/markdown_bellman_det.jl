@@ -84,53 +84,10 @@ for ti = 1:T
     αdetarr[:,ti] = αdet(ti-1,xarr)
 end
 
+
 ## Plotting stuff
-function plotdata(dataarr, x,
-                  titletext::AbstractString = "",
-                  savedata::Bool = false,
-                  imgname::AbstractString = "",
-                  dataname::AbstractString = "";
-                  ylims = (0.,1.),
-                  xlabel = "Remaining stock",
-                  ylabel = "Price")
-    idx = [1,2,3]  # time index for t = 0.0,1.0,2.0
-    plt = plot(x, dataarr[:,1], label=L"$t=0$")
-    plot!(plt, x, dataarr[:,2], label=L"$t=1$")
-    plot!(plt, x, dataarr[:,3], label=L"$t=2$")
-    xlims!(plt, x[1],x[end])
-    ylims!(plt, ylims)
-    xlabel!(plt, xlabel)
-    ylabel!(plt, ylabel)
-    title!(plt, titletext)
-    xticks!(plt,linspace(x[1],x[end],6))
-    yticks!(plt,linspace(0.,1,6)) # Overrides ylims!, see Plots.jl#
-
-    if savedata == true
-        savefig(plt,imgname)
-        writecsv(dataname, [x dataarr])
-    end
-    return plt
-end
-
-function plotvalues(dataarr, x;
-                    savedata = false,
-                    imgname = "./data/markdown_value_bellman.eps",
-                    dataname = "./data/markdown_value_bellman.csv",
-                    ylims = (0,0.8))
-    plotdata(dataarr, x, "Value function",
-             savedata, imgname, dataname;
-             ylabel = "Value", ylims = ylims)
-end
-
-function plotcontrols(dataarr, x;
-                      savedata = false,
-                      imgname = "./data/markdown_controls_bellman.eps",
-                      dataname = "./data/markdown_controls_bellman.csv")
-    plotdata(dataarr, x, "Policy function", savedata, imgname, dataname)
-end
-
 using JLD
-savefiles = true
+savefiles = false
 if savefiles == true
     @save "./data/markdown_bellman_det_$(now()).jld" bellmanvals detvals xarr α v αdetarr bellmancontrols detcontrols
     writecsv("./data/markdown_bellman_det_vals.csv", [bellmanvals detvals])
@@ -138,4 +95,4 @@ if savefiles == true
     writecsv("./data/markdown_bellman_det_val_policy.csv", ([xarr v α αdetarr])[2:end,:])
 end
 
-plot!([0,1,2], [quantile(detcontrols[:,1],0.1),quantile(detcontrols[:,2],0.1),quantile(detcontrols[:,3],0.1)])
+#plot!([0,1,2], [quantile(detcontrols[:,1],0.1),quantile(detcontrols[:,2],0.1),quantile(detcontrols[:,3],0.1)])
