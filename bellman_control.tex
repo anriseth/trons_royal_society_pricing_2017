@@ -16,7 +16,6 @@
 \listoftodos
 
 \section{The optimal control problem}
-\todo[inline]{Say that we choose to be risk-neutral}
 The overarching goal in the paper is to consider solutions to a retail
 pricing problem.
 \begin{mydef}[Pricing problem, informal]
@@ -53,7 +52,7 @@ period at price $a$,
 starting with stock $s$, and exogenous influences
 characterised by $w$.
 
-The revenue accrued over period $t\to t+1$ is $\alpha_t(S_t^\alpha-S_{t+1}^\alpha)$.
+The revenue accrued over period $t\to t+1$ is $\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})$.
 A cost of remaining stock at time $T$ is modelled by a cost per unit
 stock $C\geq 0$.\footnote{In some situations, unsold items at time $T$
   may be sold at some ``salvage price'', in which case we could allow
@@ -62,13 +61,14 @@ Let $\mathcal A$ denote the set of feasible processes that take values
 in $A$.
 Define the value of having stock $s$ at time $t\leq T$
 by the \emph{value function}
-\begin{align}
+\begin{align}\label{eq:value_function_def}
   v(t,s)&=\max_{\alpha\in\mathcal A} J(t,s,\alpha),\quad\text{where}\\
   J(t,s,\alpha)&=
                  \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
                  \alpha_tQ(S_\tau^\alpha,\alpha_\tau,W_{\tau+1})
                  - CS_T^\alpha \mid S_t^\alpha = s
                  \right].
+                 \label{eq:value_function_def2}
 \end{align}
 This leads us to the following mathematical formulation of the pricing
 problem:
@@ -79,13 +79,17 @@ problem:
     J(0,s,\alpha) = v(0,s).
   \end{equation}
 \end{mydef}
+We choose to maximise the expected profit over the period, which
+assumes a risk-neutral decision-maker. However, it is still important
+to understand the distribution of profits for a given pricing policy
+$\alpha$. Therefore, we look at the full distribution when
+we investigate the performance of algorithms in the rest of the paper.
 This stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
 Programming principle, also known as the Bellman equation.
 
-
 \subsection{The Bellman equation}
-We assume $\alpha\in\mathcal A$ is Markovian,\todo{
+We assume the optimal policy $\alpha\in\mathcal A$ is Markovian,\todo{
   do I need to justify that the optimal policy is Markovian?}
 meaning that
 there exists a function $a$ such that $\alpha_t(\omega) =
