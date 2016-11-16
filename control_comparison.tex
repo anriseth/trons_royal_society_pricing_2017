@@ -6,8 +6,6 @@
 \listoftodos
 
 \section{Suboptimal approximations}
-\todo[inline]{Investigate Bertsekas paper regarding approximations (at
-  least for CEC), and see if we get the same results}
 \todo[inline]{Should parts of this introductory discussion go into the
   Introduction section?}
 There are many reasons for practitioners to look for suboptimal
@@ -96,17 +94,22 @@ For the one-product pricing problem, we can simplify the optimization
 problem and in some cases get analytical solutions for the policy function.
 First, let us consider the point forecast
 $W\equiv 1$.
-Then we can rewrite the maximisation problem like this:
+Then we can rewrite the maximisation problem to find
+the certainty equivalent value function $\overline{v}$:
 \begin{equation}
+  \overline{v}(t,s)=
   \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
-    a_\tau+C)q(\mathbf a_\tau)-Cs\right\},
-  \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
+    a_\tau+C)\min\left(q(\mathbf a_\tau),s-\sum_{r=t}^{\tau-1}q(\mathbf a_r)\right)-Cs\right\}.
+  %\quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
 \end{equation}
 The optimal choice here is to choose $\mathbf a_\tau=a^*\in A$ for each
-$t$, where $a^*=a^C(t,s)$ is given by the policy function
+$t$, such that the same amount of stock is sold in each period.
+Then, $a^*=a^C(t,s)$ is given by the policy function
 \begin{equation}
-  a^C(t,s)=\argmax_{a\in A} \left\{(a+C)q(a)\right\},\quad\text{s.t.}\quad
-  q(a)\leq \frac{s}{T-t}.
+  a^C(t,s)=\argmax_{a\in A} \left\{(a+C)\min\left(
+      q(a),\frac{s}{T-t}
+    \right)\right\}
+  %,\quad\text{s.t.}\quad q(a)\leq \frac{s}{T-t}.
 \end{equation}
 Let $\mathcal P_A$ be the projection operator onto the interval $A$.
 Let us consider two families of demand functions that are
@@ -122,9 +125,12 @@ problem is given by the function
 In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
 \begin{equation}
   a^C(t,s)=\mathcal P_A\left[
-    \max\left( \frac{1}{q_2}\log\left( \frac{T-t}{q_1s}\right),
+    \max\left( \frac{1}{q_2}\log\left( \frac{q_1(T-t)}{s}\right),
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
+\todo[inline]{Can we get error bounds comparing $\overline{v}$ and
+  $v$? Maybe using ideas from \citet{bertsekas2005survey}
+  If so, write out explicit expression for $\overline{v}$}
 
 \subsubsection{Example system}
 The example system in \Cref{sec:bellman_example_markdown} has a demand
@@ -157,6 +163,7 @@ lower than the CEC policy would do.
       \addlegendentry{$t=2$};
     \end{axis}
   \end{tikzpicture}
+  \todo[inline]{Why are there spikes? Numerical discrepancies?}
   \caption{Comparison of the CEC policy $a^C$ and
     the optimal Bellman policy $a^B$, compare with
     \Cref{fig:markdown_bellman}.
