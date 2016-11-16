@@ -52,16 +52,17 @@ popular in order to advise on and automate the process for companies.
 There are several success stories from early adopters, for example in
 the airline industry.\todo{Reference}
 For retailers with billions of pounds in revenues, small
-improvements to their revenue-management processes have values worth millions.
+improvements to their revenue-management processes is worth millions
+of pounds.
 Unsold items add up to thousands of tonnes of waste per year, so
-a better control of the demand for products is advantageous
+improving the control of demand for products is advantageous
 for both retailers and the environment.
 
 We are interested in strategies to dynamically set the prices of products, and
 formulate the problem as a stochastic optimal control problem.
-Product stock levels $S_t$ are controlled by a pricing process
-$\alpha_t$, and evolve according to a dynamic system with disturbances
-$W_t$:
+Product stock levels $(S)_t$ are controlled by a pricing process
+$(\alpha)_t$, and evolve according to a dynamic system with disturbances
+$(W)_t$:
 \begin{equation}
 S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1})
 \end{equation}
@@ -70,7 +71,7 @@ given time horizon $T$, and
 minimises the costs $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
-  + \overline{U}(S_T)\right]
+  - \overline{U}(S_T)\right]
 \end{equation}
 The solution to this problem can be found by solving the associated
 Bellman equation. In practical applications, it is almost always
@@ -81,15 +82,15 @@ literature\todo{Mention a few?}, although most of the domain knowledge is kept w
 respective commercial actors.
 Many of these algorithms are justified solely on practical grounds, or
 from asymptotic results.\todo{References}
-In this paper, we will consider a four approximations known as
+In this paper, we will consider four approximations known as
 lookahead policies,
 and evaluate their performance on a one-product system.
-We show see that the optimal controller is more robust
+We find that the optimal policy is more robust to
 miss-specification of the model uncertainty in the system.
 Hence, the use of approximations puts more pressure on the
 demand forecasting process.
 
-We have organised the paper as follows:\todo{Write this out}
+The paper is organised as follows:\todo{Write this out}
 \begin{itemize}
 \item Section 2: Mathematical formulation of the problem, an algorithm
   to solve it based on Bellman's equation, and an example with pricing rules.

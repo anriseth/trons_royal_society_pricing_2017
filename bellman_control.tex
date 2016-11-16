@@ -19,7 +19,7 @@
 The overarching goal in the paper is to consider solutions to a retail
 pricing problem.
 \begin{mydef}[Pricing problem, informal]
-  Given a stock of a product and a future terminal time,
+  Given some initial stock of a product and a future termination time,
   dynamically set the price
   of the product in order to maximise revenue and minimise the cost of
   unsold stock.
@@ -39,7 +39,7 @@ Randomness in the system to capture exogenous influences on demand, is
 modelled in a multiplicative fashion by a Markovian stochastic process
 $(W)_t$ taking non-negative values. See for example
 \citet[Ch.~7]{talluri2006theory} for a discussion of
-popular demand models and modelling of uncertainty.
+popular demand models and the modelling of uncertainty.
 
 For a given pricing process $\alpha$, the dynamics of
 the system evolves from some initial state $S_0=s>0$, according to the
@@ -83,7 +83,8 @@ We choose to maximise the expected profit over the period, which
 assumes a risk-neutral decision-maker. However, it is still important
 to understand the distribution of profits for a given pricing policy
 $\alpha$. Therefore, we look at the full distribution when
-we investigate the performance of algorithms in the rest of the paper.
+we investigate the performance of algorithms in
+\Cref{sec:suboptimal_approximations,sec:markdown_miss_specification}.
 This stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
 Programming principle, also known as the Bellman equation.
@@ -92,7 +93,7 @@ Programming principle, also known as the Bellman equation.
 We assume the optimal policy $\alpha\in\mathcal A$ is Markovian,\todo{
   do I need to justify that the optimal policy is Markovian?}
 meaning that
-there exists a function $a$ such that $\alpha_t(\omega) =
+there exists a function $a(t,s)$ such that $\alpha_t(\omega) =
 a(t,S_t^\alpha(\omega))$ for each $\omega$ in the underlying probability space.
 Then,
 an approach to finding the value function above is to use the Dynamic
@@ -108,7 +109,11 @@ recursive relation~\eqref{eq:dynamic_programming_discrete} with
 terminal value $v(T,s)=-Cs$, and the optimal policy
 function $a(t,s)$ is given by the argmax for each $t,s$.
 The recursion is called the \emph{Bellman equation}, and a discussion
-of its validity can be found for example in \citet{bertsekas2005dynamic}.
+of its validity can be found for example in
+\citet{bertsekas2005dynamic}.
+Analytical solutions to Bellman equations are only available in very
+simplified cases, and thus numerical approaches are normally needed to
+solve the equation.
 
 We implement the following algorithm to solve the optimal control
 problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
@@ -131,13 +136,14 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
 For the rest of the paper, we consider a given non-dimensionalised
 system, in such a way that stock levels lie in $[0,1]$ and the price
 interval $A=[0,1]$.
-Let the demand function be given by
+In the numerical experiments, we choose to look at the demand function
+given by
 \begin{equation}
   q(a)=\frac{1}{3}e^{2-3a}.
 \end{equation}
 We assume the exogenous disturbance process is a sequence of
 i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
-$\gamma^2$. That is, we set $W_t\sim \frac{1}{2}+X$, where
+$\gamma^2$. That is, we define $W_t\sim \frac{1}{2}+X$, where
 $X\sim Beta(\mu,\nu)$, and
 $\mu=\nu=\frac{1}{8\gamma^2}-\frac{1}{2}$.
 
@@ -268,12 +274,12 @@ simulating the system 1000 times.
   % \end{subfigure}%
   \caption{Simulations of the pricing system, started at $S_0=1$ % TODO: subscript _0 causes issues with label re-run warnings
     and
-    controlled by the optimal policy $\alpha$ seen in
+    controlled by the optimal policy $\alpha$ shown in
     \Cref{fig:markdown_bellman}.
-    The left figure shows a box plot that represents the distribution of
-    realised prices, and the right is a histogram of the profit over
+    The left figure is a box plot that represents the distribution of
+    realised prices, and the right is a histogram of the profits over
     the pricing period. As we see, the variance of the prices increase
-    in time, reflecting the wider range of remaining stock at these times.
+    in time, reflecting the wider range of realised remaining stock at these times.
   }\label{fig:bellman_simulation}
 \end{figure}
 

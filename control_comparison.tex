@@ -5,14 +5,14 @@
 
 \listoftodos
 
-\section{Suboptimal approximations}
+\section{Suboptimal approximations}\label{sec:suboptimal_approximations}
 \todo[inline]{Should parts of this introductory discussion go into the
   Introduction section?}
 There are many reasons for practitioners to look for suboptimal
 approximations to the stochastic control problem, rather than
 computing the optimal policy functions for the whole decision period.
 The modelling of a real system and decision process can become very
-complicated, and  we must one must create a very
+complicated, and  we must  create a very
 large state space in order to make use of the Bellman equation.
 We often have to take into account unobservable
 state variables, like estimated parameters, and constraints that may
@@ -23,11 +23,11 @@ probability distribution.
 From a software implementation perspective, writing code that can
 solve the Bellman equation efficiently can be much more complicated
 than other methods.
-Finally, the dimensions of the state space, policy space and exogenous
-information space can quickly make a numerical solution to the Bellman
+Finally, the dimensions of the state, policy and exogenous
+information spaces can quickly make a numerical solution to the Bellman
 equation intractable. An explosion of dimensions can happen very
 quickly, even for one product problems. In
-\citep{bertsimas2001dynamic}, the authors model a very simple
+\citep{bertsimas2001dynamic}, the authors model a simple
 one-product demand function with uncertainty in the function
 parameters, and present an eight-dimensional dynamic programming
 solution to the problem.
@@ -49,31 +49,33 @@ In this section we will look at a class of algorithms known as
 \emph{lookahead policies}, that calculate the decisions on-line.
 Whenever a decision must be made, these methods simulate the future
 behaviour of the system and optimise the current decision based on
-these simulations. First, we consider the \emph{certainty equivalent
-  controller}, which uses a point estimate of the system. For the
+these simulations. First, we consider a special case called the
+\emph{Certainty Equivalent Control} policy, which uses a point
+estimate of the system. For the
 example system in this paper, it turns out that we can solve
 this approximation analytically.
-Then, we look at lookahead policies that take into account the
-variability of the future trajectories, and see that these produce
+Then, we investigate lookahead policies that take into account the
+variability of the future trajectories, which produce
 results that are more similar to the optimal Bellman policy.
 Numerical comparison experiments between the different policies are
-made on the example pricing problem introduced in \Cref{sec:bellman_example_markdown}.
+made using the example pricing problem introduced in
+\Cref{sec:bellman_example_markdown}.
 
-\subsection{The Certainty Equivalent Controller}
+\subsection{The Certainty Equivalent Control policy}
 \todo[inline]{It would be interesting if  we could plot the $L^2$ norm
   difference between $a^B$ and $a^C$ for a wide range of parameters.
   Then maybe do a $P^\alpha$ comparison for some of them.
 }
 A popular, tractable algorithm for solving stochastic optimal control
-problems is the Certainty Equivalent Controller(CEC), also known as Model
+problems is the Certainty Equivalent Control (CEC) policy, also known as Model
 Predictive Control in the engineering community.
 The algorithm is particularly practical, because the optimisation
 problem is reduced to a classic deterministic problem that can
-be sent to existing, commercial or open-source solvers and that can
-solve very large systems.
-At each decision-point, a deterministic optimization problem for the
-remaining decision-horizon is solved, but only the current decision is
-implemented whilst the rest are discarded.
+be solved with existing, commercial or open-source solvers which
+handle very large systems.
+At each decision point, a deterministic optimization problem for the
+remaining decision horizon is solved. Only the current decision is
+implemented whilst, the subsequent decisions are discarded.
 For each time $t=0,\dots,T-1$, the CEC algorithm for the pricing
 problem calculates the current price using the following steps:
 \begin{enumerate}
@@ -95,21 +97,21 @@ problem and in some cases get analytical solutions for the policy function.
 First, let us consider the point forecast
 $W\equiv 1$.
 Then we can rewrite the maximisation problem to find
-the certainty equivalent value function $\overline{v}$:
+the certainty equivalent value function,
 \begin{equation}
   \overline{v}(t,s)=
   \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
     a_\tau+C)\min\left(q(\mathbf a_\tau),s-\sum_{r=t}^{\tau-1}q(\mathbf a_r)\right)-Cs\right\}.
-  %\quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
+  % \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
 \end{equation}
-The optimal choice here is to choose $\mathbf a_\tau=a^*\in A$ for each
-$t$, such that the same amount of stock is sold in each period.
+The optimal choice here is to let $\mathbf a_\tau=a^*\in A$ for each
+$\tau$, such that the same amount of stock is sold in each period.
 Then, $a^*=a^C(t,s)$ is given by the policy function
 \begin{equation}
   a^C(t,s)=\argmax_{a\in A} \left\{(a+C)\min\left(
       q(a),\frac{s}{T-t}
     \right)\right\}
-  %,\quad\text{s.t.}\quad q(a)\leq \frac{s}{T-t}.
+  % ,\quad\text{s.t.}\quad q(a)\leq \frac{s}{T-t}.
 \end{equation}
 Let $\mathcal P_A$ be the projection operator onto the interval $A$.
 Let us consider two families of demand functions that are
@@ -139,8 +141,8 @@ $q_2=3$. We can therefore compare the optimal Bellman policy with the
 pricing policy that a CEC algorithm would implement.
 Denote the Bellman policy function by $a^B$, and consider
 $a^B(t,s)-a^C(t,s)$ for each $t=0,\dots,T-1$. The plot in
-\Cref{fig:bellman_det_policy_difference} shows this difference, which
-shows that both policies reach the upper bound in $A$ for small values
+\Cref{fig:bellman_det_policy_difference} shows this difference.
+Both of the policy functions reach the upper bound in $A$ for small values
 of $s$, but in general the Bellman policy is pricing the products
 lower than the CEC policy would do.
 \begin{figure}[htbp]
@@ -189,7 +191,7 @@ An approximation of the distribution of
 $P^{\alpha^B}-P^{\alpha^C}$ based on 1000 realisations of the
 underlying $W$ can be seen in \Cref{fig:bellman_det_vals}.
 Indeed the experiment shows that the expected value of following the
-Bellman policy is better, but from the plot we can see that
+Bellman policy is better, but from the histogram we see that
 in more than half of the cases, the CEC policy outperforms the optimal
 policy $\alpha^B$.
 \begin{figure}[htbp]
@@ -206,6 +208,10 @@ policy $\alpha^B$.
       {./data/markdown_bellman_det_vals.csv};
     \end{axis}
   \end{tikzpicture}
+  \todo[inline]{Draw vertical line at zero. Point to where $\alpha^B$
+    is better/worse.}
+  \todo[inline]{Show relative difference
+    $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
   \caption{This shows the distribution from 1000 samples of
     the profit of following the Bellman and CEC policy. Bars with
     positive value represent samples where Bellman performed best.
@@ -214,8 +220,6 @@ policy $\alpha^B$.
     Importantly, in more than half the samples the suboptimal policy
     outperforms the Bellman policy.
   }\label{fig:bellman_det_vals}
-  \todo[inline]{Show relative difference
-    $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
 \end{figure}
 
 \subsection{Lookahead policies}
@@ -223,8 +227,8 @@ The Certainty Equivalent Control policy is a special case of
 a set of rolling horizon, or lookahead policies, as defined in
 \citep[Ch.~6]{powell2011approximate}.
 In a general setting, these methods
-calculate calculate (sub-)optimal policies over a given \emph{control
-horizon} whilst forecasting the system behaviour over a given
+calculate (sub-)optimal policies over a given \emph{control
+  horizon} whilst forecasting the system behaviour over a given
 \emph{prediction horizon}.
 These policies are then implemented, and before the system reaches the
 end of the control horizon, the process is repeated.
@@ -235,39 +239,40 @@ only the decision calculated for that time-step will be implemented to
 the system. The control and prediction horizons will both be equal to
 the remaining time of the control problem, so at each time $t$, the
 control horizon will be $t,\dots,T-1$ and the prediction horizon
-$t,\dots,T$.
+$t+1,\dots,T$.
 In our implementation, we make two approximations.
 First, that the expectation operator is replaced by
 an average over $N_t$ samples from $(W_{t+1},\dots,W_T)$.
 Second, that
 the policy function can ``see into the future'', meaning that
 the value at time $\tau$ is calculated based on
-the current state, but also on realised values of $(W_{\tau+1},\dots W_{T})$.
+the current state \emph{and}  on realised values of $(W_{\tau+1},\dots W_{T})$.
 Thus, at time $t$, the pricing algorithm is as follows:
 \begin{enumerate}
-\item Observe state $\hat s$
+\item Observe state $\hat s$.
 \item Pick or draw $N_t$ samples $W^{(i)}$, $i=1,\dots,N_t$ from the
   underlying probability space.
 \item Solve the optimization problem
   \begin{dmath}
     \max_{\substack{a_0\in A\\a_{t+1:T-1}^{(i)}\in A^{T-{t+1}}}}
     \frac{1}{N_t}\sum_{i=1}^{N_t}\left[
-    a_0Q(\hat s,a_0,W_{t+1}^{(i)})
-    +\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
-    -C S_T^{(i)}\right]
+      a_0Q(\hat s,a_0,W_{t+1}^{(i)})
+      +\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
+      -C S_T^{(i)}\right].
   \end{dmath}
   \begin{itemize}
   \item $S^{(i)}$ corresponds to the
     controlled process in scenario $i$, starting at $S_t^{(i)}=\hat s$.
-  \item The decision variables $a_{t+1:T-1}^{(i)}$ are meant to
-    approximate the value the optimal policy $\alpha$ would have taken
-    if $W^{(i)}$ is drawn from the underlying probability space.
   \end{itemize}
 \item Implement the controller corresponding to the maximiser $a_0\in
   A$ above.
 \end{enumerate}
+\textbf{Remark:} The decision variables $a_{t+1:T-1}^{(i)}$ are meant to
+approximate the value the optimal policy $\alpha$ would have taken
+if $W^{(i)}$ is drawn from the underlying probability space.
+
 Note that if $N_t=1$, then this lookahead policy is the same as the CEC policy.
-The number of decision variables increases linearly in $N_t$, and
+The number of decision variables increases linearly with $N_t$, and
 so does the cost of calculating the objective.
 
 \subsubsection{Example system}
@@ -275,8 +280,8 @@ To investigate the performance of the suboptimal lookahead
 policies, we apply it to the system described in
 \Cref{sec:bellman_example_markdown} and compare it to the performance
 of the optimal Bellman policy in the same way as we did to the CEC
-policy. We draw the same number of samples $N$ from $W$ for each
-decision time $t$, thus $N_t=N$. Denote the resulting policy process
+policy. We draw the same number of samples $N_t=N$ from $W$ for each
+decision time $t$. Denote the resulting policy process
 by $\alpha^{L_N}$. Numerical results comparing $P^{\alpha^{L_N}}$ with the
 Bellman policy are shown in \Cref{fig:markdown_bellman_mpc_5_20_100}
 for $N=5,20,100$. The simulations are run 1000 times each to get
@@ -292,7 +297,7 @@ profits $P^\alpha$ decreases.
         width=\textwidth,
         xlabel=$P^{\alpha^B}-P^{\alpha^{L_N}}$,
         ylabel=Count,
-        title={Simulations of Bellman and Lookahead controls},
+        title={Simulations of Bellman and lookahead policies},
         xmin=-0.02,
         xmax=0.045,
         ymax=450,
@@ -335,13 +340,13 @@ profits $P^\alpha$ decreases.
     \end{tikzpicture}
   \end{subfigure}
   \caption{The difference in value using a Bellman policy and a
-  lookahead policy with $N$ future scenarios.
-  The histograms show the result from 1000 individual
-  simulations of the system.
-  As $N$ increases, the differences between the lookahead policy and
-  the optimal Bellman controller decreases. For each $N$, the Bellman
-  policy achieves a higher mean outcome over the 1000 simulations.
-}\label{fig:markdown_bellman_mpc_5_20_100}
+    lookahead policy with $N$ future scenarios.
+    The histograms show the result from 1000 individual
+    simulations of the system.
+    As $N$ increases, the differences between the lookahead policy and
+    the optimal Bellman controller decreases. For each $N$, the Bellman
+    policy achieves a higher mean outcome over the 1000 simulations.
+  }\label{fig:markdown_bellman_mpc_5_20_100}
 \end{figure}
 
 
