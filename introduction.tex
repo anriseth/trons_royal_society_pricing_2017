@@ -3,8 +3,6 @@
 \begin{document}
 \listoftodos
 
-\section{Introduction}
-
 \begin{itemize}
 \item Introduction
   \begin{itemize}
@@ -45,6 +43,8 @@
   \end{itemize}
 \end{itemize}
 
+
+\section{Introduction}
 The process of pricing products in order to control demand and
 maximize revenues has been undertaken for centuries. In recent
 decades, data- and model-driven approaches have become increasingly
@@ -65,9 +65,9 @@ $W_t$:
 \begin{equation}
 S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1})
 \end{equation}
-The goal is to find $\alpha$ which maximises total revenues over a
+The goal is to find $\alpha$ which maximises the revenues $U_t$
 given time horizon $T$, and
-minimises the costs of unsold stock:
+minimises the costs $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
   + \overline{U}(S_T)\right]
@@ -81,8 +81,9 @@ literature\todo{Mention a few?}, although most of the domain knowledge is kept w
 respective commercial actors.
 Many of these algorithms are justified solely on practical grounds, or
 from asymptotic results.\todo{References}
-In this paper, we will consider three\todo{double-check} approximations,
-and look at their performance on a one-product system.
+In this paper, we will consider a four approximations known as
+lookahead policies,
+and evaluate their performance on a one-product system.
 We show see that the optimal controller is more robust
 miss-specification of the model uncertainty in the system.
 Hence, the use of approximations puts more pressure on the
@@ -95,12 +96,12 @@ We have organised the paper as follows:\todo{Write this out}
 \item Section 3: Discussion of some approximations (list them), and
   comparison with the bellman controller in the example
 \item Section 4: What happens when the model is not correct?
-\item (MAYBE) Section 5: Risk-averse. Formulation, impact
-  (exponential, power, quadratic)
-\item Section 6: Conclusion
+% \item (MAYBE) Section 5: Risk-averse. Formulation, impact
+%   (exponential, power, quadratic)
+\item Section 5: Conclusion
 \end{itemize}
 
-\todo[inline]{Write about risk-averse formulations if we want to include it?}
+%\todo[inline]{Write about risk-averse formulations if we want to include it?}
 
 \biblio
 \end{document}
