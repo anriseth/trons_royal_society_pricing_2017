@@ -60,8 +60,19 @@ v = zeros(K, T+1)
 
 x0 = xarr[end]
 bellman = OfflineSystemControl1D(system, x0, xarr, α)
-αdet(t,s) = min(1.,max(log(q1*(T-t)./s)/q2,1/q2-C))
-deterministic = OfflineSystemControl1D(system,x0,αdet)
+αcec(t,s) = min(1.,max(log(q1*(T-t)./s)/q2,1/q2-C))
+vcec(t,s) = (T-t)*(αcec(t,s)+C).*min(Q(αcec(t,s)),s/(T-t))-C*s
+
+vcecarr = zeros(v)
+αcecarr = zeros(α)
+for ti = 1:T
+    αcecarr[:,ti] = αcec(ti-1,xarr)
+    vcecarr[:,ti] = vcec(ti-1,xarr)
+end
+vcecarr[:,T+1] = vcec(T,xarr)
+
+#==
+deterministic = OfflineSystemControl1D(system,x0,αcec)
 numsimulations = 1000
 
 @time (bellmantrajectories,
@@ -79,20 +90,17 @@ for ti = 1:T
     detcontrols[:,ti] = [traj.control[ti] for traj in dettrajectories]
 end
 
-αdetarr = zeros(α)
-for ti = 1:T
-    αdetarr[:,ti] = αdet(ti-1,xarr)
-end
 
 
 ## Plotting stuff
 using JLD
 savefiles = false
 if savefiles == true
-    @save "./data/markdown_bellman_det_$(now()).jld" bellmanvals detvals xarr α v αdetarr bellmancontrols detcontrols
+    @save "./data/markdown_bellman_det_$(now()).jld" bellmanvals detvals xarr α v αcecarr bellmancontrols detcontrols
     writecsv("./data/markdown_bellman_det_vals.csv", [bellmanvals detvals])
     writecsv("./data/markdown_bellman_det_policies.csv", [bellmancontrols detcontrols]')
-    writecsv("./data/markdown_bellman_det_val_policy.csv", ([xarr v α αdetarr])[2:end,:])
+    writecsv("./data/markdown_bellman_det_val_policy.csv", ([xarr v α αcecarr])[2:end,:])
 end
 
 #plot!([0,1,2], [quantile(detcontrols[:,1],0.1),quantile(detcontrols[:,2],0.1),quantile(detcontrols[:,3],0.1)])
+==#
