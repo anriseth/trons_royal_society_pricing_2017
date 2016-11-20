@@ -125,11 +125,16 @@ problem is given by the function
       \right) \right) \right].
 \end{equation}
 In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
-\begin{equation}
+\begin{equation}\label{eq:cec_policy}
   a^C(t,s)=\mathcal P_A\left[
     \max\left( \frac{1}{q_2}\log\left( \frac{q_1(T-t)}{s}\right),
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
+The numerical experiments in the paper are all made
+with $q(a)=q_1e^{-q_2a}$, and for a single combination of the other system
+parameters. We refer to \Cref{sec:parameter_comparison} for a
+comparison between $a^B$ and $a^C$ for a larger range of parameters.
+
 \todo[inline]{Can we get error bounds comparing $\overline{v}$ and
   $v$? Maybe using ideas from \citet{bertsekas2005survey}
   If so, write out explicit expression for $\overline{v}$}
