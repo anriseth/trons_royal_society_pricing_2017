@@ -62,10 +62,6 @@ made using the example pricing problem introduced in
 \Cref{sec:bellman_example_markdown}.
 
 \subsection{The Certainty Equivalent Control policy}
-\todo[inline]{It would be interesting if  we could plot the $L^2$ norm
-  difference between $a^B$ and $a^C$ for a wide range of parameters.
-  Then maybe do a $P^\alpha$ comparison for some of them.
-}
 A popular, tractable algorithm for solving stochastic optimal control
 problems is the Certainty Equivalent Control (CEC) policy, also known as Model
 Predictive Control in the engineering community.
@@ -99,7 +95,7 @@ $W\equiv 1$.
 Then we can rewrite the maximisation problem to find
 the certainty equivalent value function,
 \begin{equation}
-  \overline{v}(t,s)=
+  \widetilde{v}(t,s)=
   \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}(\mathbf
     a_\tau+C)\min\left(q(\mathbf a_\tau),s-\sum_{r=t}^{\tau-1}q(\mathbf a_r)\right)-Cs\right\}.
   % \quad \text{s.t.}\quad \sum_{\tau=t}^{T-1}q(\mathbf a_t)\leq s.
@@ -135,11 +131,28 @@ with $q(a)=q_1e^{-q_2a}$, and for a single combination of the other system
 parameters. We refer to \Cref{sec:parameter_comparison} for a
 comparison between $a^B$ and $a^C$ for a larger range of parameters.
 
-\todo[inline]{Can we get error bounds comparing $\overline{v}$ and
+\todo[inline]{Can we get error bounds comparing $\widetilde{v}$ and
   $v$? Maybe using ideas from \citet{bertsekas2005survey}
-  If so, write out explicit expression for $\overline{v}$}
+  If so, write out explicit expression for $\widetilde{v}$}
+% We know that $\widetilde{v}(T,s)=v(T,s)$, and that by
+% Jensen's inequality, $v(T-1,s)\leq \widetilde{v}(T-1,s)$.
+% Does this bound hold for $t<T-1$ as well? I'm struggling to prove it
+% \begin{align}
+%   \widetilde{v}(t,s)
+%   &=
+%     \begin{cases}
+%       s& \frac{s}{T-t}\leq \frac{q_1}{e^{q_2}}\\
+%       \frac{1}{q_2}(\log(q_1(T-t))s-s\log s)&
+%       \frac{q_1}{e^{-q_2}}<\frac{s}{T-t}\leq
+%       \frac{q_1e^{{(\frac{1}{q_2}-C)}^+}}{e^{-q_2}}\\
+%       \frac{q_1(T-t)}{e^{-q_2}}\left( {[\frac{1}{q_2}-C]}^++C \right)
+%       e^{{(\frac{1}{q_2}-C)}^+}-Cs&\text{otherwise}
+%     \end{cases}
+% \end{align}
+% \todo[inline]{Is $\widetilde{v}$ concave in $s$? I think we need to
+%   require $q_2\geq 1$ and maybe that $C$ only takes certain values}
 
-\subsubsection{Example system}
+\subsubsection{Example system}\label{sec:cec_comparison_example}
 The example system in \Cref{sec:bellman_example_markdown} has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
@@ -170,12 +183,13 @@ lower than the CEC policy would do.
       \addlegendentry{$t=2$};
     \end{axis}
   \end{tikzpicture}
-  \todo[inline]{Why are there spikes? Numerical discrepancies?}
   \caption{Comparison of the CEC policy $a^C$ and
     the optimal Bellman policy $a^B$, compare with
     \Cref{fig:markdown_bellman}.
     We see that the $a^C$ sets
-    higher prices than the Bellman policy function, until they both reach the
+    higher prices than the Bellman policy function for large $s$,
+    although $a^B(0,s)\geq a^C(0,s)$ in a small region before they
+    both reach the
     boundary price $a_{max}=1$.
   }\label{fig:bellman_det_policy_difference}
 \end{figure}
@@ -211,10 +225,12 @@ policy $\alpha^B$.
       % {(\thisrowno{0}-\thisrowno{1})/\thisrowno{0}},col sep=comma]
       \addplot[blue,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
       {./data/markdown_bellman_det_vals.csv};
+      \draw[dashed] (axis cs:0,-30) -- (axis cs:0,600);
+      \draw[<-] (axis cs:0.017,100) -- (axis cs:0.015,200)
+      node[anchor=south] {$\alpha^B$ best};
+      \draw[<-] (axis cs:-0.003,400) -- (axis cs:0.005,400) node[anchor=west] {$\alpha^C$ best};
     \end{axis}
   \end{tikzpicture}
-  \todo[inline]{Draw vertical line at zero. Point to where $\alpha^B$
-    is better/worse.}
   \todo[inline]{Show relative difference
     $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
   \caption{This shows the distribution from 1000 samples of
@@ -353,39 +369,6 @@ profits $P^\alpha$ decreases.
     policy achieves a higher mean outcome over the 1000 simulations.
   }\label{fig:markdown_bellman_mpc_5_20_100}
 \end{figure}
-
-
-% \subsection{Discussion}
-% The Bellman controller is easy to calculate for small-sized problems,
-% but numerical solutions to the Bellman equation spends much time
-% computing the value function in states that a the given system is
-% highly unlikely to end up in. That can be useful if low-probability
-% events occur, although I believe it is more likely that such events
-% ``surprise'' us due to model miss-specification of the underlying
-% uncertainty.
-
-% Lookahead policies with on-line computation of controllers can use
-% powerful deterministic solvers, they make it easier to handle
-% state-dependent constraints, and to update our beliefs for the system
-% dynamics with filtering techniques.
-% The lookahead policy performance was similar to the Bellman controller
-% in our example, especially when we consider multiple future scenarios.
-% One computational issue is that the optimisation problem carried out
-% at each step increases linearly in size with number of scenarios.
-% It is therefore critical to such policies that the system dynamic is slow
-% enough to allow the on-line optimisation step to be calculated before
-% the control period has passed.
-
-% The Certainty Equivalent Control policy is very fast, but
-% is sensitive to the forecast uncertainty. Over time, combining
-% CEC with good filtering rules may result in a fast and accurate controller.
-% The stability investigations of model uncertainty miss-specification
-% in \Cref{sec:markdown_miss_specification} indicate that the
-% relative CEC performance is fairly stable to perturbations in the second- and higher order
-% moments, but less so to perturbations in the true mean.
-
-% \todo[inline]{Jeff idea: The ``robustness'' of Bellman may be because of the
-% ``stability properties'' of the parabolic equation (think in cts time).}
 
 \biblio
 \end{document}

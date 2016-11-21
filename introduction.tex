@@ -4,37 +4,15 @@
 \listoftodos
 
 \begin{itemize}
-\item Introduction
-  \begin{itemize}
-  \item References: Revenue management book. Bertsimas demand-learning
-  \item Many heuristics or approximations, investigate how well they
-    do
-  \item Won't go into computational costs
-  %\item Risk-aversion. Expected utility
-  \end{itemize}
 \item Approximations
   \begin{itemize}
   \item Theoretical results from Bertsekas, do they fit with these methods?
   \end{itemize}
 \item Model miss-specification
   \begin{itemize}
-  \item Compare CEC with Bellman: mean, variance, distribution
-    miss-specification
-  \item Compare lookahead with multiple scenarios when we have mean miss-specification?
+  %\item Compare lookahead with multiple scenarios when we have mean miss-specification?
   \item (Shall we argue for Bellman robustness as with parabolic equations?)
   \end{itemize}
-% \item Risk-aversion
-%   \begin{itemize}
-%   \item Motivation: product manager judged on profit over whole
-%     period. Company judged on quarterly/yearly profits/revenues, below worse
-%     than above expected?
-%   \item Reformulate with revenue as state
-%   \item CARA:~revenue does not make a difference. Show
-%   \item CRRA:~increasing price with increasing revenue. Run
-%     experiments with $T=2$ or $T=3$
-%   \item Quadratic:~opposite behaviour. Just mention
-%   \item These are all expected due to (C/D/I)ARA
-%   \end{itemize}
 \item Conclusion
   \begin{itemize}
   \item Approximations used in industry. Understanding how well they
@@ -50,7 +28,13 @@ maximize revenues has been undertaken for centuries. In recent
 decades, data- and model-driven approaches have become increasingly
 popular in order to advise on and automate the process for companies.
 There are several success stories from early adopters, for example in
-the airline industry.\todo{Reference}
+the airline industry. American Airlines estimated in 1992 that
+the introduction of yield management software had, over the preceding
+three years, contributed 500\$ of additional revenue per year,
+and would continue to do so in the future \citep{smith1992yield}.
+In an example from Chilean retail, \citet{bitran1998coordinating}
+report an expected improvement of 7\%-16\% by implementing
+model-driven strategies.
 For retailers with billions of pounds in revenues, small
 improvements to their revenue-management processes is worth millions
 of pounds.
@@ -60,8 +44,8 @@ for both retailers and the environment.
 
 We are interested in strategies to dynamically set the prices of products, and
 formulate the problem as a stochastic optimal control problem.
-Product stock levels $(S)_t$ are controlled by a pricing process
-$(\alpha)_t$, and evolve according to a dynamic system with random disturbances
+Product stock levels ${(S)}_t$ are controlled by a pricing process
+${(\alpha)}_t$, and evolve according to a dynamic system with random disturbances
 ${(W)}_t$:
 \begin{equation}
 S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1})
@@ -78,10 +62,11 @@ Bellman equation. In practical applications, it is almost always
 intractable to solve the control problem to optimality.
 Thus, algorithms based on approximations and heuristics are employed.
 There are several proposed approximations in the
-literature\todo{Mention a few?}, although most of the domain knowledge is kept within
+literature, although most of the domain knowledge is kept within
 respective commercial actors.
-Many of these algorithms are justified solely on practical grounds, or
-from asymptotic results.\todo{References}
+Many of these algorithms are justified on practical grounds
+\citep{aviv2012dynamic}, or
+from asymptotic results \citep{gallego1994optimal}.
 In this paper, we will consider four approximations known as
 lookahead policies,
 and evaluate their performance on a one-product system.
@@ -90,19 +75,27 @@ miss-specification of the model uncertainty in the system.
 Hence, the use of approximations puts more pressure on the
 demand forecasting process.
 
-The paper is organised as follows:\todo{Write this out}
-\begin{itemize}
-\item Section 2: Mathematical formulation of the problem, an algorithm
-  to solve it based on Bellman's equation, and an example with pricing rules.
-\item Section 3: Discussion of some approximations (list them), and
-  comparison with the bellman controller in the example
-\item Section 4: What happens when the model is not correct?
-% \item (MAYBE) Section 5: Risk-averse. Formulation, impact
-%   (exponential, power, quadratic)
-\item Section 5: Conclusion
-\end{itemize}
-
-%\todo[inline]{Write about risk-averse formulations if we want to include it?}
+The paper is organised as follows:
+In \Cref{sec:bellman_optimal_control} we formulate the
+pricing problem mathematically, and describe an algorithm to solve the
+problem via the associated Bellman equation. We also give an example
+of a problem with one product, and present the optimal pricing rules.
+In practical pricing problems, suboptimal approximations are used, as it is intractable to
+solve the problem optimally. We discuss a class of suboptimal
+algorithms called lookahead policies in
+\Cref{sec:suboptimal_approximations}, and compare their performance to
+the optimal policy. As the dynamical system is stochastic, the
+suboptimal policies may sometimes perform better than the optimal
+one. We find that our example, this is indeed true more than half of
+the time.
+In \Cref{sec:markdown_miss_specification} we consider the issue of
+model uncertainty, where the estimation of the random system
+disturbance is incorrect. The experiments in that section suggests
+that the suboptimal policies are less robust to model uncertainty
+than the optimal policy. Hence, the reduction in the cost
+of calculating the optimal policies must partially be paid for
+by improving the model estimation process.
+Finally, we conclude and mention further work in \Cref{sec:conclusion}.
 
 \biblio
 \end{document}
