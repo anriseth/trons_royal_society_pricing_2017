@@ -26,14 +26,14 @@ we can create a heatmap of the difference between the two policy
 functions by varying the parameters $q_1,q_2$.
 The $L^2$ difference between the
 policy function $a^B(T-1,\cdot)$ and $a^C(T-1,\cdot)$
-gives us a measure of how different the pricing decisions are between
+gives us a measure of how different the pricing decisions are for
 the Bellman policy and the CEC policy.
-This comparison is given in \Cref{fig:policy_diff_heatmaps}.
+This comparison is shown in \Cref{fig:policy_diff_heatmaps}.
 \begin{figure}[htbp]
   \includegraphics[width=1\textwidth]{./img/policy_diff_heatmaps}
   \caption{The $L^2$ difference $\|a^B(T-1,\cdot)-a^C(T-1,\cdot)\|_2$
     between the Bellman and CEC policy functions on $s\in[0,1]$.
-    Each plot shows a combination of $(C,\gamma)$, whilst
+    Each plot defines a combination of $(C,\gamma)$, whilst
     the axes vary the parameters $q_1,q_2$ from the demand function
     $q(a)=q_1e^{-q_2a}$.
     The difference is largest for small values of $q_1$ and $q_2$,
@@ -46,7 +46,7 @@ This comparison is given in \Cref{fig:policy_diff_heatmaps}.
 
 The parameters chosen in this paper's numerical experiments
 are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
-in the region where the error is around $0.012$, on the
+in the region where the $L^2$ difference is around $0.012$, on the
 bottom, left subfigure in \Cref{fig:policy_diff_heatmaps}.
 This difference is in the lower range of what we see for all the
 combinations of parameters, so the conclusions made in the paper
