@@ -1,15 +1,15 @@
 \documentclass[main.tex]{subfiles}
 
 % This code shows which label has been changed when latex complains
-%\makeatletter
+% \makeatletter
 % \def\@testdef #1#2#3{%
-%   \def\reserved@a{#3}\expandafter \ifx \csname #1@#2\endcsname
-%  \reserved@a  \else
+% \def\reserved@a{#3}\expandafter \ifx \csname #1@#2\endcsname
+% \reserved@a  \else
 % \typeout{^^Jlabel #2 changed:^^J%
 % \meaning\reserved@a^^J%
 % \expandafter\meaning\csname #1@#2\endcsname^^J}%
 % \@tempswatrue \fi}
-%\makeatother
+% \makeatother
 
 \begin{document}
 
@@ -31,13 +31,14 @@ solve it numerically for an example system.
 Consider a system over discrete time points $t=0,\dots,T$, with state
 $S$ and policy process $\alpha$ that takes values in an
 interval $A\subset\mathbb R_+$.
-The state $S_t$ denotes the stock of product at time $t$, and
+The state $S_t$ denotes the stock of a product at time $t$, and
 $\alpha_t$ the price for the product in the time period from $t$ to
 $t+1$. We model the sales of the product according to a demand
-function $q:A\to\mathbb R_+$ that is bounded, continuous and decreasing.
-Randomness in the system to capture exogenous influences on demand, is
-modelled in a multiplicative fashion by a Markovian stochastic process
-$(W)_t$ taking non-negative values. See for example
+function $q:A\to\mathbb R_+$ which is bounded, continuous and decreasing.
+Exogenous influences on demand are considered as randomness in the
+system, and is
+modelled in a multiplicative fashion by a stochastic process
+${(W)}_t$ taking non-negative values. See for example
 \citet[Ch.~7]{talluri2006theory} for a discussion of
 popular demand models and the modelling of uncertainty.
 
@@ -53,7 +54,7 @@ starting with stock $s$, and exogenous influences
 characterised by $w$.
 
 The revenue accrued over period $t\to t+1$ is $\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})$.
-A cost of remaining stock at time $T$ is modelled by a cost per unit
+The cost of remaining stock at time $T$ is modelled by a cost per unit
 stock $C\geq 0$.\footnote{In some situations, unsold items at time $T$
   may be sold at some ``salvage price'', in which case we could allow
   $C<0$.}
@@ -85,7 +86,8 @@ to understand the distribution of profits for a given pricing policy
 $\alpha$. Therefore, we look at the full distribution when
 we investigate the performance of algorithms in
 \Cref{sec:suboptimal_approximations,sec:markdown_miss_specification}.
-This stochastic optimal control problem can be solved by
+If we assume that the random variables $W_t$ are independent, this
+stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
 Programming principle, also known as the Bellman equation.
 
@@ -107,7 +109,7 @@ recursively in the following way:
 Thus, the value function is the solution to the backwards-in-time
 recursive relation~\eqref{eq:dynamic_programming_discrete} with
 terminal value $v(T,s)=-Cs$, and the optimal policy
-function $a(t,s)$ is given by the argmax for each $t,s$.
+function $a(t,s)$ is given by the argmax for each $(t,s)$.
 The recursion is called the \emph{Bellman equation}, and a discussion
 of its validity can be found for example in
 \citet{bertsekas2005dynamic}.
@@ -119,17 +121,17 @@ We implement the following algorithm to solve the optimal control
 problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
 \begin{enumerate}
 \item Create grid $s_1,\dots,s_K$, and arrays $v^K\in\mathbb R^{K\times(T+1)}$,
-  $\alpha^K\in\mathbb R^{K\times T}$
-\item Set $Iv^K(s)=-Cs$
-\item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$
-\item For $t = T-1,\dots,0$
+  $\alpha^K\in\mathbb R^{K\times T}$.
+\item Set $Iv^K(s)=-Cs$.
+\item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$.
+\item For $t = T-1,\dots,0$:
   \begin{enumerate}
   \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ aQ(s,a,W_{t+1})
       +Iv^K(s-Q(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
-  \item Set $\alpha^K[i,t]$ to the maximiser above
-  \item Set $Iv^K(s) = Interpolate(s, {(s_i)}_i,{(v^K[i,t])}_i)$
+  \item Set $\alpha^K[i,t]$ to the maximiser above.
+  \item Set $Iv^K(s) = Interpolate(s, {(s_i)}_i,{(v^K[i,t])}_i)$.
   \end{enumerate}
-\item Return $v^K,\alpha^K$
+\item Return $v^K,\alpha^K$.
 \end{enumerate}
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
@@ -144,11 +146,11 @@ given by
 We assume the exogenous disturbance process is a sequence of
 i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
 $\gamma^2$. That is, we define $W_t\sim \frac{1}{2}+X$, where
-$X\sim Beta(\mu,\nu)$,
-\footnote{A $Beta(\mu,\nu)$ random variable has probability density
+$X\sim Beta(\mu,\nu)$,\footnote{
+  A $Beta(\mu,\nu)$ random variable has probability density
   function on $[0,1]$, given by
-  $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$, with a
-  normalising function $B(\mu,\nu)$.
+  $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$.
+  The function $B(\mu,\nu)$ acts as a normalising factor.
 }
 and $\mu=\nu=\frac{1}{8\gamma^2}-\frac{1}{2}$.
 
@@ -202,7 +204,7 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
   \end{subfigure}
   \caption{The value function and corresponding
     optimal control function for the pricing problem.
-    The kink in the value function
+    The kinks in the value function
     correspond to when the pricing policy hits the upper bound 1.
   }\label{fig:markdown_bellman}
 \end{figure}
@@ -212,7 +214,7 @@ the outcome of following this policy.
 Define a random variable $P^\alpha$, which for each realisation
 represents the total profit,
 \begin{equation}
-  P^\alpha = \sum_{t=0}^T\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
+  P^\alpha = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
 \end{equation}
 If $a(t,s)$ is the function found when solving the Bellman equation,
 then $\alpha$ is a stochastic process defined for each event $\omega$
@@ -234,7 +236,7 @@ simulating the system 1000 times.
         boxplot/draw direction=y,
         xtick={1,2,3},
         xticklabels={$t=0$, $t=1$, $t=2$},
-        %ymin=0.6,ymax=0.75
+        % ymin=0.6,ymax=0.75
         ]
         \addplot+[boxplot] table[y index=0,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
@@ -281,8 +283,9 @@ simulating the system 1000 times.
     and
     controlled by the optimal policy $\alpha$ shown in
     \Cref{fig:markdown_bellman}.
-    The left figure is a box plot that represents the distribution of
-    realised prices, and the right is a histogram of the profits over
+    The left figure is a box plot
+    that shows the median, the quartiles and outlier prices observed
+    in the simulations. The right figure is a histogram of the profits over
     the pricing period. As we see, the variance of the prices increase
     in time, reflecting the wider range of realised remaining stock at these times.
   }\label{fig:bellman_simulation}

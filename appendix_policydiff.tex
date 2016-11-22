@@ -31,22 +31,27 @@ the Bellman policy and the CEC policy.
 This comparison is shown in \Cref{fig:policy_diff_heatmaps}.
 \begin{figure}[htbp]
   \includegraphics[width=1\textwidth]{./img/policy_diff_heatmaps}
+  \todo[inline]{Make 3-by-2 plot instead}
+  \todo[inline]{Wrap PGF around raw heatmaps}
   \caption{The $L^2$ difference $\|a^B(T-1,\cdot)-a^C(T-1,\cdot)\|_2$
     between the Bellman and CEC policy functions on $s\in[0,1]$.
     Each plot defines a combination of $(C,\gamma)$, whilst
-    the axes vary the parameters $q_1,q_2$ from the demand function
+    the axes vary the parameters $q_1,q_2$ of the demand function
     $q(a)=q_1e^{-q_2a}$.
     The difference is largest for small values of $q_1$ and $q_2$,
     which represent inelastic products with low absolute demand.
-    The $L^2$ difference seems to scale uniformly over $q_1,q_2$, in the uncertainty
+    The $L^2$ difference seems to scale uniformly over $(q_1,q_2)$, in the uncertainty
     parameter $\gamma$, with higher uncertainty increasing the
     difference.
+    The white dot on the bottom, left plot corresponds to the
+    parameters chosen for the experiments in this paper.
   }\label{fig:policy_diff_heatmaps}
 \end{figure}
 
 The parameters chosen in this paper's numerical experiments
 are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
-in the region where the $L^2$ difference is around $0.012$, on the
+in the region where the $L^2$ difference is around $0.012$ --- see the
+white dot in the
 bottom, left subfigure in \Cref{fig:policy_diff_heatmaps}.
 This difference is in the lower range of what we see for all the
 combinations of parameters, so the conclusions made in the paper

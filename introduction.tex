@@ -10,14 +10,8 @@
   \end{itemize}
 \item Model miss-specification
   \begin{itemize}
-  %\item Compare lookahead with multiple scenarios when we have mean miss-specification?
+    % \item Compare lookahead with multiple scenarios when we have mean miss-specification?
   \item (Shall we argue for Bellman robustness as with parabolic equations?)
-  \end{itemize}
-\item Conclusion
-  \begin{itemize}
-  \item Approximations used in industry. Understanding how well they
-    perform is important
-  \item Forward: more products. Time dependence. Constraints
   \end{itemize}
 \end{itemize}
 
@@ -45,17 +39,17 @@ for both retailers and the environment.
 We are interested in strategies to dynamically set the prices of products, and
 formulate the problem as a stochastic optimal control problem.
 Product stock levels ${(S)}_t$ are controlled by a pricing process
-${(\alpha)}_t$, and evolve according to a dynamic system with random disturbances
+${(\alpha)}_t$, and evolve according to a transition function $f$ with random disturbances
 ${(W)}_t$:
 \begin{equation}
-S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1})
+  S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1}).
 \end{equation}
-The goal is to find $\alpha$ which maximises the revenues $U_t$
+The goal is to find $\alpha$ which maximises the revenues $U_t$ over a
 given time horizon $T$, and
 minimises the costs $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
-  - \overline{U}(S_T)\right]
+    - \overline{U}(S_T)\right].
 \end{equation}
 The solution to this problem can be found by solving the associated
 Bellman equation. In practical applications, it is almost always
@@ -80,13 +74,12 @@ In \Cref{sec:bellman_optimal_control} we formulate the
 pricing problem mathematically, and describe an algorithm to solve the
 problem via the associated Bellman equation. We also give an example
 of a problem with one product, and present the optimal pricing rules.
-In practical pricing problems, suboptimal approximations are used, as it is intractable to
-solve the problem optimally. We discuss a class of suboptimal
-algorithms called lookahead policies in
-\Cref{sec:suboptimal_approximations}, and compare their performance to
+A discussion of a class of suboptimal
+algorithms called lookahead policies follows in
+\Cref{sec:suboptimal_approximations}, where we compare their performance to
 the optimal policy. As the dynamical system is stochastic, the
 suboptimal policies may sometimes perform better than the optimal
-one. We find that our example, this is indeed true more than half of
+one. We find that for our example, this is  true more than half of
 the time.
 In \Cref{sec:markdown_miss_specification} we consider the issue of
 model uncertainty, where the estimation of the random system
@@ -95,7 +88,7 @@ that the suboptimal policies are less robust to model uncertainty
 than the optimal policy. Hence, the reduction in the cost
 of calculating the optimal policies must partially be paid for
 by improving the model estimation process.
-Finally, we conclude and mention further work in \Cref{sec:conclusion}.
+Finally, we conclude and propose further work in \Cref{sec:conclusion}.
 
 \biblio
 \end{document}

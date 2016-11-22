@@ -12,15 +12,15 @@ with degree of suboptimality. The motivation is to better understand
 how well the suboptimal policies approximate the returns from the
 optimal policy.
 Pricing problems are often formulated as an expected value
-maximisation, but different algorithms may create different
-distributions of the realised profits.
+maximisation, but different algorithms may induce different
+distributions of the profits.
 So even though the expected value of suboptimal policies are no better
 than the optimal policy, they may have a higher profit for some
-realisations of the underlying uncertainty.
+realisations of the underlying probability distribution.
 We found in \Cref{sec:cec_comparison_example} that there are
 reasonable system parameters for which
 the suboptimal Certainty Equivalent Control policy performs better
-than the optimal one in more
+than the optimal policy in more
 than half of the realisations.
 This underscores the importance of looking at what impact
 different suboptimal algorithms have on the distribution of
@@ -32,9 +32,9 @@ The model problem in this paper is fairly simple, and
 we propose two specific lines of research that
 take this analysis closer to practical models.
 First, to investigate multi-product problems where the demand and
-availability of one product depend on the other products.
+availability of one product depends on the other products.
 Second, to introduce a state dependence on the uncertainty in the
-system, that is to allow $W_{t+1}$ to depend explicitly on the values
+system, that is, to allow $W_{t+1}$ to depend explicitly on the values
 of $S_t$ and $\alpha_t$.
 We hope that these two extensions can get a better understanding of
 whether the effects seen in this paper will be stronger or diluted

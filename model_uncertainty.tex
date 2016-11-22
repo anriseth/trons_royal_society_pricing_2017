@@ -89,6 +89,8 @@ update parameter estimates more frequently.
         \addplot[blue,hist={bins=40}] table [y index = 4,col sep=comma]
         {./data/markdown_bellman_mpc_model_misspecification.csv};
         \addlegendentry{$\mathbb E[W^\dagger]=0.95$};
+        \draw[<-] (axis cs:0.018,180) -- (axis cs:0.01,220)
+        node [anchor=south,align=left] {$\alpha^B$ better with\\ high probability};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}\hfill
@@ -111,9 +113,9 @@ update parameter estimates more frequently.
     miss-specification of
     $W$. Compare with \Cref{fig:markdown_bellman_mpc_5_20_100}.
     The policy functions are calculated under the assumption that
-    the system disturbance is a translated Beta distribution with mean 1
-    and standard deviation $5\times 10^{-2}$,
-    instead
+    the system disturbance is a translated, symmetric Beta
+    distribution with mean 1
+    and standard deviation $5\times 10^{-2}$, instead
     of the true disturbance~$W^\dagger$.
     The CEC policy performance is very dependent on mean miss-specification,
     which can be expected.
@@ -127,8 +129,8 @@ disturbance is likely to be more accurate than for higher moments.
 It can therefore be interesting to see how the different
 policies deal with model uncertainty of higher moments.
 We consider affine transformations of a $\chi^2_5$ distribution with five degrees of
-freedom, that have the \emph{same mean and standard deviation as the model
-  distribution $W$}. A comparison of the probability density
+freedom, that have the same mean and standard deviation as the model
+distribution $W$. A comparison of the probability density
 functions can be seen in \Cref{fig:chisq_transformed}.
 \begin{figure}[htbp]
   \centering
@@ -249,7 +251,7 @@ the true uncertainty $W^\dagger$.
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
-  \caption{Performance of Bellman and CEC policies when the true system disturbances
+  \caption{Performance of the Bellman  and CEC policies when the true system disturbances
     are transformations $W_1^\dagger,W_2^\dagger$ of
     a $\chi_5^2$ distribution (\Cref{fig:chisq_transformed}).
     The relative performance of CEC compared to Bellman does not

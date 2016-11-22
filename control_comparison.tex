@@ -18,15 +18,15 @@ We often have to take into account unobservable
 state variables, like estimated parameters, and constraints that may
 depend on history. Decision-makers in business may change their mind
 about the objective over the course of the decision period, which should
-be incorporated in the modelling as parameters with some estimated
-probability distribution.
+be incorporated in the modelling as parameters with corresponding, estimated
+probability distributions.
 From a software implementation perspective, writing code that can
 solve the Bellman equation efficiently can be much more complicated
 than other methods.
 Finally, the dimensions of the state, policy and exogenous
 information spaces can quickly make a numerical solution to the Bellman
 equation intractable. An explosion of dimensions can happen very
-quickly, even for one product problems. In
+quickly, even for one-product problems. In
 \citep{bertsimas2001dynamic}, the authors model a simple
 one-product demand function with uncertainty in the function
 parameters, and present an eight-dimensional dynamic programming
@@ -51,7 +51,7 @@ Whenever a decision must be made, these methods simulate the future
 behaviour of the system and optimise the current decision based on
 these simulations. First, we consider a special case called the
 \emph{Certainty Equivalent Control} policy, which uses a point
-estimate of the system. For the
+estimate of the system \citep[Ch.~6]{bertsekas2005dynamic}. For the
 example system in this paper, it turns out that we can solve
 this approximation analytically.
 Then, we investigate lookahead policies that take into account the
@@ -71,8 +71,8 @@ be solved with existing, commercial or open-source solvers which
 handle very large systems.
 At each decision point, a deterministic optimization problem for the
 remaining decision horizon is solved. Only the current decision is
-implemented whilst, the subsequent decisions are discarded.
-For each time $t=0,\dots,T-1$, the CEC algorithm for the pricing
+implemented, whilst the subsequent decisions are discarded.
+For each decision point $t=0,\dots,T-1$, the CEC algorithm for the pricing
 problem calculates the current price using the following steps:
 \begin{enumerate}
 \item Observe state $\hat s$.
@@ -183,14 +183,16 @@ lower than the CEC policy would do.
       \addlegendentry{$t=2$};
     \end{axis}
   \end{tikzpicture}
-  \caption{Comparison of the CEC policy $a^C$ and
-    the optimal Bellman policy $a^B$, compare with
+  \caption{Comparison of the CEC policy function $a^C$ and
+    the optimal Bellman policy function $a^B$, see also
     \Cref{fig:markdown_bellman}.
-    We see that the $a^C$ sets
-    higher prices than the Bellman policy function for large $s$,
-    although $a^B(0,s)\geq a^C(0,s)$ in a small region before they
-    both reach the
-    boundary price $a_{max}=1$.
+    The CEC function sets
+    higher prices than the Bellman function for large $s$.
+    Observe that when $t<T-1$, there is a small region where
+    $a^B(t,s)\geq a^C(t,s)$, before they
+    both reach the boundary price $a_{max}=1$. This is due to the
+    diffusion of the value function by the
+    random variables $W_t$.
   }\label{fig:bellman_det_policy_difference}
 \end{figure}
 
@@ -202,15 +204,16 @@ the distribution of the profits $P^{\alpha^B}$ and $P^{\alpha^C}$.
 We remind the reader that
 $P^\alpha =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
-From the definition of the Bellman policy function, we should have
+From the opitimality of the Bellman policy function, we should have
 that $\mathbb E_W[P^{\alpha^B}]\geq \mathbb E_W[P^{\alpha^C}]$.
 However, marginalising a random variable with the expectation operator
 loses a lot of information which can be of value.
 An approximation of the distribution of
 $P^{\alpha^B}-P^{\alpha^C}$ based on 1000 realisations of the
 underlying $W$ can be seen in \Cref{fig:bellman_det_vals}.
-Indeed the experiment shows that the expected value of following the
-Bellman policy is better, but from the histogram we see that
+Indeed in the experiment, the average value of following the
+Bellman policy is higher than following the CEC policy.
+However, from the histogram we see that
 in more than half of the cases, the CEC policy outperforms the optimal
 policy $\alpha^B$.
 \begin{figure}[htbp]
@@ -234,10 +237,9 @@ policy $\alpha^B$.
   \todo[inline]{Show relative difference
     $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
   \caption{This shows the distribution from 1000 samples of
-    the profit of following the Bellman and CEC policy. Bars with
-    positive value represent samples where Bellman performed best.
+    the profit of following the Bellman and CEC policies.
     The mean $\mathbb E_W[P^{\alpha^B}-P^{\alpha^C}]\approx 3.8\times
-    10^{-3}$ confirms that Bellman is better on average, as expected.
+    10^{-3}$ confirms that Bellman is better on average, as it should be.
     Importantly, in more than half the samples the suboptimal policy
     outperforms the Bellman policy.
   }\label{fig:bellman_det_vals}
@@ -248,13 +250,13 @@ The Certainty Equivalent Control policy is a special case of
 a set of rolling horizon, or lookahead policies, as defined in
 \citep[Ch.~6]{powell2011approximate}.
 In a general setting, these methods
-calculate (sub-)optimal policies over a given \emph{control
-  horizon} whilst forecasting the system behaviour over a given
-\emph{prediction horizon}.
+calculate (sub-)optimal policies over a given control
+horizon whilst forecasting the system behaviour over a given
+prediction horizon.
 These policies are then implemented, and before the system reaches the
 end of the control horizon, the process is repeated.
 
-For the current work, all decisions will be made \emph{on-line}. This means
+For the current work, all decisions are made on-line. This means
 that the rolling horizon process is carried out at each time step, and
 only the decision calculated for that time-step will be implemented to
 the system. The control and prediction horizons will both be equal to
@@ -289,7 +291,7 @@ Thus, at time $t$, the pricing algorithm is as follows:
   A$ above.
 \end{enumerate}
 \textbf{Remark:} The decision variables $a_{t+1:T-1}^{(i)}$ are meant to
-approximate the value the optimal policy $\alpha$ would have taken
+approximate the values the optimal policy $\alpha^B$ would have taken
 if $W^{(i)}$ is drawn from the underlying probability space.
 
 Note that if $N_t=1$, then this lookahead policy is the same as the CEC policy.
@@ -297,8 +299,8 @@ The number of decision variables increases linearly with $N_t$, and
 so does the cost of calculating the objective.
 
 \subsubsection{Example system}
-To investigate the performance of the suboptimal lookahead
-policies, we apply it to the system described in
+To investigate the performance of a suboptimal lookahead
+policy, we apply it to the system described in
 \Cref{sec:bellman_example_markdown} and compare it to the performance
 of the optimal Bellman policy in the same way as we did to the CEC
 policy. We draw the same number of samples $N_t=N$ from $W$ for each
@@ -360,12 +362,12 @@ profits $P^\alpha$ decreases.
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
-  \caption{The difference in value using a Bellman policy and a
+  \caption{We look at the difference in realised profit when using a Bellman policy and a
     lookahead policy with $N$ future scenarios.
-    The histograms show the result from 1000 individual
+    The histograms show the results from 1000 individual
     simulations of the system.
     As $N$ increases, the differences between the lookahead policy and
-    the optimal Bellman controller decreases. For each $N$, the Bellman
+    the optimal Bellman policy decreases. For each $N$, the Bellman
     policy achieves a higher mean outcome over the 1000 simulations.
   }\label{fig:markdown_bellman_mpc_5_20_100}
 \end{figure}
