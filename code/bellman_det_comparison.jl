@@ -3,22 +3,23 @@ using Distributions
 using LaTeXStrings
 using Plots, StatPlots
 
-#Carr = [0.25, 0.5, 1.]
+Carr = [0.25, 0.5, 1.]
 #γarr = [2.5e-2, 5e-2, 1e-1]
-Carr = [0.5, 1.]
+#Carr = [0.5, 1.]
 γarr = [5e-2, 1e-1]
 q1arr = linspace(0.5,3, 50)
 q2arr = linspace(1., 5, 50)
 
-
 amin = 0.; amax = 1.
 xmin = 0.; xmax = 1.
-K = 101
+K = 201
 xarr = collect(linspace(xmin,xmax,K)[2:end])
 xtup = (xarr,)
 
 α = zeros(xarr)
 αcecarr = zeros(α)
+v = zeros(α)
+vcecarr = zeros(v)
 
 q(a,q1,q2) = q1*exp(-q2*a)
 Y(a,s,γ,q1,q2) = (s-q(a,q1,q2))/(γ*q(a,q1,q2))
@@ -100,16 +101,18 @@ end
 
 using JLD
 
-savefiles = false
+savefiles = true
 if savefiles == true
     @save "./data/bellman_det_comparison_$(now()).jld"
 end
 
+
 Plots.scalefontsizes(1.5)
-titles = [L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$" L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"]
+titles = [L"$(C,\gamma)=(0.25,0.05)$" L"$(C,\gamma)=(0.25,0.1)$" L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$" L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"]
 plt = plot(q1arr, q2arr, diffarrays, st=:heatmap, margin=0mm, ratio=0.4,
            xlabel=L"$q_1$", ylabel=L"$q_2$",
-           title=titles,layout=@layout [ p11 p12 ; p21 p22])
-scatter!(plt.spmap[:p21], [q1],[q2], label="", color=:white, markersize=10)
-xlims!(plt.spmap[:p21], minimum(q1arr), maximum(q1arr))
-ylims!(plt.spmap[:p21], minimum(q2arr), maximum(q2arr))
+           title=titles,layout=@layout [ p11 p12 ; p21 p22; p31 p32])
+scatter!(plt.spmap[:p31], [q1],[q2], label="", color=:white, markersize=10)
+xlims!(plt.spmap[:p31], minimum(q1arr), maximum(q1arr))
+ylims!(plt.spmap[:p31], minimum(q2arr), maximum(q2arr))
+xticks!(plt.spmap[:p31], [1,2,3])

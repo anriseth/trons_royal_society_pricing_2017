@@ -5,6 +5,20 @@ import Distributions.rand
 using LaTeXStrings
 using Plots, StatPlots
 
+if !isdefined(:Betashift)
+    type Betashift{T} <: Distributions.Distribution{Univariate,Continuous}
+        rv::Distributions.Beta{T}
+        shift::T
+    end
+
+    function rand(d::Betashift)
+        d.shift + rand(d.rv)
+    end
+    function rand(d::Betashift, dims::Int...)
+        d.shift + rand(d.rv, dims)
+    end
+end
+
 srand(0) # For reproducibility
 
 #Q(a) = 1.-a
@@ -19,7 +33,7 @@ Q(a) = q1*exp(-q2*a)
 
 f(t,x,a,w) = x-min(Q(a)*w,x)
 U(t,x,a,w) = a*min(Q(a)*w,x)
-C = 1
+C = 1.
 Ubar(x) = -C*x
 
 γ = 5e-2
@@ -33,19 +47,7 @@ xtup = (xarr,)
 
 numsamples = 1000 # Samples per time step
 betavar = 1./(8γ^2)-0.5  # Sets variance equal to γ^2
-if !isdefined(:Betashift)
-    type Betashift{T} <: Distributions.Distribution{Univariate,Continuous}
-        rv::Distributions.Beta{T}
-        shift::T
-    end
 
-    function rand(d::Betashift)
-        d.shift + rand(d.rv)
-    end
-    function rand(d::Betashift, dims::Int...)
-        d.shift + rand(d.rv, dims)
-    end
-end
 ωdist = Betashift(Beta(betavar,betavar), 0.5) # shift by 0.5 to get mean 1
 #ωdist = Normal(1.,γ)
 
@@ -59,8 +61,7 @@ v = zeros(K, T+1)
 # Simulations
 
 x0 = xarr[end]
-bellman = OfflineSystemControl1D(system, x0, xarr, α)
-αcec(t,s) = min(1.,max(log(q1*(T-t)./s)/q2,1/q2-C))
+αcec(t,s) = min(amax,max(log(q1*(T-t)./s)/q2,1/q2-C,amin))
 vcec(t,s) = (T-t)*(αcec(t,s)+C).*min(Q(αcec(t,s)),s/(T-t))-C*s
 
 vcecarr = zeros(v)
@@ -71,7 +72,9 @@ for ti = 1:T
 end
 vcecarr[:,T+1] = vcec(T,xarr)
 
+plot(xarr,α-αcecarr)
 #==
+bellman = OfflineSystemControl1D(system, x0, α)
 deterministic = OfflineSystemControl1D(system,x0,αcec)
 numsimulations = 1000
 
