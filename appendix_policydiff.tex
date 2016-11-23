@@ -30,9 +30,10 @@ gives us a measure of how different the pricing decisions are for
 the Bellman policy and the CEC policy.
 This comparison is shown in \Cref{fig:policy_diff_heatmaps}.
 \begin{figure}[htbp]
-  \includegraphics[width=1\textwidth]{./img/policy_diff_heatmaps}
-  \todo[inline]{Make 3-by-2 plot instead}
-  \todo[inline]{Wrap PGF around raw heatmaps}
+  %\begin{overpic}[width=\textwidth,grid,tics=10]
+    \includegraphics[width=0.96\textwidth]{./img/policy_diff_heatmaps}
+  %\end{overpic}
+  %\todo[inline]{Wrap PGF around raw heatmaps?}
   \caption{The $L^2$ difference $\|a^B(T-1,\cdot)-a^C(T-1,\cdot)\|_2$
     between the Bellman and CEC policy functions on $s\in[0,1]$.
     Each plot defines a combination of $(C,\gamma)$, whilst
