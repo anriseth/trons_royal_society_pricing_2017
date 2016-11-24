@@ -3,24 +3,25 @@
 \begin{document}
 
 \abstract{
-  In this paper, we investigate  Approximate Dynamic Programming (ADP)
-  algorithms to a pricing problem for retailers.
+  In this article, we investigate  Approximate Dynamic Programming (ADP)
+  algorithms for a pricing problem in retail.
   The pricing problem is formulated as a stochastic optimal
   control problem, where the optimal policy can be found by solving
   the associated Bellman equation.
   For realistic retail applications, modelling the problem and solving
   it to optimality becomes impractical and intractable.
-  Thus practitioners make simplifying assumptions, but thorough investigations
-  of their relative performance is lacking.
+  Thus practitioners make simplifying assumptions and
+  design suboptimal policies, but a thorough investigation
+  of the relative performance of these policies is lacking.
   A challenge in ADP is to better understand
-  such trade-offs, which this paper contributes to.
+  such trade-offs, to which this article contributes.
   We simulate the performance of a family of algorithms on a
   one-product system, and find that in
-  certain situations, the popular Certainty Equivalent Control policy
-  can perform better than the optimal, expected value maximising policy more than
+  particular situations, the popular Certainty Equivalent Control policy
+  can perform better than an optimal, expected value maximising policy more than
   \emph{half of the time}.
-  However, this algorithm is less robust to model uncertainty, and thus
-  requires that the retailer spends more resources on system estimation.
+  However, this algorithm is less robust to model misspecification, and thus
+  requires that the retailer spends more resources on state estimation.
 }
 \end{document}
 

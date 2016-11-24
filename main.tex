@@ -5,11 +5,12 @@
 %%% End:
 
 \documentclass[a4paper,12pt]{article}
+\pdfoutput=1
 
 \usepackage{mathmacros} % My own macros
+\usepackage{authblk}
 \setcitestyle{square,numbers} % natbib
 \setlength{\marginparwidth}{3.1cm} % For todonotes
-
 
 \pgfplotsset{compat=1.13}
 \usetikzlibrary{external}
@@ -26,9 +27,19 @@
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
 
-\title{Stochastic control strategies applied to a retail
-  pricing problem}
-\author{Asbj{\o}rn Nilsen Riseth}
+\title{Stochastic control strategies applied to a
+  pricing problem in retail}
+\author{Asbj{\o}rn Nilsen Riseth\thanks{
+    This publication is based on work partially supported by the EPSRC
+    Centre For Doctoral Training in Industrially Focused Mathematical
+    Modelling (EP/L015803/1) in collaboration with a partner
+    company.\\
+    The author would like to thank his supervisors
+    J.~N.~Dewynne and C.~L.~Farmer for their valuable suggestions.}\\
+  {\tt riseth@maths.ox.ac.uk}}
+\affil{Mathematical Institute, University
+  of Oxford, OX2 6GG.}
+
 \date{\today}
 
 \begin{document}
@@ -39,6 +50,12 @@
 \def\listoftodos{}
 
 \subfile{abstract}
+
+\vspace{1em}\noindent
+{\bf Key words:} Revenue management, dynamic pricing, stochastic
+optimal control,
+approximate dynamic programming
+
 \subfile{introduction}
 \subfile{bellman_control}
 \subfile{control_comparison}
