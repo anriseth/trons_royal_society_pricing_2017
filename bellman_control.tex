@@ -16,41 +16,43 @@
 \listoftodos
 
 \section{The optimal control problem}\label{sec:bellman_optimal_control}
-The overarching goal in the paper is to consider solutions to a retail
+The overarching goal in the article is to consider solutions to a retail
 pricing problem.
-\begin{mydef}[Pricing problem, informal]
-  Given some initial stock of a product and a future termination time,
-  dynamically set the price
-  of the product in order to maximise revenue and minimise the cost of
-  unsold stock.
-\end{mydef}
+Given some initial amount of stock of a product and a future
+termination time,
+the pricing problem is to
+dynamically set the price
+of the product in order to maximise revenue and minimise the cost of
+unsold stock at the termination time.
 In this section, we define the optimal control pricing problem,
 describe the optimality conditions given by the Bellman equation and
 solve it numerically for an example system.
 
-Consider a system over discrete time points $t=0,\dots,T$, with state
-$S$ and policy process $\alpha$ that takes values in an
+Consider a system over discrete, equispaced time points
+$t=0,1,\dots,T$, with state
+$S_t$ and policy process $\alpha_t$ that takes values in a closed
 interval $A\subset\mathbb R_+$.
-The state $S_t$ denotes the stock of a product at time $t$, and
+The state $S_t$ is the stock of a product at time $t$, and
 $\alpha_t$ the price for the product in the time period from $t$ to
-$t+1$. We model the sales of the product according to a demand
-function $q:A\to\mathbb R_+$ which is bounded, continuous and decreasing.
+$t+1$. We model the amount of product sold over each time period according
+to a forecast demand
+function $q:A\to\mathbb R_+$, which is bounded, continuous and decreasing.
 Exogenous influences on demand are considered as randomness in the
-system, and is
+system, and are
 modelled in a multiplicative fashion by a stochastic process
-${(W)}_t$ taking non-negative values. See for example
+$(W_t)$ taking non-negative values. See, for example,
 \citet[Ch.~7]{talluri2006theory} for a discussion of
 popular demand models and the modelling of uncertainty.
 
-For a given pricing process $\alpha$, the dynamics of
-the system evolves from some initial state $S_0=s>0$, according to the
+For a given pricing process $\alpha$, the
+system evolves from some initial state $S_0>0$, according to the
 recursion
 \begin{equation}\label{eq:stock_dynamics}
-  S_{t+1}^\alpha=S_t^\alpha-\min(q(\alpha_t)W_{t+1},S_t^\alpha),\qquad t=0,\dots,T-1.
+  S_{t+1}^\alpha=S_t^\alpha-\min(S_t^\alpha,q(\alpha_t)W_{t+1}),\qquad t=0,\dots,T-1.
 \end{equation}
-The function $Q(s,a,w)=\min(q(a)w,s)$ denotes the unit sales per
+The function $Q(s,a,w)=\min(s,q(a)w)$ denotes the unit sales over a
 period at price $a$,
-starting with stock $s$, and exogenous influences
+starting with stock $s$, and with exogenous influences
 characterised by $w$.
 
 The revenue accrued over period $t\to t+1$ is $\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})$.
@@ -73,17 +75,17 @@ by the \emph{value function}
 \end{align}
 This leads us to the following mathematical formulation of the pricing
 problem:
-\begin{mydef}[Pricing problem]
-  Given an initial stock $s>0$ and a cost per unit unsold stock $C\geq
-  0$, find $\alpha\in\mathcal A$ such that
+\begin{mydef}
+  Given an initial stock $S_0>0$ and a cost per unit unsold stock $C\geq
+  0$, the \emph{pricing problem} is to find $\alpha\in\mathcal A$ such that
   \begin{equation}
-    J(0,s,\alpha) = v(0,s).
+    J(0,S_0,\alpha) = v(0,S_0).
   \end{equation}
 \end{mydef}
 We choose to maximise the expected profit over the period, which
 assumes a risk-neutral decision-maker. However, it is still important
 to understand the distribution of profits for a given pricing policy
-$\alpha$. Therefore, we look at the full distribution when
+$\alpha$. Therefore, we simulate the distribution when
 we investigate the performance of algorithms in
 \Cref{sec:suboptimal_approximations,sec:markdown_miss_specification}.
 If we assume that the random variables $W_t$ are independent, this
@@ -91,16 +93,61 @@ stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
 Programming principle, also known as the Bellman equation.
 
+\subsection{Non-dimensionalisation of the system}
+We will now consider a non-dimensionalised
+representation of the system.
+The unit of time is already scaled such that
+the difference between two time points is $1$.
+The units of stock will be  scaled with
+respect to
+the initial stock $S_0$, and units of money will be scaled with respect to
+the upper bound on
+price, $a_{max}=\max\{a\in A\}$.
+Let the corresponding non-dimensional quantities be defined with hats.
+Then we set
+\begin{align}
+  \hat s &= \frac{s}{S_0},&\hat a&=\frac{a}{a_{max}},&\hat C&=\frac{C}{a_{max}}.
+\end{align}
+The dimensionless functions $\hat q(\hat a)$ and $\hat Q(\hat s,\hat a, w)$,
+for forecasted demand
+and realised sales respectively, should then be defined as
+\begin{align}
+  \hat q(\hat a)&= \frac{q(\hat a\cdot a_{\max})}{S_0},
+  &\hat Q(\hat s,\hat a,w)&= \min(\hat s, \hat q(\hat a)w).
+\end{align}
+The collection of pricing policies $\hat{\mathcal A}$ contains all
+the processes $\frac{\alpha_t}{a_{max}}$, where $\alpha\in \mathcal
+A$. Now we can define the dimensionless value function
+\begin{align}\label{eq:value_function_def_nondim}
+  \hat v(t,\hat s)&=\max_{\hat \alpha\in\hat{\mathcal A}}
+                    \hat J(t,\hat s,\hat \alpha),\quad\text{where}\\
+  \hat J(t,\hat s,\hat \alpha)&=
+                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
+                 \hat \alpha_t\hat Q(\hat {S_\tau^\alpha},\hat{\alpha_\tau},W_{\tau+1})
+                 - \hat C \hat{S_T^\alpha} \mid \hat{S_t^\alpha} =
+                                \hat s
+                 \right].
+                 \label{eq:value_function_def_nondim2}
+\end{align}
+Finally, the dimensionless optimal control problem
+is to find $\hat \alpha^*\in\hat{\mathcal A}$, such that
+$\hat J(0,1,\hat \alpha^*)=\hat v(0,1)$.
+For the remainder of this article, we work with the
+non-dimensionalised system, and drop the hats from the
+dimensionless quantities.
+
 \subsection{The Bellman equation}
 We assume the optimal policy $\alpha\in\mathcal A$ is Markovian,\todo{
   do I need to justify that the optimal policy is Markovian?}
 meaning that
-there exists a function $a(t,s)$ such that $\alpha_t(\omega) =
-a(t,S_t^\alpha(\omega))$ for each $\omega$ in the underlying probability space.
+there exists a function $a(t,s)$ such that for each possible outcome
+$\omega$, the process is given by
+$\alpha_t(\omega) =
+a(t,S_t^\alpha(\omega))$.
 Then,
 an approach to finding the value function above is to use the Dynamic
 Programming principle, which states that $v$ can be defined
-recursively in the following way:
+recursively by
 \begin{align}\label{eq:dynamic_programming_discrete}
   v(t,s)&=\max_{a\in A}\mathbb E_{W}\left[
           aQ(s,a,W_{t+1})
@@ -111,7 +158,7 @@ recursive relation~\eqref{eq:dynamic_programming_discrete} with
 terminal value $v(T,s)=-Cs$, and the optimal policy
 function $a(t,s)$ is given by the argmax for each $(t,s)$.
 The recursion is called the \emph{Bellman equation}, and a discussion
-of its validity can be found for example in
+of its validity can be found, for example, in
 \citet{bertsekas2005dynamic}.
 Analytical solutions to Bellman equations are only available in very
 simplified cases, and thus numerical approaches are normally needed to
@@ -120,7 +167,7 @@ solve the equation.
 We implement the following algorithm to solve the optimal control
 problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
 \begin{enumerate}
-\item Create grid $s_1,\dots,s_K$, and arrays $v^K\in\mathbb R^{K\times(T+1)}$,
+\item Create a grid of equispaced points $0=s_1<s_2<\cdots<s_K=S_0$, and arrays $v^K\in\mathbb R^{K\times(T+1)}$,
   $\alpha^K\in\mathbb R^{K\times T}$.
 \item Set $Iv^K(s)=-Cs$.
 \item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$.
@@ -129,25 +176,24 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
   \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ aQ(s,a,W_{t+1})
       +Iv^K(s-Q(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
   \item Set $\alpha^K[i,t]$ to the maximiser above.
-  \item Set $Iv^K(s) = Interpolate(s, {(s_i)}_i,{(v^K[i,t])}_i)$.
+  \item Set $Iv^K(s) = \mathrm{Interpolate}(s, {(s_i)}_i,{(v^K[i,t])}_i)$.
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
+The expectation above is approximated by Monte-Carlo simulations, and
+we chose to use a linear interpolation for $Iv^K(s)$.
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
-For the rest of the paper, we consider a given non-dimensionalised
-system, in such a way that stock levels lie in $[0,1]$ and the price
-interval $A=[0,1]$.
 In the numerical experiments, we choose to look at the demand function
 given by
 \begin{equation}
-  q(a)=\frac{1}{3}e^{2-3a}.
+  q(a)={\textstyle\frac{1}{3}}e^{2-3a}.
 \end{equation}
 We assume the exogenous disturbance process is a sequence of
 i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
 $\gamma^2$. That is, we define $W_t\sim \frac{1}{2}+X$, where
-$X\sim Beta(\mu,\nu)$,\footnote{
-  A $Beta(\mu,\nu)$ random variable has probability density
+$X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{
+  A $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
   function on $[0,1]$, given by
   $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$.
   The function $B(\mu,\nu)$ acts as a normalising factor.
@@ -204,8 +250,9 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
   \end{subfigure}
   \caption{The value function and corresponding
     optimal control function for the pricing problem.
-    The kinks in the value function
-    correspond to when the pricing policy hits the upper bound 1.
+    The regions where the value function moves from a linear to a
+    non-linear regime
+    corresponds to when the pricing policy hits the upper bound 1.
   }\label{fig:markdown_bellman}
 \end{figure}
 Let us now investigate the behaviour of the optimal pricing policy
@@ -216,14 +263,14 @@ represents the total profit,
 \begin{equation}
   P^\alpha = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
 \end{equation}
-If $a(t,s)$ is the function found when solving the Bellman equation,
-then $\alpha$ is a stochastic process defined for each event $\omega$
-from the underlying probability space, with
-$\alpha_t(\omega)=a(t,S_t^\alpha(\omega))$.
 By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
 estimate the random variables $\alpha_t$ and $P^\alpha$.
 The plots in \Cref{fig:bellman_simulation} show the results of
-simulating the system 1000 times.
+simulating the system $1000$ times.\footnote{
+  Preliminary investigations indicated that $1000$
+  simulations is enough to get a good representation of
+  the distributions in this article.
+}
 
 \begin{figure}[htbp]
   \centering
@@ -231,7 +278,7 @@ simulating the system 1000 times.
     \begin{tikzpicture}[scale=0.8]
       \begin{axis}[
         ylabel={Price},
-        xlabel={\phantom{$P^\alpha$}},
+        xlabel={\phantom{$P^\alpha$}},% \phantom: to align the two figures
         title={$\alpha_t$, simulated values},
         boxplot/draw direction=y,
         xtick={1,2,3},
@@ -240,9 +287,9 @@ simulating the system 1000 times.
         ]
         \addplot+[boxplot] table[y index=0,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
-        \addplot+[boxplot] table[y index=1,col sep=comma]
+        \addplot+[boxplot = {whisker range = 2}] table[y index=1,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
-        \addplot+[boxplot] table[y index=2,col sep=comma]
+        \addplot+[boxplot = {whisker range = 2}] table[y index=2,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
       \end{axis}
     \end{tikzpicture}
@@ -284,10 +331,12 @@ simulating the system 1000 times.
     controlled by the optimal policy $\alpha$ shown in
     \Cref{fig:markdown_bellman}.
     The left figure is a box plot
-    that shows the median, the quartiles and outlier prices observed
-    in the simulations. The right figure is a histogram of the profits over
-    the pricing period. As we see, the variance of the prices increase
+    that shows the median, the quartiles and the extremal prices observed
+    in the simulations.
+    As we see, the variance of the prices increase
     in time, reflecting the wider range of realised remaining stock at these times.
+    The right figure is a histogram of the profits over
+    the pricing period.
   }\label{fig:bellman_simulation}
 \end{figure}
 
