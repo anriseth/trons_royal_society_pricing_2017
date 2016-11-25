@@ -11,65 +11,69 @@ popular in order to advise on and automate the process for companies.
 There are several success stories from early adopters, for example in
 the airline industry. American Airlines estimated in 1992 that
 the introduction of yield management software had, over the preceding
-three years, contributed \$500 of additional revenue per year,
-and would continue to do so in the future \citep{smith1992yield}.
+three years, contributed \$500 million of additional revenue per year,
+and would continue to do so in the future (\citet{smith1992yield}).
 In an example from Chilean retail, \citet{bitran1998coordinating}
 report an expected improvement of 7\%-16\% by implementing
 model-driven strategies.
 For retailers with billions of pounds in revenues, small
-improvements to their revenue-management processes is worth millions
+improvements to their revenue-management processes can be worth millions
 of pounds.
 Unsold items add up to thousands of tonnes of waste per year, so
 improving the control of demand for products is advantageous
 for both retailers and the environment.
 
-We are interested in strategies to dynamically set the prices of products, and
-formulate the problem as a stochastic optimal control problem.
-Product stock levels ${(S)}_t$ are controlled by a pricing process
-${(\alpha)}_t$, and evolve according to a transition function $f$ with random disturbances
-${(W)}_t$:
+We are interested in strategies to dynamically set the prices of
+products, and thus
+formulate the problem in a stochastic optimal control framework.
+Let $t$ denote equally spaced, discrete time points.
+Product stock levels $(S_t)$ are controlled by a pricing process
+$(\alpha_t)$, and evolve according to a transition function $f$ with random disturbances
+$(W_t)$:
 \begin{equation}
-  S_{t+1}=f_{t+1}(S_t,\alpha_t,W_{t+1}).
+  S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
 \end{equation}
-The goal is to find $\alpha$ which maximises the revenues $U_t$ over a
+The goal is to find $\alpha$ which maximises the expected revenues $U_t$ over a
 given time horizon $T$, and
 minimises the costs $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
     - \overline{U}(S_T)\right].
 \end{equation}
+We use the subscript on $\mathbb E_W$ to emphasise that the
+expectation is taken with respect to the random variables $W_t$.
 The solution to this problem can be found by solving the associated
 Bellman equation. In practical applications, it is almost always
 intractable to solve the control problem to optimality.
 Thus, algorithms based on approximations and heuristics are employed.
 There are several proposed approximations in the
 literature, although most of the domain knowledge is kept within
-respective commercial actors.
+respective commercial organisations.
 Many of these algorithms are justified on practical grounds
-\citep{aviv2012dynamic}, or
-from asymptotic results \citep{gallego1994optimal}.
-In this paper, we will consider four approximations known as
+(\citet{aviv2012dynamic}), or
+from asymptotic results (\citet{gallego1994optimal}).
+In this article, we will consider four approximations known as
 lookahead policies,
 and evaluate their performance on a one-product system.
 We find that the optimal policy is more robust to
-miss-specification of the model uncertainty in the system.
+misspecification of the model uncertainty in the system.
 Hence, the use of approximations puts more pressure on the
 demand forecasting process.
 
-The paper is organised as follows:
+The article is organised as follows:
 In \Cref{sec:bellman_optimal_control} we formulate the
 pricing problem mathematically, and describe an algorithm to solve the
 problem via the associated Bellman equation. We also give an example
 of a problem with one product, and present the optimal pricing rules.
 A discussion of a class of suboptimal
-algorithms called lookahead policies follows in
+algorithms, called lookahead policies, follows in
 \Cref{sec:suboptimal_approximations}, where we compare their performance to
 the optimal policy. As the dynamical system is stochastic, the
 suboptimal policies may sometimes perform better than the optimal
 one. We find that for our example, this is  true more than half of
 the time.
 In \Cref{sec:markdown_miss_specification} we consider the issue of
-model uncertainty, where the estimation of the random system
+model uncertainty, for the case where the description of the random system
 disturbance is incorrect. The experiments in that section suggests
 that the suboptimal policies are less robust to model uncertainty
 than the optimal policy. Hence, the reduction in the cost
