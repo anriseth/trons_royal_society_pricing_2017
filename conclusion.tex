@@ -5,7 +5,7 @@
 \listoftodos
 
 \section{Conclusion}\label{sec:conclusion}
-In this paper we have looked at a mathematical formulation of a
+In this article we have looked at a mathematical formulation of a
 retail pricing problem for profit maximisation, and investigated the
 performance of different algorithms that balance practicality
 with degree of suboptimality. The motivation is to better understand
@@ -19,25 +19,27 @@ than the optimal policy, they may have a higher profit for some
 realisations of the underlying probability distribution.
 We found in \Cref{sec:cec_comparison_example} that there are
 reasonable system parameters for which
-the suboptimal Certainty Equivalent Control policy performs better
-than the optimal policy in more
-than half of the realisations.
-This underscores the importance of looking at what impact
+the suboptimal Certainty Equivalent Control policy resulted in a higher profit
+than the optimal policy in more than half of the realisations.
+However, in the remaining realisations, the CEC policy resulted in
+much smaller profits. We interpret these results as an indication that
+the suboptimal policy is more risk-seeking than the optimal policy.
+The results in this article underscores the importance of looking at the impact
 different suboptimal algorithms have on the distribution of
 an objective, and not only the impact of
-marginalised statistics like the expected value.
-\todo{Mention model uncertainty?}
+marginalised statistics such as the expected value.
+\todo[inline]{Mention model uncertainty?}
 
-The model problem in this paper is fairly simple, and
-we propose two specific lines of research that
+The model problem in this article is fairly simple, and
+we propose two specific lines for future research that
 take this analysis closer to practical models.
 First, to investigate multi-product problems where the demand and
 availability of one product depends on the other products.
-Second, to introduce a state dependence on the uncertainty in the
+Second, to introduce a state dependence in the uncertainty in the
 system, that is, to allow $W_{t+1}$ to depend explicitly on the values
 of $S_t$ and $\alpha_t$.
-We hope that these two extensions can get a better understanding of
-whether the effects seen in this paper will be stronger or diluted
+We hope that these two extensions will lead to a better understanding of
+whether the effects seen in this article will be stronger or diluted
 in real-life problems.
 
 \biblio
