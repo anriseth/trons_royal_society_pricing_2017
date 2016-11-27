@@ -73,8 +73,8 @@ end
 vcecarr[:,T+1] = vcec(T,xarr)
 
 plot(xarr,α-αcecarr)
-#==
-bellman = OfflineSystemControl1D(system, x0, α)
+
+bellman = OfflineSystemControl1D(system, x0, xarr, α)
 deterministic = OfflineSystemControl1D(system,x0,αcec)
 numsimulations = 1000
 
@@ -94,7 +94,6 @@ for ti = 1:T
 end
 
 
-
 ## Plotting stuff
 using JLD
 savefiles = false
@@ -106,4 +105,5 @@ if savefiles == true
 end
 
 #plot!([0,1,2], [quantile(detcontrols[:,1],0.1),quantile(detcontrols[:,2],0.1),quantile(detcontrols[:,3],0.1)])
-==#
+
+#histogram(bellmanvals-detvals)
