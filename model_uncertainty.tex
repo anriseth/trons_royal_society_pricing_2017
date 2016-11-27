@@ -17,117 +17,153 @@
 
 \listoftodos
 
-\section{Model uncertainty, or
-  miss-specification}\label{sec:markdown_miss_specification}
+\section{Model
+  misspecification}\label{sec:markdown_miss_specification}
 It is difficult to correctly model the true underlying disturbance
 $W^\dagger$, and the performance of the policy function should be
-tested to different types of model miss-specification.
+tested for different types of model misspecification.
 Say the policy functions are calculated based on
-system disturbances $W_t\sim \frac{1}{2}+Beta(\mu,\mu)$, where
+system disturbances $W_t\sim \frac{1}{2}+\mathrm{Beta}(\mu,\mu)$, where
 $\mu$ is chosen such that $\mathbb E[W]=1$ and $\mbox{std}[W]=\gamma$.
 We first consider two cases where the true disturbance is
 different from $W$:
 \begin{enumerate}
-\item Mean miss-specification, $W^\dagger = W-0.05$.
-\item Standard deviation miss-specification, $\gamma^\dagger = 2\gamma$.
+\item Mean misspecification, $W^\dagger = W-0.05$, $\gamma^\dagger=\gamma$.
+\item Standard deviation misspecification, $\gamma^\dagger = 2\gamma$,
+  $\mathbb E[W^\dagger] = \mathbb E[W]$.
 \end{enumerate}
-We simulate the system for both of these cases 1000 times each,
+We simulate the system for both of these cases $1000$ times each,
 and check the performance of the optimal Bellman policy and the
 Certainty Equivalent Control policy. The results are shown in
-\Cref{fig:markdown_bellman_mpc_model_misspecification}.
+\Cref{fig:markdown_bellman_cec_model_misspecification}.
 The relative performance of the CEC is drastically reduced when the
 assumed mean is wrong, that is, when a poor quality forecast is taken as
 the truth. This indicates that, although implementing a CEC policy is
 easier than the optimal policy, the trade-off is that the retailer
 must spend more effort on forecasting and system estimation, and
 update parameter estimates more frequently.
-\begin{figure}[htbp]
+\begin{figure}[p]
   \centering
   \begin{subfigure}[b]{0.5\textwidth}
-    \begin{tikzpicture}[trim axis left]
+    \begin{tikzpicture}[trim axis left,scale=0.95]
       \begin{axis}[
         width=\textwidth,
         legend pos=north west,
         xlabel=$P^{\alpha^B}$,
         ylabel=Count,
-        title={Mean miss-specification},
-        xmin=0.52, xmax=0.71,
-        ymax=150,
+        title={Mean misspecification},
+        xmin=0.48, xmax=0.705,
+        ymax=170,
         ]
         \addplot[blue,hist={bins=40}] table [y index = 0,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$\mathbb E[W^\dagger]=0.95$};
+        \draw (axis cs:0.5,100) node[anchor=west] {Bellman};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}\hfill
   \begin{subfigure}[b]{0.5\textwidth}
-    \begin{tikzpicture}
+    \begin{tikzpicture}[scale=0.95]
       \begin{axis}[
         width=\textwidth,
         legend pos=north west,
         xlabel=$P^{\alpha^B}$,
-        title={Deviation miss-specification},
-        xmin=0.52, xmax=0.71,
-        ymax=150
+        title={Deviation misspecification},
+        xmin=0.48, xmax=0.705,
+        ymax=170
         ]
         \addplot[blue,hist={bins=40}] table [y index = 1,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$\mbox{std}[W^\dagger]=0.1$};
+        \draw (axis cs:0.5,100) node[anchor=west] {Bellman};
       \end{axis}
     \end{tikzpicture}
-  \end{subfigure}\\[1em]
+  \end{subfigure}\\[0.5em]
   \begin{subfigure}[b]{0.5\textwidth}
-    \begin{tikzpicture}[trim axis left]
+    \begin{tikzpicture}[trim axis left,scale=0.95]
+      \begin{axis}[
+        width=\textwidth,
+        legend pos=north west,
+        xlabel=$P^{\alpha^C}$,
+        ylabel=Count,
+        xmin=0.48, xmax=0.705,
+        ymax=170,
+        ]
+        \addplot[blue,hist={bins=40}] table [y index = 4,col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
+        \addlegendentry{$\mathbb E[W^\dagger]=0.95$};
+        \draw (axis cs:0.5,100) node[anchor=west] {CEC};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{tikzpicture}[scale=0.95]
+      \begin{axis}[
+        width=\textwidth,
+        legend pos=north west,
+        xlabel=$P^{\alpha^C}$,
+        xmin=0.48, xmax=0.705,
+        ymax=170
+        ]
+        \addplot[blue,hist={bins=40}] table [y index = 5,col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
+        \addlegendentry{$\mbox{std}[W^\dagger]=0.1$};
+        \draw (axis cs:0.5,100) node[anchor=west] {CEC};
+      \end{axis}
+    \end{tikzpicture}
+  \end{subfigure}\\[0.5em]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \begin{tikzpicture}[trim axis left,scale=0.95]
       \begin{axis}[
         width=\textwidth,
         % legend style={at={(0.5,0.97)}, anchor=north},
         xlabel=$P^{\alpha^B}-P^{\alpha^C}$,
         ylabel=Count,
-        xmin=-0.007, xmax=0.025,
-        ymax=500
+        xmin=-0.006, xmax=0.021,
+        ymax=400
         ]
-        \addplot[blue,hist={bins=40}] table [y index = 4,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{0}-\thisrowno{4},col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$\mathbb E[W^\dagger]=0.95$};
-        \draw[<-] (axis cs:0.018,180) -- (axis cs:0.01,220)
+        \draw[<-] (axis cs:0.018,160) -- (axis cs:0.008,190)
         node [anchor=south,align=left] {$\alpha^B$ better with\\ high probability};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}\hfill
   \begin{subfigure}[b]{0.5\textwidth}
-    \begin{tikzpicture}
+    \begin{tikzpicture}[scale=0.95]
       \begin{axis}[
         width=\textwidth,
         % legend style={at={(0.5,0.97)}, anchor=north},
         xlabel=$P^{\alpha^B}-P^{\alpha^C}$,
-        xmin=-0.007, xmax=0.025,
-        ymax=500
+        xmin=-0.006, xmax=0.021,
+        ymax=400
         ]
-        \addplot[blue,hist={bins=40}] table [y index = 5,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{1}-\thisrowno{5},col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$\mbox{std}[W^\dagger]=0.1$};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}
   \caption{Performance of the Bellman and CEC policies under model
-    miss-specification of
+    misspecification of
     $W$. Compare with \Cref{fig:markdown_bellman_mpc_5_20_100}.
     The policy functions are calculated under the assumption that
     the system disturbance is a translated, symmetric Beta
     distribution with mean 1
     and standard deviation $5\times 10^{-2}$, instead
     of the true disturbance~$W^\dagger$.
-    The CEC policy performance is very dependent on mean miss-specification,
+    The CEC policy performance is very dependent on mean misspecification,
     which can be expected.
-  }\label{fig:markdown_bellman_mpc_model_misspecification}
+  }\label{fig:markdown_bellman_cec_model_misspecification}
   \todo[inline]{Run simulations with beta distributions instead of normals}
 \end{figure}
 
-\subsection{Higher-order model uncertainty}
-The model approximation of the two first moments of the underlying
+\subsection{Higher-order model misspecification}
+The model approximation of the first two moments of the underlying
 disturbance is likely to be more accurate than for higher moments.
 It can therefore be interesting to see how the different
-policies deal with model uncertainty of higher moments.
+policies deal with model error in the higher moments.
 We consider affine transformations of a $\chi^2_5$ distribution with five degrees of
 freedom, that have the same mean and standard deviation as the model
 distribution $W$. A comparison of the probability density
@@ -178,7 +214,7 @@ functions can be seen in \Cref{fig:chisq_transformed}.
 \end{figure}
 Denote the random variable with a positive skew by $W_1^\dagger$, and
 the one with a negative skew by $W_2^\dagger$.
-We again simulate the system with the Bellman and CEC policies 1000
+We again simulate the system with the Bellman and CEC policies $1000$
 times, and compare the outomes. The results are shown in
 \Cref{fig:markdown_bellman_mpc_chi2}. We see that in the two cases considered,
 the relative performance of the CEC controller does not change much
@@ -195,12 +231,13 @@ the true uncertainty $W^\dagger$.
         xlabel=$P^{\alpha^B}$,
         ylabel=Count,
         title={Skewness under-specification},
-        xmin=0.58, xmax=0.69,
-        ymax=150,
+        xmin=0.55, xmax=0.7,
+        ymax=180,
         ]
         \addplot[blue,hist={bins=40}] table [y index = 2,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$W_1^\dagger$};
+        \draw (axis cs:0.57,100) node[anchor=west] {Bellman};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}\hfill
@@ -211,12 +248,13 @@ the true uncertainty $W^\dagger$.
         legend pos=north west,
         xlabel=$P^{\alpha^B}$,
         title={Skewness over-specification},
-        xmin=0.58, xmax=0.69,
-        ymax=150
+        xmin=0.55, xmax=0.7,
+        ymax=180
         ]
         \addplot[blue,hist={bins=40}] table [y index = 3,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$W_2^\dagger$};
+        \draw (axis cs:0.57,100) node[anchor=west] {Bellman};
       \end{axis}
     \end{tikzpicture}
   \end{subfigure}\\[1em]
@@ -230,8 +268,8 @@ the true uncertainty $W^\dagger$.
         xmin=-0.006, xmax=0.022,
         ymax=600
         ]
-        \addplot[blue,hist={bins=40}] table [y index = 6,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{2}-\thisrowno{6},col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$W_1^\dagger$};
       \end{axis}
     \end{tikzpicture}
@@ -245,8 +283,8 @@ the true uncertainty $W^\dagger$.
         xmin=-0.006, xmax=0.022,
         ymax=600
         ]
-        \addplot[blue,hist={bins=40}] table [y index = 7,col sep=comma]
-        {./data/markdown_bellman_mpc_model_misspecification.csv};
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{3}-\thisrowno{7},col sep=comma]
+        {./data/markdown_bellman_cec_model_misspecification.csv};
         \addlegendentry{$W_2^\dagger$};
       \end{axis}
     \end{tikzpicture}
