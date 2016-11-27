@@ -134,7 +134,7 @@ In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
 The numerical experiments in the article are all made
 with a demand function of the family $q(a)=q_1e^{-q_2a}$,  for a
 single combination of the  system
-parameters. We refer to \Cref{sec:parameter_comparison} for a
+parameters. We refer to the appendix for a
 comparison between the Bellman policy and CEC functions for a larger
 range of parameters.
 
@@ -390,7 +390,7 @@ profits $P^\alpha$ decreases.
         xmax=0.045,
         ymax=450,
         ]
-        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{0}-\thisrowno{3},col sep=comma]
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{0}-\thisrowno{3},col sep=comma]
         {./data/markdown_bellman_mpc_5_20_100.csv};
         \addlegendentry{$N=5$};
       \end{axis}
@@ -406,7 +406,7 @@ profits $P^\alpha$ decreases.
         xmax=0.045,
         ymax=450,
         ]
-        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{1}-\thisrowno{4},col sep=comma]
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{1}-\thisrowno{4},col sep=comma]
         {./data/markdown_bellman_mpc_5_20_100.csv};
         \addlegendentry{$N=20$};
       \end{axis}
@@ -421,7 +421,7 @@ profits $P^\alpha$ decreases.
         xmax=0.045,
         ymax=450,
         ]
-        \addplot[blue,hist={bins=40}] table [y expr=\thisrowno{2}-\thisrowno{5},col sep=comma]
+        \addplot[red,hist={bins=40}] table [y expr=\thisrowno{2}-\thisrowno{5},col sep=comma]
         {./data/markdown_bellman_mpc_5_20_100.csv};
         \addlegendentry{$N=100$};
       \end{axis}
