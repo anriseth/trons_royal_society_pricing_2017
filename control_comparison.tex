@@ -95,7 +95,8 @@ problem calculates the current price using the following steps:
 
 For the one-product pricing problem, we can simplify the optimization
 problem and in some cases obtain analytical solutions for the policy function.
-First, let us consider the estimate $W_\tau=1$ for $\tau=t+1,\dots T$.
+First, let us consider the expected value estimate $w_\tau=\mathbb E
+[W_\tau]=1$ for $\tau=t+1,\dots T$.
 Then we can rewrite the maximisation problem to find
 the certainty equivalent value function,
 \begin{equation}
@@ -168,7 +169,7 @@ Denote the Bellman policy function by $a^B$, and consider
 $a^B(t,s)-a^C(t,s)$ for each $t=0,\dots,T-1$. The plot in
 \Cref{fig:bellman_det_policy_difference} shows this difference.
 Both of the policy functions reach the upper bound in $A$ for small values
-of $s$, but in general the Bellman policy is pricing the products
+of $s$, but most of the time, the Bellman policy is pricing the products
 lower than the CEC policy.
 \begin{figure}[p]
   \centering
@@ -222,9 +223,10 @@ lower than the CEC policy.
     $a^B$.
     The CEC function sets
     higher prices than the Bellman function for large $s$.
-    Observe the spike in the difference plot, which happens when $t<T-1$, and
-    $a^B(t,s)\geq a^C(t,s)$, before they
-    both reach the boundary price $a_{max}=1$. This is due to the
+    Observe the spikes in the difference plot for $t<T-1$:
+    In a small interval, $a^B(t,s)\geq a^C(t,s)$, before both functions
+    reach the boundary price $a_{max}=1$. This sudden, relative increase in
+    the Bellman function compared to $a^C$ is due to the
     diffusion of the value function caused by the
     random variables $W_t$.
   }\label{fig:bellman_det_policy_difference}
@@ -345,7 +347,7 @@ Thus, at time $t$, the pricing algorithm is as follows:
     \frac{1}{N_t}\sum_{i=1}^{N_t}&\left[
     a_0Q(\hat s,a_0,W_{t+1}^{(i)})
     \phantom{+\sum_{\tau=t+1}^{T-1}}\right.\\
-      &\left.+\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
+      &\;\left.+\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
       -C S_T^{(i)}\right].
   \end{align}
   \begin{itemize}
@@ -376,7 +378,7 @@ for $N=5,20,100$. The simulations are run $1000$ times each to get
 approximate distributions for the $P^\alpha$s.
 As $N$ increases, the behaviour of the lookahead policies become more
 similar to the Bellman policy, and as a result the spread of differences in the
-profits $P^\alpha$ decreases.
+profits $P^\alpha$ becomes smaller.
 \begin{figure}[htbp]
   \centering
   \begin{subfigure}[b]{0.5\textwidth}

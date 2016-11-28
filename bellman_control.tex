@@ -31,7 +31,12 @@ solve it numerically for an example system.
 Consider a system over discrete, equispaced time points
 $t=0,1,\dots,T$, with state
 $S_t$ and policy process $\alpha_t$ that takes values in a closed
-interval $A\subset\mathbb R_+$.
+interval $A\subset\mathbb R_+$.\footnote{
+  In practice, policy values may have additional constraints that depend
+  on the current state,
+  in which case we say that $\alpha_t$ must take values
+  in a set $A(S_t)$.
+}
 The state $S_t$ is the stock of a product at time $t$, and
 $\alpha_t$ the price for the product in the time period from $t$ to
 $t+1$. We model the amount of product sold over each time period according
@@ -180,7 +185,7 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
-The expectation above is approximated by Monte-Carlo simulations, and
+The expectation above is approximated using Monte-Carlo simulations, and
 we chose to use a linear interpolation for $Iv^K(s)$.
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
