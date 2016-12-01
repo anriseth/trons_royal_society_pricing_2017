@@ -80,14 +80,14 @@ used, whilst the subsequent decisions are discarded.
 For each decision time $t=0,\dots,T-1$, the CEC algorithm for the pricing
 problem calculates the current price using the following steps:
 \begin{enumerate}
-\item Observe state $\hat s$.
+\item Observe state $s$.
 \item Take a best estimate $w_{t+1},\dots,w_T$ of ${(W_\tau)}_{t+1}^T$.
 \item Solve the optimization problem
   \begin{equation}
     \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}\mathbf
       a_\tau Q(S_\tau^{\mathbf a},\mathbf
       a_\tau,w_{\tau})-CS_T^{\mathbf a}\right\},
-    \quad \text{s.t.}\quad S_t^{\mathbf a}=\hat s.
+    \quad \text{s.t.}\quad S_t^{\mathbf a}=s.
   \end{equation}
 \item Set the price corresponding to a maximizer
   $\mathbf a_t\in A$ above.
@@ -255,7 +255,8 @@ in more than half of the cases, the CEC policy outperforms the optimal
 policy $\alpha^B$. What we can take from this experiment is that
 the CEC policy induces a more risk-seeking pricing strategy than
 $\alpha^B$: It results in slightly larger profits for a majority of the
-realisations of $W$, but at a cost of taking a more significant hit on
+realisations of $W$, but at a cost of taking a more significant
+reduction in
 profits in the remaining realisations.
 \begin{figure}[p]
   \centering
@@ -338,21 +339,21 @@ the value at time $\tau$ is calculated based on
 the current state \emph{and}  on realised values of $(W_{\tau+1},\dots W_{T})$.
 Thus, at time $t$, the pricing algorithm is as follows:
 \begin{enumerate}
-\item Observe state $\hat s$.
+\item Observe state $s$.
 \item Pick or draw $N_t$ samples $W^{(i)}$, $i=1,\dots,N_t$ from the
   underlying probability space.
 \item Solve the optimization problem
   \begin{align}\nonumber
     \max_{\substack{a_0\in A\\a_{t+1:T-1}^{(i)}\in A^{T-{t+1}}}}
     \frac{1}{N_t}\sum_{i=1}^{N_t}&\left[
-    a_0Q(\hat s,a_0,W_{t+1}^{(i)})
+    a_0Q(s,a_0,W_{t+1}^{(i)})
     \phantom{+\sum_{\tau=t+1}^{T-1}}\right.\\
       &\;\left.+\sum_{\tau=t+1}^{T-1}a_s^{(i)}Q(S_\tau^{(i)},a_\tau^{(i)},W_{\tau+1}^{(i)})
       -C S_T^{(i)}\right].
   \end{align}
   \begin{itemize}
   \item $S^{(i)}$ corresponds to the
-    controlled process in realisation $i$, starting at $S_t^{(i)}=\hat s$.
+    controlled process in realisation $i$, starting at $S_t^{(i)}=s$.
   \end{itemize}
 \item Use the controller corresponding to a maximiser $a_0\in
   A$ above.
@@ -375,7 +376,7 @@ decision time $t$. Denote the resulting policy process
 by $\alpha^{L_N}$. Numerical results comparing $P^{\alpha^{L_N}}$ with the
 Bellman policy are shown in \Cref{fig:markdown_bellman_mpc_5_20_100}
 for $N=5,20,100$. The simulations are run $1000$ times each to get
-approximate distributions for the $P^\alpha$s.
+approximate distributions for the $P^\alpha$.
 As $N$ increases, the behaviour of the lookahead policies become more
 similar to the Bellman policy, and as a result the spread of differences in the
 profits $P^\alpha$ becomes smaller.

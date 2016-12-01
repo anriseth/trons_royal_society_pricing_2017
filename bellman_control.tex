@@ -31,7 +31,7 @@ solve it numerically for an example system.
 Consider a system over discrete, equispaced time points
 $t=0,1,\dots,T$, with state
 $S_t$ and policy process $\alpha_t$ that takes values in a closed
-interval $A\subset\mathbb R_+$.\footnote{
+interval $A=[a_{min},a_{max}]\subset\mathbb R_+$.\footnote{
   In practice, policy values may have additional constraints that depend
   on the current state,
   in which case we say that $\alpha_t$ must take values
@@ -73,7 +73,7 @@ by the \emph{value function}
   v(t,s)&=\max_{\alpha\in\mathcal A} J(t,s,\alpha),\quad\text{where}\\
   J(t,s,\alpha)&=
                  \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
-                 \alpha_tQ(S_\tau^\alpha,\alpha_\tau,W_{\tau+1})
+                 \alpha_\tau Q(S_\tau^\alpha,\alpha_\tau,W_{\tau+1})
                  - CS_T^\alpha \mid S_t^\alpha = s
                  \right].
                  \label{eq:value_function_def2}
@@ -107,29 +107,38 @@ The units of stock will be  scaled with
 respect to
 the initial stock $S_0$, and units of money will be scaled with respect to
 the upper bound on
-price, $a_{max}=\max\{a\in A\}$.
-Let the corresponding non-dimensional quantities be defined with hats.
+price, $a_{max}$.
+Let the corresponding dimensionless quantities be defined with hats.
 Then we set
 \begin{align}
-  \hat s &= \frac{s}{S_0},&\hat a&=\frac{a}{a_{max}},&\hat C&=\frac{C}{a_{max}}.
+  \hat s
+  &= \frac{s}{S_0},
+  &\hat a
+  &=\frac{a}{a_{max}},
+  &\hat C&=\frac{C}{a_{max}},
+  &\hat t &= t,
+  &\hat W_{\hat t}&=W_{t}.
 \end{align}
-The dimensionless functions $\hat q(\hat a)$ and $\hat Q(\hat s,\hat a, w)$,
+The dimensionless functions $\hat q(\hat a)$ and $\hat Q(\hat s,\hat
+a, \hat w)$,
 for forecasted demand
 and realised sales respectively, should then be defined as
 \begin{align}
   \hat q(\hat a)&= \frac{q(\hat a\cdot a_{\max})}{S_0},
-  &\hat Q(\hat s,\hat a,w)&= \min(\hat s, \hat q(\hat a)w).
+  &\hat Q(\hat s,\hat a, \hat w)&= \min(\hat s, \hat q(\hat a)\hat w).
 \end{align}
 The collection of pricing policies $\hat{\mathcal A}$ contains all
 the processes $\frac{\alpha_t}{a_{max}}$, where $\alpha\in \mathcal
 A$. Now we can define the dimensionless value function
 \begin{align}\label{eq:value_function_def_nondim}
-  \hat v(t,\hat s)&=\max_{\hat \alpha\in\hat{\mathcal A}}
-                    \hat J(t,\hat s,\hat \alpha),\quad\text{where}\\
-  \hat J(t,\hat s,\hat \alpha)&=
-                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
-                 \hat \alpha_t\hat Q(\hat {S_\tau^\alpha},\hat{\alpha_\tau},W_{\tau+1})
-                 - \hat C \hat{S_T^\alpha} \mid \hat{S_t^\alpha} =
+  \hat v(\hat t,\hat s)&=\max_{\hat \alpha\in\hat{\mathcal A}}
+                    \hat J(\hat t,\hat s,\hat \alpha),\quad\text{where}\\
+  \hat J(\hat t,\hat s,\hat \alpha)&=
+                 \mathbb E_{\hat W}\left[ \sum_{\tau=\hat t}^{\hat T-1}
+                 \hat \alpha_\tau\hat Q(\hat
+                                     {S_\tau^\alpha},\hat{\alpha_\tau},\hat
+                                     W_{\tau+1})
+                 - \hat C \hat{S}_{\hat{T}}^\alpha \mid \hat{S}_{\hat{t}}^\alpha =
                                 \hat s
                  \right].
                  \label{eq:value_function_def_nondim2}
@@ -153,11 +162,11 @@ Then,
 an approach to finding the value function above is to use the Dynamic
 Programming principle, which states that $v$ can be defined
 recursively by
-\begin{align}\label{eq:dynamic_programming_discrete}
-  v(t,s)&=\max_{a\in A}\mathbb E_{W}\left[
+\begin{equation}\label{eq:dynamic_programming_discrete}
+  v(t,s)=\max_{a\in A}\mathbb E_{W}\left[
           aQ(s,a,W_{t+1})
           +v(t+1,s-Q(s,a,W_{t+1}))\right].
-\end{align}
+\end{equation}
 Thus, the value function is the solution to the backwards-in-time
 recursive relation~\eqref{eq:dynamic_programming_discrete} with
 terminal value $v(T,s)=-Cs$, and the optimal policy
@@ -178,24 +187,26 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
 \item Set $v^K[i,T]=Iv^K(s_i)$ for $i=1,\dots, K$.
 \item For $t = T-1,\dots,0$:
   \begin{enumerate}
-  \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ aQ(s,a,W_{t+1})
-      +Iv^K(s-Q(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
+  \item Set $\displaystyle v^K[i,t]=\max_{a\in A}\mathbb E_{W_{t+1}}\left[ aQ(s_i,a,W_{t+1})
+      +Iv^K(s_i-Q(s,a,W_{t+1}))\right]$\\ for $i=1,\dots,K$.
   \item Set $\alpha^K[i,t]$ to the maximiser above.
   \item Set $Iv^K(s) = \mathrm{Interpolate}(s, {(s_i)}_i,{(v^K[i,t])}_i)$.
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
-The expectation above is approximated using Monte-Carlo simulations, and
+The expectation above is approximated using Monte-Carlo simulation, and
 we chose to use a linear interpolation for $Iv^K(s)$.
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
 In the numerical experiments, we choose to look at the demand function
+defined on $A=[0,1]$,
 given by
 \begin{equation}
   q(a)={\textstyle\frac{1}{3}}e^{2-3a}.
 \end{equation}
 We assume the exogenous disturbance process is a sequence of
-i.i.d.~shifted Beta-distributed random variables with mean 1 and variance
+shifted, independent and identically Beta-distributed random
+variables with mean $1$ and variance
 $\gamma^2$. That is, we define $W_t\sim \frac{1}{2}+X$, where
 $X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{
   A $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
@@ -338,7 +349,7 @@ simulating the system $1000$ times.\footnote{
     The left figure is a box plot
     that shows the median, the quartiles and the extremal prices observed
     in the simulations.
-    As we see, the variance of the prices increase
+    As we see, the variance of the prices increases
     in time, reflecting the wider range of realised remaining stock at these times.
     The right figure is a histogram of the profits over
     the pricing period.

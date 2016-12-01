@@ -36,7 +36,7 @@ $(W_t)$:
 \end{equation}
 The goal is to find $\alpha$ which maximises the expected revenues $U_t$ over a
 given time horizon $T$, and
-minimises the costs $\overline{U}$ of unsold stock:
+minimises the cost $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
     - \overline{U}(S_T)\right].
@@ -68,7 +68,8 @@ problem via the associated Bellman equation. We also give an example
 of a problem with one product, and present the optimal pricing rules.
 A discussion of a class of suboptimal
 algorithms, called lookahead policies, follows in
-\Cref{sec:suboptimal_approximations}, where we compare their performance to
+\Cref{sec:suboptimal_approximations}, where we compare their
+performance to that of
 the optimal policy. As the dynamical system is stochastic, the
 suboptimal policies may sometimes perform better than the optimal
 one. We find that for our example, this is  true more than half of
