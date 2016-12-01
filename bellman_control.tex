@@ -31,7 +31,7 @@ solve it numerically for an example system.
 Consider a system over discrete, equispaced time points
 $t=0,1,\dots,T$, with state
 $S_t$ and policy process $\alpha_t$ that takes values in a closed
-interval $A=[a_{min},a_{max}]\subset\mathbb R_+$.\footnote{
+interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]\subset\mathbb R_+$.\footnote{
   In practice, policy values may have additional constraints that depend
   on the current state,
   in which case we say that $\alpha_t$ must take values
@@ -107,15 +107,15 @@ The units of stock will be  scaled with
 respect to
 the initial stock $S_0$, and units of money will be scaled with respect to
 the upper bound on
-price, $a_{max}$.
+price, $a_{\mathrm{max}}$.
 Let the corresponding dimensionless quantities be defined with hats.
 Then we set
 \begin{align}
   \hat s
   &= \frac{s}{S_0},
   &\hat a
-  &=\frac{a}{a_{max}},
-  &\hat C&=\frac{C}{a_{max}},
+  &=\frac{a}{a_{\mathrm{max}}},
+  &\hat C&=\frac{C}{a_{\mathrm{max}}},
   &\hat t &= t,
   &\hat W_{\hat t}&=W_{t}.
 \end{align}
@@ -128,7 +128,7 @@ and realised sales respectively, should then be defined as
   &\hat Q(\hat s,\hat a, \hat w)&= \min(\hat s, \hat q(\hat a)\hat w).
 \end{align}
 The collection of pricing policies $\hat{\mathcal A}$ contains all
-the processes $\frac{\alpha_t}{a_{max}}$, where $\alpha\in \mathcal
+the processes $\alpha_t/a_{\mathrm{max}}$, where $\alpha\in \mathcal
 A$. Now we can define the dimensionless value function
 \begin{align}\label{eq:value_function_def_nondim}
   \hat v(\hat t,\hat s)&=\max_{\hat \alpha\in\hat{\mathcal A}}

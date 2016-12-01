@@ -204,7 +204,7 @@ lower than the CEC policy.
   \begin{tikzpicture}
     \begin{axis}[
       xlabel={$s$},
-      ylabel={$\frac{a^B(t,s)-a^C(t,s)}{a^B(t,s)}$},
+      ylabel={$[a^B(t,s)-a^C(t,s)]/a^B(t,s)$},
       title={\hspace{1em}Relative function difference},
       legend cell align=left,
       ]
@@ -225,7 +225,7 @@ lower than the CEC policy.
     higher prices than the Bellman function for large $s$.
     Observe the spikes in the difference plot for $t<T-1$:
     In a small interval, $a^B(t,s)\geq a^C(t,s)$, before both functions
-    reach the boundary price $a_{max}=1$. This sudden, relative increase in
+    reach the boundary price $a_{\mathrm{max}}=1$. This sudden, relative increase in
     the Bellman function compared to $a^C$ is due to the
     diffusion of the value function caused by the
     random variables $W_t$.
