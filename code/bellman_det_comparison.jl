@@ -106,7 +106,7 @@ if savefiles == true
     @save "./data/bellman_det_comparison_$(now()).jld"
 end
 
-
+q2 = 3; q1 = exp(q2*2/3)/3
 Plots.scalefontsizes(1.5)
 titles = [L"$(C,\gamma)=(0.25,0.05)$" L"$(C,\gamma)=(0.25,0.1)$" L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$" L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"]
 plt = plot(q1arr, q2arr, diffarrays, st=:heatmap, margin=0mm, ratio=0.4,

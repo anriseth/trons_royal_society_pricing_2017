@@ -15,7 +15,7 @@ if !isdefined(:Betashift)
         d.shift + rand(d.rv)
     end
     function rand(d::Betashift, dims::Int...)
-        d.shift + rand(d.rv, dims)
+        d.shift + rand(d.rv, dims...)
     end
 end
 
@@ -23,7 +23,6 @@ srand(0) # For reproducibility
 
 #Q(a) = 1.-a
 q2 = 3; q1 = exp(q2*2/3)/3 # Gives same 0/1st order properties for Q as d(a)=1-a at a = 2/3
-#q1 = 1.1; q2 = 2
 Q(a) = q1*exp(-q2*a)
 #Qhat(a) = Q1*exp(-Q2*a)
 #L(a) = (1+exp(-10a))*(1+exp(10(a-1))) # Discourage extreme pricing values
@@ -94,6 +93,12 @@ for ti = 1:T
 end
 
 
+function Eu(arr,μ)
+    u(x) = (1-exp(-μ*x))/μ
+    mean(u(arr))
+end
+
+
 ## Plotting stuff
 using JLD
 savefiles = false
@@ -107,3 +112,4 @@ end
 #plot!([0,1,2], [quantile(detcontrols[:,1],0.1),quantile(detcontrols[:,2],0.1),quantile(detcontrols[:,3],0.1)])
 
 #histogram(bellmanvals-detvals)
+#plt = plot(μ->Eu(bellmanvals, μ)/Eu(detvals, μ), 0, 50)
