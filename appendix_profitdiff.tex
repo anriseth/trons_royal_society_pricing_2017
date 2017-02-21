@@ -1,0 +1,83 @@
+\documentclass[main.tex]{subfiles}
+
+\begin{document}
+
+\listoftodos
+
+\section*{Appendix: Bellman and CEC parameter comparisons}\label{sec:parameter_comparison}
+This article contains many numerical experiments on a system
+with a fixed combination of the five parameters:
+Termination time $T$, unsold items cost $C$, uncertainty $\gamma$, and
+demand function parameters $q_1,q_2$.
+In this section we explore the differences between the Bellman policy
+and the CEC policy for a larger parameter range.
+We are interested in the difference between the profit following
+a Bellman policy $\alpha^B$ and a CEC policy $\alpha^C$.
+The policy $\alpha^B$ is computed numerically, and
+$\alpha^C$ is obtained using the function $a^C$ from
+the formula in \Cref{eq:cec_policy}.
+As a reminder, the profit of following a policy process $\alpha$ is
+the random variable
+\begin{equation}
+  P^\alpha = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
+\end{equation}
+In particular, the difference between the two policies is measured
+using the $L^2$-norm with respect to the probability distribution
+induced by the disturbance $(W_1,W_2,\dots,W_T)$, that is
+\begin{equation}
+  \left\|P^{\alpha^B}-P^{\alpha^C}\right\|_2
+  =\sqrt{\mathbb E_W\left[{( P^{\alpha^B}-P^{\alpha^C} )}^2 \right]}.
+\end{equation}
+
+To reduce the number of combinations of parameters, we make the
+simplification to choose only
+four combinations of
+$(C,\gamma)\in\{0.5,1\}\times\{0.05,0.1\}$.
+Then,
+for each combination of $(C,\gamma)$,
+we can create a heatmap of the difference between the two policy
+functions by varying the parameters $q_1,q_2$.
+The relative $L^2$ difference between the CEC and Bellman policy outcomes
+is shown in \Cref{fig:profit_diff_heatmaps}. The norms were approximated
+with $1000$ samples from $(W_1,W_2,\dots,W_T)$.
+Comparing the left and right column, we see that the relative difference doubles as
+the standard deviation $\gamma$ is doubled. The cost $C$ plays a large
+role, both in terms of the shape of the difference surface and its
+magnitude.
+The black region at the bottom right of the plots correspond to popular,
+low-elasticity products where both policies choose to sell at the
+maximum price $a=1$.
+\begin{figure}[htbp]
+  \includegraphics[width=\textwidth]{./img/profit_diff_heatmaps}
+  \caption{The relative $L^2$ difference
+    $\|P^{\alpha^B}-P^{\alpha^C}\|_2/\|P^{\alpha^B}\|_2$ representing
+    how different the CEC policy is to the optimal Bellman policy.
+    Each plot defines a combination of $(C,\gamma)$, whilst
+    the axes vary the parameters $q_1,q_2$ of the demand function
+    $q(a)=q_1e^{-q_2a}$.
+    The white dot on the bottom, left plot corresponds to the
+    parameters chosen for the experiments in this article.
+  }\label{fig:profit_diff_heatmaps}
+\end{figure}
+
+The parameters chosen in this article's numerical experiments
+are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
+in the region where the relative difference is around $0.016$ --- see the
+white dot in the
+bottom, left subfigure in \Cref{fig:policy_diff_heatmaps}.
+This difference is in the middle of that seen for all the
+combinations of parameters, so the conclusions made in the article
+should be considered as relevant for a wider range of systems.
+
+
+\todo[inline]{Pick some other points(including white), create a table
+  and show median, 0.05 and 0.95 quantiles of $P^B-P^C$ (maybe relative?)
+}
+\biblio
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
