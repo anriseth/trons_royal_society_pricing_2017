@@ -40,12 +40,17 @@ q(a,q1,q2) = q1*exp(-q2*a)
 function creatediffarrays()
     counter = 0
     diffarrays = Vector{Array{Float64,2}}(length(Carr)*length(γarr))
+
     for C in Carr, γ in γarr
         counter += 1
         @show counter
 
         betavar = 1./(8γ^2)-0.5  # Sets variance equal to γ^2
         Ubar(x) = -C*x
+        ωdist = Betashift(Beta(betavar,betavar), 0.5) # shift by 0.5 to get mean 1
+
+        srand(0) # For reproducibility
+        ω = rand(ωdist,bellsamples,T)
 
         diffarray = zeros(length(q2arr),length(q1arr))
         for i = 1:length(q1arr)
@@ -58,9 +63,8 @@ function creatediffarrays()
 
                 system = DynamicSystem1D(f,U,Ubar,T,amin,amax)
 
-                ωdist = Betashift(Beta(betavar,betavar), 0.5) # shift by 0.5 to get mean 1
 
-                ω = rand(ωdist,bellsamples,T)
+
                 # Value and policy function arrays
                 v = zeros(K, T+1)
                 α = zeros(K, T)
@@ -73,6 +77,7 @@ function creatediffarrays()
                 bellman = OfflineSystemControl1D(system, x0, xarr, α)
                 deterministic = OfflineSystemControl1D(system,x0,αcec)
 
+                srand(0) # Use same samples for each trajectory
                 (bellmantrajectories,
                  dettrajectories) = simulatetrajectories([bellman, deterministic],
                                                          ωdist, x0,
