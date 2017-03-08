@@ -59,7 +59,6 @@ maximum price $a=1$.
     parameters chosen for the experiments in this article.
   }\label{fig:profit_diff_heatmaps}
 \end{figure}
-\todo[inline]{Add white dot and the points from table}
 
 The parameters chosen in this article's numerical experiments
 are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
@@ -75,7 +74,10 @@ outperforms the Bellman policy the
 majority of events, at the expense of a stronger underperformance
 for the remainder of the events. Notably, the CEC policy is better
 more than 50\% of the time for all the parameter
-combinations considered in this article.
+combinations considered in this article. The values in
+\Cref{tbl:paramcomparisons} were approximated using $10,000$ samples
+from $W$, and their corresponding parameter combinations are shown as
+grey dots in \Cref{fig:profit_diff_heatmaps}.
 
 \begin{table}[htbp]
   \centering
@@ -99,7 +101,8 @@ combinations considered in this article.
     $1-P^{\alpha^C}/P^{\alpha^B}$. Median is the same as $\mbox{VaR}_{0.5}$.
     The values in the column $L_2$ refers to the relative $L_2$
     difference $\|P^{\alpha^B}-P^{\alpha^C}\|_2/\|P^{\alpha^B}\|_2$
-    from \Cref{fig:profit_diff_heatmaps}.
+    from \Cref{fig:profit_diff_heatmaps}. Each of the parameter
+    combinations correspond to a gray dot in \Cref{fig:profit_diff_heatmaps}.
   }\label{tbl:paramcomparisons}
 \end{table}
 \biblio

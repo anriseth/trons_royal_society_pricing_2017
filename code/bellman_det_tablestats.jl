@@ -94,11 +94,6 @@ function main()
         end
     end
 
-
-    bellvalarrs = Array{Float64,2}(numsimulations, length(Carr))
-    detvalarrs = Array{Float64,2}(numsimulations, length(Carr))
-    createsamples(bellvalarrs, detvalarrs)
-
     function printtable(bellvalarrs, detvalarrs)
         numentries = size(bellvalarrs,2)
         diffarr = 1.0 - detvalarrs./bellvalarrs
@@ -127,14 +122,15 @@ function main()
 """
     end
 
+    bellvalarrs = Array{Float64,2}(numsimulations, length(Carr))
+    detvalarrs = Array{Float64,2}(numsimulations, length(Carr))
+    createsamples(bellvalarrs, detvalarrs)
+    tblstr = printtable(bellvalarrs, detvalarrs)
 
-    return bellvalarrs, detvalarrs
+    return bellvalarrs, detvalarrs, tblstr
 end
 
-# TODO: write function to print out table of 1-detvalarrs/bellvalarrs
-
-bellvalarrs, detvalarrs = main()
-
+bellvalarrs, detvalarrs, tblstr = main()
 
 function plothistos(bellvalarrs, detvalarrs)
     Base.error("Not finished")
