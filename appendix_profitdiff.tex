@@ -59,6 +59,7 @@ maximum price $a=1$.
     parameters chosen for the experiments in this article.
   }\label{fig:profit_diff_heatmaps}
 \end{figure}
+\todo[inline]{Add white dot and the points from table}
 
 The parameters chosen in this article's numerical experiments
 are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
@@ -68,11 +69,39 @@ bottom, left subfigure in \Cref{fig:profit_diff_heatmaps}.
 This difference is in the middle of that seen for all the
 combinations of parameters, so the conclusions made in the article
 should be considered as relevant for a wider range of systems.
+\Cref{tbl:paramcomparisons} provides further data to underscore
+the claim that the CEC policy
+outperforms the Bellman policy the
+majority of events, at the expense of a stronger underperformance
+for the remainder of the events. Notably, the CEC policy is better
+more than 50\% of the time for all the parameter
+combinations considered in this article.
 
-
-\todo[inline]{Pick some other points(including white), create a table
-  and show median, 0.05 and 0.95 quantiles of $P^B-P^C$ (maybe relative?)
-}
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{llllcccc}
+    $C$ & $\gamma$ & $q_1$ & $q_2$ & $\mbox{VaR}_{0.05}$
+    &Median & $\mbox{VaR}_{0.95}$ &$L_2$\\
+    \toprule
+    $0.25$ & $0.05$ & $2.0$ & $4.0$ & -0.4 & -0.3 & 0.6 & 0.4 \\
+    $0.25$ & $0.1$ & $1.33$ & $2.67$ & -0.5 & -0.0 & 0.6 & 0.3 \\
+    $0.5$ & $0.05$ & $2.67$ & $4.0$ & -0.6 & -0.6 & 1.9 & 1.1 \\
+    $0.5$ & $0.1$ & $2.0$ & $2.67$ & -0.9 & -0.6 & 1.9 & 1.2 \\
+    $1.0$ & $0.05$ & $1.33$ & $4.0$ & -1.2 & -1.1 & 5.3 & 2.7 \\
+    $1.0$ & $0.1$ & $2.67$ & $2.67$ & -1.5 & -1.3 & 5.8 & 2.9\\
+    &&&&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$\\
+    \bottomrule
+  \end{tabular}
+  \caption{Statistics comparing $P^{\alpha^B}$ and $P^{\alpha^C}$ for six different
+    parameter combinations. The columns $\mbox{VaR}_s$ represent the
+    $s$-Value-at-Risk, or the $s^{\text{th}}$ quantile of the relative
+    difference
+    $1-P^{\alpha^C}/P^{\alpha^B}$. Median is the same as $\mbox{VaR}_{0.5}$.
+    The values in the column $L_2$ refers to the relative $L_2$
+    difference $\|P^{\alpha^B}-P^{\alpha^C}\|_2/\|P^{\alpha^B}\|_2$
+    from \Cref{fig:profit_diff_heatmaps}.
+  }\label{tbl:paramcomparisons}
+\end{table}
 \biblio
 \end{document}
 
