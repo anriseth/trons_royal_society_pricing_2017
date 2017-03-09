@@ -105,8 +105,8 @@ function main()
 
         str = """
 \\begin{tabular}{llllcccc}
-  \$C\$ & \$\\gamma\$ & \$q_1\$ & \$q_2\$ & \$\\mbox{VaR}_{0.05}\$
-  &Median & \$\\mbox{VaR}_{0.95}\$ &\$L_2\$\\\\
+  \$C\$ & \$\\gamma\$ & \$q_1\$ & \$q_2\$ & \$\\mathcal Q_{0.05}\$
+  &Median & \$\\mathcal Q_{0.95}\$ &\$L_2\$\\\\
   \\toprule
 """
         for k = 1:numentries

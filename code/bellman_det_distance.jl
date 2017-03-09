@@ -105,35 +105,76 @@ if savefiles == true
     @save "./data/bellman_det_distance_$(now()).jld"
 end
 
-q2 = 3; q1 = exp(q2*2/3)/3
-Plots.scalefontsizes(1.3)
-titles = [L"$(C,\gamma)=(0.25,0.05)$" L"$(C,\gamma)=(0.25,0.1)$" L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$" L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"]
-plt = plot(q1arr, q2arr, diffarrays, st=:heatmap, margin=0mm, ratio=0.4,
-           xlabel=L"$q_1$", ylabel=L"$q_2$",
-           title=titles,layout=@layout [ p11 p12 ; p21 p22; p31 p32])
-scatter!(plt.spmap[:p31], [q1],[q2], label="", color=:white, markersize=10)
-oldxlims = xlims(plt.spmap[:p11])
-oldylims = ylims(plt.spmap[:p11])
-xlims!(plt.spmap[:p31], oldxlims...) # Fix scatter changing xlims,ylims
-ylims!(plt.spmap[:p31], oldylims...)
-xticks!(plt.spmap[:p31], [1,2,3])
-yticks!(plt.spmap[:p31], [2,3,4,5])
+function plotheatmaps()
+    q2 = 3; q1 = exp(q2*2/3)/3
+    Plots.scalefontsizes(1.3)
+    titles = [L"$(C,\gamma)=(0.25,0.05)$" L"$(C,\gamma)=(0.25,0.1)$" L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$" L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"]
+    plt = plot(q1arr, q2arr, diffarrays, st=:heatmap, margin=0mm, ratio=0.4,
+               xlabel=L"$q_1$", ylabel=L"$q_2$",
+               title=titles,layout=@layout [ p11 p12 ; p21 p22; p31 p32])
+    scatter!(plt.spmap[:p31], [q1],[q2], label="", color=:white, markersize=10)
+    oldxlims = xlims(plt.spmap[:p11])
+    oldylims = ylims(plt.spmap[:p11])
+    xlims!(plt.spmap[:p31], oldxlims...) # Fix scatter changing xlims,ylims
+    ylims!(plt.spmap[:p31], oldylims...)
+    xticks!(plt.spmap[:p31], [1,2,3])
+    yticks!(plt.spmap[:p31], [2,3,4,5])
 
-q1s = [1+1/3, 2, 2+2/3]
-q2s = [2+2/3, 4]
-q1scatter = [q1s[k] for k in [2,1,3,2,1,3]]
-q2scatter = [q2s[k] for k in [2,1,2,1,2,1]]
+    q1s = [1+1/3, 2, 2+2/3]
+    q2s = [2+2/3, 4]
+    q1scatter = [q1s[k] for k in [2,1,3,2,1,3]]
+    q2scatter = [q2s[k] for k in [2,1,2,1,2,1]]
 
-for k = 1:length(q1scatter)
-    q1 = q1scatter[k]; q2 = q2scatter[k]
-    splt = plt.subplots[k]
-    scatter!(splt, [q1], [q2], label="",
-             color = :grey, markersize = 10)
-    # TODO: add scatter for each plt.subplots[k]
-    xlims!(splt, oldxlims...) # Fix scatter changing xlims,ylims
-    ylims!(splt, oldylims...)
-    xticks!(splt, [1,2,3])
-    yticks!(splt, [2,3,4,5])
+    for k = 1:length(q1scatter)
+        q1 = q1scatter[k]; q2 = q2scatter[k]
+        splt = plt.subplots[k]
+        scatter!(splt, [q1], [q2], label="",
+                 color = :grey, markersize = 10)
+        # TODO: add scatter for each plt.subplots[k]
+        xlims!(splt, oldxlims...) # Fix scatter changing xlims,ylims
+        ylims!(splt, oldylims...)
+        xticks!(splt, [1,2,3])
+        yticks!(splt, [2,3,4,5])
+    end
+
+    plt
 end
 
-plt
+plt = plotheatmaps()
+
+function plotheatmaps_pres()
+    q2 = 3; q1 = exp(q2*2/3)/3
+    Plots.scalefontsizes(1.3)
+    titles = ([L"$(C,\gamma)=(0.25,0.05)$" L"$(C,\gamma)=(0.25,0.1)$"],
+              [L"$(C,\gamma)=(0.5,0.05)$" L"$(C,\gamma)=(0.5,0.1)$"],
+              [L"$(C,\gamma)=(1,0.05)$" L"$(C,\gamma)=(1,0.1)$"])
+    plts = [plot(q1arr, q2arr, diffarrays[[2k-1,2k]], st=:heatmap, margin=0mm, ratio=0.4,
+                 xlabel=L"$q_1$", ylabel=L"$q_2$",
+                 title=titles[k],layout=(1,2))
+            for k = [1,2,3]]
+    oldxlims = xlims(plts[1].subplots[1])
+    oldylims = ylims(plts[1].subplots[1])
+
+    scatter!(plts[3].subplots[1], [q1],[q2], label="", color=:white, markersize=10)
+
+    q1s = [1+1/3, 2, 2+2/3]
+    q2s = [2+2/3, 4]
+    q1scatter = [q1s[k] for k in [2,1,3,2,1,3]]
+    q2scatter = [q2s[k] for k in [2,1,2,1,2,1]]
+
+    for k = 1:3
+        for j = 1:2
+            q1 = q1scatter[2k-j%2]; q2 = q2scatter[2k-j%2]
+            splt = plts[k].subplots[j]
+            scatter!(splt, [q1], [q2], label="",
+                     color = :grey, markersize = 10)
+            # TODO: add scatter for each plt.subplots[k]
+            xlims!(splt, oldxlims...) # Fix scatter changing xlims,ylims
+            ylims!(splt, oldylims...)
+            xticks!(splt, [1,2,3])
+            yticks!(splt, [2,3,4,5])
+        end
+    end
+
+    plts
+end
