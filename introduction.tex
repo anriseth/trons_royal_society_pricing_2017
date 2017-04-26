@@ -44,43 +44,93 @@ minimises the cost $\overline{U}$ of unsold stock:
 We use the subscript on $\mathbb E_W$ to emphasise that the
 expectation is taken with respect to the random variables $W_t$.
 The solution to this problem can be found by solving the associated
-Bellman equation. In practical applications, it is almost always
+Bellman equation.
+
+In practical applications, it is almost always
 intractable to solve the control problem to optimality.
-Thus, algorithms based on approximations and heuristics are employed.
+The modelling of a real system and decision process can become very
+complicated, and  we must  create a very
+large state space in order to make use of the Bellman equation.
+We often have to take into account unobservable
+state variables, like estimated parameters, and constraints
+that may depend on history. Decision-makers in business may change their mind
+about the objective over the course of the decision period, which should
+be incorporated in the modelling as parameters with corresponding, estimated
+probability distributions.
+From a software implementation perspective, writing code that can
+solve the Bellman equation efficiently can be much more complicated
+than other methods.
+Finally, the dimensions of the state, policy and exogenous
+information spaces can quickly make a numerical solution to the Bellman
+equation intractable. An explosion of dimensions can happen very
+quickly, even for one-product problems. In
+\citet{bertsimas2001dynamic}, the authors model a simple
+one-product demand function with uncertainty in the function
+parameters, and present an eight-dimensional dynamic programming
+solution to the problem.
+Much of the focus in the research community has therefore been on
+developing tractable algorithms with comparable performance to the
+optimal policies, see for example
+\citet{powell2011approximate} or \citet{bertsekas2012dynamic}.
+One can either create explicit policy functions \emph{offline}, at the
+start of the decision process, or implicitly through an automated
+search for the best policy \emph{online} for each decision point.
+An advantage of the pre-calculated, explicit policy functions
+is the speed at which we can make our decisions in the
+future. In the classic pricing problems, the dynamics of the
+underlying system do not require instant pricing decisions. Thus,
+suboptimal decision rules that are created as they are needed, are often used
+instead (\citet{talluri2006theory}). Estimation of the system and optimisation of prices are
+normally separated, and constraints are more easily updated at each
+decision point.
+
 There are several proposed approximations in the
-literature, although most of the domain knowledge is kept within
+literature, although for revenue management applications, most of the domain knowledge is kept within
 respective commercial organisations.
-Many of these algorithms are justified on practical grounds
+Many of the suboptimal pricing algorithms are justified on practical grounds
 (\citet{aviv2012dynamic}), or
 from asymptotic results (\citet{gallego1994optimal}).
-In this article, we will consider four approximations known as
-lookahead policies,
-and evaluate their performance on a one-product system.
-We find that the optimal policy is more robust to
-misspecification of the model uncertainty in the system.
-Hence, the use of approximations puts more pressure on the
-demand forecasting process.
+The aim of this article is to highlight the implications suboptimal policy
+choices have on the distribution of the relevant objective, and not
+only marginalised quantities such as the expected value.
+In particular, we consider a one-product pricing problem and
+investigate both the optimal Bellman policy and a popular suboptimal
+policy known as the \emph{Certainty Equivalent Control} (CEC)
+policy.\todo{And OLFC?}
+Rather surprisingly, we find that, more than half the
+time, using the suboptimal CEC policy
+leads to a higher profit than using the Bellman policy. Of course, the
+Bellman policy performs better on average, but
+this is due the CEC policy generating to a larger, lower tail on the
+distribution of profits than the Bellman policy.
+Heuristically, one can say that the CEC policy has a higher risk
+associated to it. We wish to emphasise that this indicates that a
+choice of approximate control policy implicitly is a statement of
+risk attitude. Thus, it should be addressed at the same level as a
+description of decision-maker's risk attitude as expressed with
+utility functions or risk measures.
+
+% We find that the optimal policy is more robust to
+% misspecification of the model uncertainty in the system.
+% Hence, the use of approximations puts more pressure on the
+% demand forecasting process.
 
 The article is organised as follows:
 In \Cref{sec:bellman_optimal_control} we formulate the
 pricing problem mathematically, and describe an algorithm to solve the
 problem via the associated Bellman equation. We also give an example
 of a problem with one product, and present the optimal pricing rules.
-A discussion of a class of suboptimal
-algorithms, called lookahead policies, follows in
-\Cref{sec:suboptimal_approximations}, where we compare their
+A discussion of the CEC policy follows in
+\Cref{sec:suboptimal_approximations}, where we compare its
 performance to that of
-the optimal policy. As the dynamical system is stochastic, the
-suboptimal policies may sometimes perform better than the optimal
-one. We find that for our example, this is  true more than half of
-the time.
-In \Cref{sec:markdown_miss_specification} we consider the issue of
-model uncertainty, for the case where the description of the random system
-disturbance is incorrect. The experiments in that section suggest
-that the suboptimal policies are less robust to model uncertainty
-than the optimal policy. Hence, the reduction in the cost
-of calculating the optimal policies must partially be paid for
-by improving the model estimation process.
+the optimal policy.\todo{And OLFC?}
+% In \Cref{sec:markdown_miss_specification} we consider the issue of
+% model uncertainty, for the case where the description of the random system
+% disturbance is incorrect. The experiments in that section suggest
+% that the suboptimal policies are less robust to model uncertainty
+% than the optimal policy. Hence, the reduction in the cost
+% of calculating the optimal policies must partially be paid for
+% by improving the model estimation process.
 Finally, we conclude and propose further work in \Cref{sec:conclusion}.
 
 \biblio
