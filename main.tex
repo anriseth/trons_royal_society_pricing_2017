@@ -27,7 +27,7 @@
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
 
-\title{Stochastic control strategies applied to a
+\title{A comparison of control strategies applied to a
   pricing problem in retail}
 \author{Asbj{\o}rn Nilsen Riseth\thanks{
     This publication is based on work partially supported by the EPSRC
@@ -59,42 +59,11 @@ approximate dynamic programming.
 \section{Feedback from Sam Cohen}
 Key points he had issues with:
 \begin{itemize}
-\item I am only considering one model (he did not find the appendix
-  bit useful, or at least I would have to do it over $T=3$ periods
-  there as well)
-  \begin{itemize}
-  \item This seems to be a criticism for several things: choosing only one
-    demand-model (and not justifying it), one set of parameters for
-    this model, and one type of model disturbance
-  \end{itemize}
 \item My Figure caption of ``better 50\%'' of the time sounded like I
   am saying ``CEC is a better method''. He wanted me to conclude (as
   we have done), that it means higher risk / fatter lower tail
-\item It seems like he felt the conclusions were ``obvious'',
-  i.e.~that such a ``terrible'' approximation as CEC will obviously
-  create lower mean and larger variance
-\item Model uncertainty: Sam said that I have just shown things for
-  very particular models, but could not extrapolate to statements like ``CEC
-  is unstable to mean misspecification''
 \item Comment on what types of events cause the ``CEC'' better
   outcomes [do the experiment first]
-\end{itemize}
-
-For future work, his opinion was that I should also compare something in between
-CEC and full Bellman, as they are two extremes. Especially when the
-state and decision space dimensions become larger (e.g. let all prices
-be defined in terms of three factors, instead of having each product
-have their own control function [I think])
-This should give a table with relevant metrics after simulation (mean,
-variance, VaR, time to solve)
-
-Reading list from Sam:
-\begin{itemize}
-\item Almgren and Chriss, 2000: Optimal Execution of Portfolio
-  Transactions
-\item Obizhaeva+Wang: Optimal Trading Strategy
-and
-Supply/Demand Dynamics (\textbf{I think?})
 \end{itemize}
 
 Things I think can improve the paper (and make it more precise)
@@ -103,20 +72,14 @@ Things I think can improve the paper (and make it more precise)
 \item Emphasise that CEC is what is done in the revenue literature
 \item Emphasise that the models we use are the ones from literature
   [or maybe use the GBM model]
-\item Present the distribution plot for one demand model, with
-  two-three different parameters
-\item Show mean, variance, VaR (e.g. 95\%) comparison for three demand
-  models, and three parameter combinations
-\item Either scrap model uncertainty, or justify better why I just
-  shift the mean but keep the model the same
+
 \end{itemize}
 
 
 \subfile{introduction}
 \subfile{bellman_control}
 \subfile{control_comparison}
-\subfile{model_uncertainty}
-% \subfile{expected_utility}
+%\subfile{model_uncertainty} % TODO: talk to Sam to see how to do this properly?
 \subfile{conclusion}
 
 % Bibliography:
@@ -126,7 +89,6 @@ Things I think can improve the paper (and make it more precise)
 
 
 %\appendix
-%\subfile{appendix_policydiff}
 \subfile{appendix_profitdiff}
 
 
