@@ -1,6 +1,5 @@
 \documentclass[main.tex]{subfiles}
 \usepgfplotslibrary{statistics}
-\usepackage[group-separator={,}]{siunitx}
 \begin{document}
 
 \listoftodos
@@ -8,21 +7,22 @@
 \section{Suboptimal
   approximations}\label{sec:suboptimal_approximations}
 \todo[inline]{Update introduction here}
-In this section we will look at a class of algorithms known as
-\emph{lookahead policies}, that calculate the decisions on-line.
+In this section we will look at a suboptimal policy among the class of
+algorithms that calculate decisions on-line.
 Whenever a decision must be made, these methods simulate the future
-behaviour of the system and optimise the current decision based on
-these simulations. First, we consider a special case called the
+behaviour of the system and optimise the current decision base don
+these simulations.
+We consider a special case called the
 \emph{Certainty Equivalent Control} policy, which uses a point
-estimate of the system (\citet[Ch.~6]{bertsekas2005dynamic}). For the
-example system in this article, it turns out that we can solve
+estimate of the system (\citet[Ch.~6]{bertsekas2005dynamic}).
+For the example system in this article, it turns out that we can solve
 this approximate problem analytically.
-Then, we investigate lookahead policies that take into account the
-variability of the future system trajectories, which produce
-results that are more similar to the optimal Bellman policy.
-Numerical comparison experiments between the different policies are
+Numerical comparison experiments between this policy and the optimal
+Bellman policy are
 made using the example pricing problem introduced in
-\Cref{sec:bellman_example_markdown}.
+\Cref{sec:bellman_example_markdown}. We also extend the comparison to
+cover a much larger range of parameters in the problem, to show that
+the same results hold for a wide range of retail products.
 
 \subsection{The Certainty Equivalent Control policy}
 A popular, tractable, algorithm for solving stochastic optimal control
@@ -93,12 +93,14 @@ In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
     \max\left( \frac{1}{q_2}\log\left( \frac{q_1(T-t)}{s}\right),
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
-The numerical experiments in the article are all made
-with a demand function of the family $q(a)=q_1e^{-q_2a}$,  for a
+The numerical experiments in the article are
+done with a demand function of the exponential family
+$q(a)=q_1e^{-q_2a}$.
+We start with investigating policy functions for a
 single combination of the  system
-parameters. We refer to the appendix for a
+parameters, and then consider make a
 comparison between the Bellman policy and CEC policy for a larger
-range of parameters.
+range of parameters in \Cref{sec:parameter_comparison}.
 
 \todo[inline]{Can we get error bounds comparing $\widetilde{v}$ and
   $v$? Maybe using ideas from \citet{bertsekas2005survey}
@@ -199,17 +201,17 @@ What is more important than how the policy function works, is how it
 impacts the goal of the decision-process. Thus, we would like to see
 how the two policy processes $\alpha^B$ and $\alpha^C$ perform.
 One way to evaluate their performance is to look at
-the distribution of the profits $P^{\alpha^B}$ and $P^{\alpha^C}$.
+the distribution of the profits $P(\alpha^B)$ and $P(\alpha^C)$.
 We remind the reader that
-$P^\alpha =
+$P(\alpha) =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
 From the opitimality of the Bellman policy function, we should have
-that $\mathbb E_W[P^{\alpha^B}]\geq \mathbb E_W[P^{\alpha^C}]$.
+that $\mathbb E_W[P(\alpha^B)]\geq \mathbb E_W[P(\alpha^C)]$.
 However, marginalising a random variable with the expectation operator
 loses a lot of information which can be of interest.
-An approximation of the distributions of $P^{\alpha^B}, P^{\alpha^C}$
+An approximation of the distributions of $P(\alpha^B), P(\alpha^C)$
 and their difference
-$P^{\alpha^B}-P^{\alpha^C}$, based on \num{10000} realisations of the
+$P(\alpha^B)-P(\alpha^C)$, based on \num{10000} realisations of the
 underlying $W$, can be seen in \Cref{fig:bellman_det_vals}.
 Indeed in the experiment, the average value of following the
 Bellman policy is higher than following the CEC policy.
@@ -225,7 +227,7 @@ profits in the remaining realisations.
   \centering
   \begin{tikzpicture}[scale=0.8]
     \begin{axis}[
-      xlabel=$P^{\alpha^B}$,
+      xlabel=$P(\alpha^B)$,
       ylabel=Count,
       title={Simulations of Bellman policy},
       xmin=0.565, xmax=0.695,
@@ -237,7 +239,7 @@ profits in the remaining realisations.
   \end{tikzpicture}%
   \begin{tikzpicture}[scale=0.8]
     \begin{axis}[
-      xlabel=$P^{\alpha^C}$,
+      xlabel=$P(\alpha^C)$,
       title={Simulations of CEC policy},
       xmin=0.565, xmax=0.695,
       ymax=2000,
@@ -252,7 +254,7 @@ profits in the remaining realisations.
   \vspace{1em}
   \begin{tikzpicture}
     \begin{axis}[
-      xlabel=$P^{\alpha^B}-P^{\alpha^C}$,
+      xlabel=$P(\alpha^B)-P(\alpha^C)$,
       ylabel=Count,
       title={Simulations of Bellman and CEC policies},
       ]
@@ -265,10 +267,10 @@ profits in the remaining realisations.
     \end{axis}
   \end{tikzpicture}
   \todo[inline]{Show relative difference
-    $(P^{\alpha^B}-P^{\alpha^C})/P^{\alpha^B}$ instead?}
+    $(P(\alpha^B)-P(\alpha^C))/P(\alpha^B)$ instead?}
   \caption{This shows the distributions from \num{10000} samples of
     the profits of following the Bellman and CEC policies.
-    The sample mean $\mathbb E_W[P^{\alpha^B}-P^{\alpha^C}]\approx 3.8\times
+    The sample mean $\mathbb E_W[P(\alpha^B)-P(\alpha^C)]\approx 3.8\times
     10^{-3}$, confirms that Bellman is better on average, as it should be.
     Importantly, however, in more than half the samples the suboptimal policy
     outperforms the Bellman policy.
@@ -299,8 +301,8 @@ In particular, the difference between the two policies is measured
 using the $L^2$-norm with respect to the probability distribution
 induced by the disturbance $(W_1,W_2,\dots,W_T)$, that is
 \begin{equation}
-  \left\|P^{\alpha^B}-P^{\alpha^C}\right\|_2
-  =\sqrt{\mathbb E_W\left[{( P^{\alpha^B}-P^{\alpha^C} )}^2 \right]}.
+  \left\|P(\alpha^B)-P(\alpha^C)\right\|_2
+  =\sqrt{\mathbb E_W\left[{( P(\alpha^B)-P(\alpha^C) )}^2 \right]}.
 \end{equation}
 
 To reduce the number of combinations of parameters, we make the
@@ -324,7 +326,7 @@ maximum price $a=1$.
 \begin{figure}[htbp]
   \includegraphics[width=\textwidth]{./img/profit_diff_heatmaps}
   \caption{The relative $L^2$ difference
-    $\|P^{\alpha^B}-P^{\alpha^C}\|_2/\|P^{\alpha^B}\|_2$ representing
+    $\|P(\alpha^B)-P(\alpha^C)\|_2/\|P(\alpha^B)\|_2$ representing
     how different the CEC policy is to the optimal Bellman policy.
     Each plot defines a combination of $(C,\gamma)$, whilst
     the axes vary the parameters $q_1,q_2$ of the demand function
@@ -348,8 +350,13 @@ outperforms the Bellman policy the
 majority of events, at the expense of a stronger underperformance
 for the remainder of the events. Notably, the CEC policy is better
 more than 50\% of the time for all the parameter
-combinations considered in this article. The values in
-\Cref{tbl:paramcomparisons} were approximated using $10,000$ samples
+combinations considered in this article.
+We can also see from the table that the implicit risk-seeking attitude
+of the CEC policy increases with
+the relative $L_2$ difference: The frequency at which the CEC policy
+outperforms Bellman increases, at the expense of a larger
+underperformance in the remaining realisations.
+The values in \Cref{tbl:paramcomparisons} were approximated using \num{10000} samples
 from $W$, and their corresponding parameter combinations are shown as
 grey dots in \Cref{fig:profit_diff_heatmaps}.
 
@@ -368,13 +375,13 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
     &&&&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$\\
     \bottomrule
   \end{tabular}
-  \caption{Statistics comparing $P^{\alpha^B}$ and $P^{\alpha^C}$ for six different
+  \caption{Statistics comparing $P(\alpha^B)$ and $P(\alpha^C)$ for six different
     parameter combinations. The columns $\mathcal Q_s$ represent the
     the $s^{\text{th}}$ quantile of the relative
     difference
-    $1-P^{\alpha^C}/P^{\alpha^B}$. %Median is the same as $\mathcal Q_{0.5}$.
+    $1-P(\alpha^C)/P(\alpha^B)$. %Median is the same as $\mathcal Q_{0.5}$.
     The values in the column $L_2$ refers to the relative $L_2$
-    difference $\|P^{\alpha^B}-P^{\alpha^C}\|_2/\|P^{\alpha^B}\|_2$
+    difference $\|P(\alpha^B)-P(\alpha^C)\|_2/\|P(\alpha^B)\|_2$
     from \Cref{fig:profit_diff_heatmaps}. Each of the parameter
     combinations correspond to a grey dot in \Cref{fig:profit_diff_heatmaps}.
   }\label{tbl:paramcomparisons}

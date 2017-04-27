@@ -281,13 +281,13 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
 Let us now investigate the behaviour of the optimal pricing policy
 $\alpha$ and
 the outcome of following this policy.
-Define a random variable $P^\alpha$, which for each realisation
+Define a random variable $P(\alpha)$, which for each realisation
 represents the total profit,
 \begin{equation}
-  P^\alpha = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
+  P(\alpha) = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
 \end{equation}
 By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
-estimate the random variables $\alpha_t$ and $P^\alpha$.
+estimate the random variables $\alpha_t$ and $P(\alpha)$.
 The plots in \Cref{fig:bellman_simulation} show the results of
 simulating the system $1000$ times.\footnote{
   Preliminary investigations indicated that $1000$
@@ -301,7 +301,7 @@ simulating the system $1000$ times.\footnote{
     \begin{tikzpicture}[scale=0.8]
       \begin{axis}[
         ylabel={Price},
-        xlabel={\phantom{$P^\alpha$}},% \phantom: to align the two figures
+        xlabel={\phantom{$P(\alpha)$}},% \phantom: to align the two figures
         title={$\alpha_t$, simulated values},
         boxplot/draw direction=y,
         xtick={1,2,3},
@@ -320,7 +320,7 @@ simulating the system $1000$ times.\footnote{
   \begin{subfigure}[t]{0.5\textwidth}
     \begin{tikzpicture}[scale=0.8]
       \begin{axis}[
-        xlabel=$P^{\alpha}$,
+        xlabel=$P(\alpha)$,
         ylabel=Count,
         title={Realised profit},
         legend cell align=left
