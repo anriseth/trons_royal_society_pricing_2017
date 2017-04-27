@@ -75,7 +75,7 @@ plot(xarr,α-αcecarr)
 
 bellman = OfflineSystemControl1D(system, x0, xarr, α)
 deterministic = OfflineSystemControl1D(system,x0,αcec)
-numsimulations = 1000
+numsimulations = 10000
 
 @time (bellmantrajectories,
        dettrajectories) = simulatetrajectories([bellman, deterministic],
@@ -101,11 +101,11 @@ end
 
 ## Plotting stuff
 using JLD
-savefiles = false
+savefiles = true
 if savefiles == true
     @save "./data/markdown_bellman_det_$(now()).jld" bellmanvals detvals xarr α v αcecarr bellmancontrols detcontrols
     writecsv("./data/markdown_bellman_det_vals.csv", [bellmanvals detvals])
-    writecsv("./data/markdown_bellman_det_policies.csv", [bellmancontrols detcontrols]')
+    writecsv("./data/markdown_bellman_det_policies.csv", [bellmancontrols detcontrols])
     writecsv("./data/markdown_bellman_det_val_policy.csv", ([xarr v α αcecarr])[2:end,:])
 end
 

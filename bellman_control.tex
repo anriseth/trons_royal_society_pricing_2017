@@ -92,7 +92,7 @@ assumes a risk-neutral decision-maker. However, it is still important
 to understand the distribution of profits for a given pricing policy
 $\alpha$. Therefore, we simulate the distribution when
 we investigate the performance of algorithms in
-\Cref{sec:suboptimal_approximations,sec:markdown_miss_specification}.
+\Cref{sec:suboptimal_approximations}.%,sec:markdown_miss_specification}.
 If we assume that the random variables $W_t$ are independent, this
 stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
@@ -151,11 +151,11 @@ non-dimensionalised system, and drop the hats from the
 dimensionless quantities.
 
 \subsection{The Bellman equation}
-We assume the optimal policy $\alpha\in\mathcal A$ is Markovian,\todo{
-  do I need to justify that the optimal policy is Markovian?}
-meaning that
-there exists a function $a(t,s)$ such that for each possible outcome
-$\omega$, the process is given by
+We choose $\mathcal A$ to be the set of Markovian policies for the
+problem. This means that for each $\alpha\in \mathcal
+A$, there exists a
+measurable function $a:[0,T)\times \mathbb R_+\to A$, such that for each possible outcome
+$\omega$, the process $\alpha$ is given by
 $\alpha_t(\omega) =
 a(t,S_t^\alpha(\omega))$.
 Then,
@@ -198,12 +198,19 @@ The expectation above is approximated using Monte-Carlo simulation, and
 we chose to use a linear interpolation for $Iv^K(s)$.
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
-In the numerical experiments, we choose to look at the demand function
+In order to investigate the optimal pricing of a concrete system, we
+choose to look at the demand function
 defined on $A=[0,1]$,
 given by
 \begin{equation}
   q(a)={\textstyle\frac{1}{3}}e^{2-3a}.
 \end{equation}
+This function belongs to the family of exponential demand functions of
+the form $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
+about their properties and usage in modelling demand, see \citet[Ch.~7]{talluri2006theory}.
+All the numerical experiments in this article use this family of exponential
+demand functions.
+
 We assume the exogenous disturbance process is a sequence of
 shifted, independent and identically Beta-distributed random
 variables with mean $1$ and variance
@@ -274,13 +281,13 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
 Let us now investigate the behaviour of the optimal pricing policy
 $\alpha$ and
 the outcome of following this policy.
-Define a random variable $P^\alpha$, which for each realisation
+Define a random variable $P(\alpha)$, which for each realisation
 represents the total profit,
 \begin{equation}
-  P^\alpha = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
+  P(\alpha) = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
 \end{equation}
 By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
-estimate the random variables $\alpha_t$ and $P^\alpha$.
+estimate the random variables $\alpha_t$ and $P(\alpha)$.
 The plots in \Cref{fig:bellman_simulation} show the results of
 simulating the system $1000$ times.\footnote{
   Preliminary investigations indicated that $1000$
@@ -294,7 +301,7 @@ simulating the system $1000$ times.\footnote{
     \begin{tikzpicture}[scale=0.8]
       \begin{axis}[
         ylabel={Price},
-        xlabel={\phantom{$P^\alpha$}},% \phantom: to align the two figures
+        xlabel={\phantom{$P(\alpha)$}},% \phantom: to align the two figures
         title={$\alpha_t$, simulated values},
         boxplot/draw direction=y,
         xtick={1,2,3},
@@ -303,9 +310,9 @@ simulating the system $1000$ times.\footnote{
         ]
         \addplot+[boxplot] table[y index=0,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
-        \addplot+[boxplot = {whisker range = 2}] table[y index=1,col sep=comma]
+        \addplot+[boxplot = {whisker range = 10}] table[y index=1,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
-        \addplot+[boxplot = {whisker range = 2}] table[y index=2,col sep=comma]
+        \addplot+[boxplot = {whisker range = 10}] table[y index=2,col sep=comma]
         {./data/markdown_bellman_det_policies.csv};
       \end{axis}
     \end{tikzpicture}
@@ -313,7 +320,7 @@ simulating the system $1000$ times.\footnote{
   \begin{subfigure}[t]{0.5\textwidth}
     \begin{tikzpicture}[scale=0.8]
       \begin{axis}[
-        xlabel=$P^{\alpha}$,
+        xlabel=$P(\alpha)$,
         ylabel=Count,
         title={Realised profit},
         legend cell align=left
