@@ -14,7 +14,7 @@ behaviour of the system and optimise the current decision base don
 these simulations.
 We consider a special case called the
 \emph{Certainty Equivalent Control} policy, which uses a point
-estimate of the system (\citet[Ch.~6]{bertsekas2005dynamic}).
+estimate of the system \cite[Ch.~6]{bertsekas2005dynamic}.
 For the example system in this article, it turns out that we can solve
 this approximate problem analytically.
 Numerical comparison experiments between this policy and the optimal
@@ -27,7 +27,7 @@ the same results hold for a wide range of retail products.
 \subsection{The Certainty Equivalent Control policy}
 A popular, tractable, algorithm for solving stochastic optimal control
 problems is the Certainty Equivalent Control (CEC) policy, as it is
-named in \citet{bertsekas2005dynamic}.
+named in \cite{bertsekas2005dynamic}.
 It also known as (deterministic) Model
 Predictive Control in the engineering community.
 The algorithm is particularly practical, because the optimisation
@@ -78,7 +78,7 @@ Then, $a^*=a^C(t,s)$ is given by the policy function
 \end{equation}
 Let $\mathcal P_A$ be the projection operator from $\mathbb R$ onto the interval $A$.
 Let us consider two families of demand functions that are
-popular in the literature, see e.g.~\citet[Ch.~7]{talluri2006theory}.
+popular in the literature, see for example \cite[Ch.~7]{talluri2006theory}.
 If $q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
 the optimal policy $\alpha_t=a^C(t,S_t^\alpha)$ for the deterministic
 problem is given by the function
@@ -103,7 +103,7 @@ comparison between the Bellman policy and CEC policy for a larger
 range of parameters in \Cref{sec:parameter_comparison}.
 
 \todo[inline]{Can we get error bounds comparing $\widetilde{v}$ and
-  $v$? Maybe using ideas from \citet{bertsekas2005survey}
+  $v$? Maybe using ideas from \cite{bertsekas2005survey}
   If so, write out explicit expression for $\widetilde{v}$}
 % We know that $\widetilde{v}(T,s)=v(T,s)$, and that by
 % Jensen's inequality, $v(T-1,s)\leq \widetilde{v}(T-1,s)$.
@@ -133,19 +133,19 @@ range of parameters in \Cref{sec:parameter_comparison}.
       title={Policy functions},
       legend cell align=left,
       ]
-      \addplot[mark=none] table[x index = 0,y expr={\thisrowno{5}},col sep=comma]
+      \addplot[thick,mark=none] table[x index = 0,y expr={\thisrowno{5}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
       \addlegendentry{$a^B(t,s)$};
-      \addplot[mark=none,dashed] table[x index = 0,y expr={\thisrowno{8}},col sep=comma]
+      \addplot[thick,mark=none,dashed] table[x index = 0,y expr={\thisrowno{8}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
       \addlegendentry{$a^C(t,s)$};
-      \addplot[mark=none] table[x index = 0,y expr={\thisrowno{6}},col sep=comma]
+      \addplot[thick,mark=none] table[x index = 0,y expr={\thisrowno{6}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
-      \addplot[mark=none,dashed] table[x index = 0,y expr={\thisrowno{9}},col sep=comma]
+      \addplot[thick,mark=none,dashed] table[x index = 0,y expr={\thisrowno{9}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
-      \addplot[mark=none] table[x index = 0,y expr={\thisrowno{7}},col sep=comma]
+      \addplot[thick,mark=none] table[x index = 0,y expr={\thisrowno{7}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
-      \addplot[mark=none,dashed] table[x index = 0,y expr={\thisrowno{10}},col sep=comma]
+      \addplot[thick,mark=none,dashed] table[x index = 0,y expr={\thisrowno{10}},col sep=comma]
       {./data/markdown_bellman_det_val_policy.csv};
       \draw (axis cs:0.45,0.55) node[anchor=north east] {$t=2$};
       \draw (axis cs:0.72,0.65) node[anchor=north east] {$t=1$};
@@ -223,7 +223,7 @@ $\alpha^B$: It results in slightly larger profits for a majority of the
 realisations of $W$, but at a cost of taking a more significant
 reduction in
 profits in the remaining realisations.
-\begin{figure}[p]
+\begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[scale=0.8]
     \begin{axis}[

@@ -4,20 +4,32 @@
 %%% TeX-command-extra-options: "-shell-escape"
 %%% End:
 
-\documentclass[a4paper,12pt]{article}
-\pdfoutput=1
+% \documentclass[a4paper,12pt]{article}
+\documentclass{rstransa}
 
-\usepackage{mathmacros} % My own macros
-\usepackage{authblk}
-\setcitestyle{square,numbers} % natbib
+\usepackage[l2tabu, orthodox]{nag}
+\usepackage{booktabs}
+\usepackage[group-separator={,}]{siunitx}
+\usepackage{fix-cm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[disable]{todonotes}
+\usepackage{subcaption}
+\usepackage[noabbrev]{cleveref}
 \setlength{\marginparwidth}{3.1cm} % For todonotes
 
-\pgfplotsset{compat=1.13}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\pgfplotsset{compat=1.14}
 \usetikzlibrary{external}
 \usetikzlibrary{pgfplots.statistics}
 \tikzexternalize
 \tikzsetexternalprefix{figures/}
 \makeatletter
+
+\theoremstyle{definition}
+\newtheorem{mydef}{Definition}[section]
+
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \makeatother
 % \usepackage[margin=2.5cm]{geometry}
@@ -27,34 +39,41 @@
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
 
-\title{A comparison of control strategies applied to a
-  pricing problem in retail}
-\author{Asbj{\o}rn Nilsen Riseth\thanks{
-    This publication is based on work partially supported by the EPSRC
-    Centre For Doctoral Training in Industrially Focused Mathematical
-    Modelling (EP/L015803/1) in collaboration with a partner
-    company.\\
-    The author would like to thank his supervisors
-    J.~N.~Dewynne and C.~L.~Farmer for their valuable suggestions.}\\
-  {\footnotesize\texttt{riseth@maths.ox.ac.uk}}}
-\affil{Mathematical Institute, University
-  of Oxford, OX2 6GG.}
 
-\date{\today}
+
+% \author{Asbj{\o}rn Nilsen Riseth\thanks{
+%     This publication is based on work partially supported by the EPSRC
+%     Centre For Doctoral Training in Industrially Focused Mathematical
+%     Modelling (EP/L015803/1) in collaboration with a partner
+%     company.\\
+%     The author would like to thank his supervisors
+%     J.~N.~Dewynne and C.~L.~Farmer for their valuable suggestions.}\\
+%   {\footnotesize\texttt{riseth@maths.ox.ac.uk}}}
+% \affil{Mathematical Institute, University
+%   of Oxford, OX2 6GG.}
+
 
 \begin{document}
-\maketitle
+\title{A comparison of control strategies applied to a
+  pricing problem in retail}
+
+% TODO: Full names?
+\author{A.~N.~Riseth$^{1}$, C.~L.~Farmer$^{1}$ and J.~N.~Dewynne$^{1}$}
+\address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG.}
+\corres{Asbj{\o}rn Nilsen Riseth\\
+  \email{riseth@maths.ox.ac.uk}}
+
+\subject{applied mathematics, revenue management}
+\keywords{dynamic pricing, stochastic optimal control, approximate dynamic programming}
+
+
 \listoftodos
 
 \def\biblio{}
 \def\listoftodos{}
 
 \subfile{abstract}
-
-\vspace{1em}\noindent
-\textbf{Key words:} Revenue management, dynamic pricing, stochastic
-optimal control,
-approximate dynamic programming.
+\maketitle
 
 % Things I think can improve the paper (and make it more precise)
 % \begin{itemize}
@@ -72,14 +91,18 @@ approximate dynamic programming.
 %\subfile{model_uncertainty} % TODO: talk to Sam to see how to do this properly?
 \subfile{conclusion}
 
+\dataccess{TODO: make github repository of code and csv files}
+\aucontribute{TODO}
+\competing{The authors declare that they have no competing interests.}
+\funding{This publication is based on work partially supported by the EPSRC
+Centre For Doctoral Training in Industrially Focused Mathematical
+Modelling (EP/L015803/1) in collaboration with Dunnhumby Limited.}
+
+
 % Bibliography:
-\clearpage
-\bibliographystyle{abbrvnat}
+%\clearpage
+\bibliographystyle{rsta}
 \bibliography{references}
-
-
-%\appendix
-%\subfile{appendix_profitdiff}
 
 
 \end{document}

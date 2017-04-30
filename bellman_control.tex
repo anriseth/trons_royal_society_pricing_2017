@@ -46,7 +46,7 @@ Exogenous influences on demand are considered as randomness in the
 system, and are
 modelled in a multiplicative fashion by a stochastic process
 $(W_t)$ taking non-negative values. See, for example,
-\citet[Ch.~7]{talluri2006theory} for a discussion of
+\cite[Ch.~7]{talluri2006theory} for a discussion of
 popular demand models and the modelling of uncertainty.
 
 For a given pricing process $\alpha$, the
@@ -92,7 +92,7 @@ assumes a risk-neutral decision-maker. However, it is still important
 to understand the distribution of profits for a given pricing policy
 $\alpha$. Therefore, we simulate the distribution when
 we investigate the performance of algorithms in
-\Cref{sec:suboptimal_approximations}.%,sec:markdown_miss_specification}.
+\Cref{sec:suboptimal_approximations}. %,sec:markdown_miss_specification}.
 If we assume that the random variables $W_t$ are independent, this
 stochastic optimal control problem can be solved by
 considering the optimality conditions that arise from the Dynamic
@@ -173,7 +173,7 @@ terminal value $v(T,s)=-Cs$, and the optimal policy
 function $a(t,s)$ is given by the argmax for each $(t,s)$.
 The recursion is called the \emph{Bellman equation}, and a discussion
 of its validity can be found, for example, in
-\citet{bertsekas2005dynamic}.
+\cite{bertsekas2005dynamic}.
 Analytical solutions to Bellman equations are only available in very
 simplified cases, and thus numerical approaches are normally needed to
 solve the equation.
@@ -207,7 +207,7 @@ given by
 \end{equation}
 This function belongs to the family of exponential demand functions of
 the form $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
-about their properties and usage in modelling demand, see \citet[Ch.~7]{talluri2006theory}.
+about their properties and usage in modelling demand, see \cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
 demand functions.
 
@@ -237,13 +237,13 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
         legend cell align=left,
         legend pos=north west
         ]
-        \addplot+[mark=none] table[x index = 0,y index = 1,col sep=comma]
+        \addplot+[thick,mark=none] table[x index = 0,y index = 1,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=0$};
-        \addplot+[mark=none] table[x index = 0,y index = 2,col sep=comma]
+        \addplot+[thick,mark=none,dashed] table[x index = 0,y index = 2,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=1$};
-        \addplot+[mark=none] table[x index = 0,y index = 3,col sep=comma]
+        \addplot+[thick,mark=none,dash dot] table[x index = 0,y index = 3,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=2$};
       \end{axis}
@@ -258,13 +258,13 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
         title={Policy function},
         legend cell align=left,
         ]
-        \addplot+[mark=none] table[x index = 0,y index = 5,col sep=comma]
+        \addplot+[thick,mark=none] table[x index = 0,y index = 5,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=0$};
-        \addplot+[mark=none] table[x index = 0,y index = 6,col sep=comma]
+        \addplot+[thick,mark=none,dashed] table[x index = 0,y index = 6,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=1$};
-        \addplot+[mark=none] table[x index = 0,y index = 7,col sep=comma]
+        \addplot+[thick,mark=none,dash dot] table[x index = 0,y index = 7,col sep=comma]
         {./data/markdown_bellman_det_val_policy.csv};
         \addlegendentry{$t=2$};
       \end{axis}
@@ -289,8 +289,8 @@ represents the total profit,
 By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
 estimate the random variables $\alpha_t$ and $P(\alpha)$.
 The plots in \Cref{fig:bellman_simulation} show the results of
-simulating the system $1000$ times.\footnote{
-  Preliminary investigations indicated that $1000$
+simulating the system \num{10000} times.\footnote{
+  Preliminary investigations indicated that \num{1000}
   simulations is enough to get a good representation of
   the distributions in this article.
 }
