@@ -1,0 +1,13 @@
+* TODO
+** Include OLFC
+- Describe procedure
+- Run experiments and create table with same parameters as used with CEC
+- Say how it is a middle ground between CEC and Bellman
+
+** Move everything into one tex file
+
+** Get Chris Farmer to look over and write his own stuff
+
+** Write Authors contributions sentence
+
+** Set up github page
