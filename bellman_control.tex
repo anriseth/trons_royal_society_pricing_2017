@@ -31,8 +31,8 @@ solve it numerically for an example system.
 Consider a system over discrete, equispaced time points
 $t=0,1,\dots,T$, with state
 $S_t$ and policy process $\alpha_t$ that takes values in a closed
-interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]\subset\mathbb R_+$.\footnote{
-  In practice, policy values may have additional constraints that depend
+interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]\subset\mathbb R_+$.\footnote{In
+  practice, policy values may have additional constraints that depend
   on the current state,
   in which case we say that $\alpha_t$ must take values
   in a set $A(S_t)$.
@@ -45,8 +45,8 @@ function $q:A\to\mathbb R_+$, which is bounded, continuous and decreasing.
 Exogenous influences on demand are considered as randomness in the
 system, and are
 modelled in a multiplicative fashion by a stochastic process
-$(W_t)$ taking non-negative values. See, for example,
-\cite[Ch.~7]{talluri2006theory} for a discussion of
+$(W_t)$ taking non-negative values. See, for
+example,~\cite[Ch.~7]{talluri2006theory} for a discussion of
 popular demand models and the modelling of uncertainty.
 
 For a given pricing process $\alpha$, the
@@ -122,7 +122,7 @@ Then we set
 The dimensionless functions $\hat q(\hat a)$ and $\hat Q(\hat s,\hat
 a, \hat w)$,
 for forecasted demand
-and realised sales respectively, should then be defined as
+and realised sales respectively, are
 \begin{align}
   \hat q(\hat a)&= \frac{q(\hat a\cdot a_{\max})}{S_0},
   &\hat Q(\hat s,\hat a, \hat w)&= \min(\hat s, \hat q(\hat a)\hat w).
@@ -172,10 +172,9 @@ recursive relation~\eqref{eq:dynamic_programming_discrete} with
 terminal value $v(T,s)=-Cs$, and the optimal policy
 function $a(t,s)$ is given by the argmax for each $(t,s)$.
 The recursion is called the \emph{Bellman equation}, and a discussion
-of its validity can be found, for example, in
-\cite{bertsekas2005dynamic}.
+of its validity can be found, for example, in~\cite{bertsekas2005dynamic}.
 Analytical solutions to Bellman equations are only available in very
-simplified cases, and thus numerical approaches are normally needed to
+rare cases, and thus numerical approaches are normally needed to
 solve the equation.
 
 We implement the following algorithm to solve the optimal control
@@ -199,29 +198,29 @@ we chose to use a linear interpolation for $Iv^K(s)$.
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
 In order to investigate the optimal pricing of a concrete system, we
-choose to look at the demand function
-defined on $A=[0,1]$,
-given by
-\begin{equation}
-  q(a)={\textstyle\frac{1}{3}}e^{2-3a}.
-\end{equation}
-This function belongs to the family of exponential demand functions of
-the form $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
-about their properties and usage in modelling demand, see \cite[Ch.~7]{talluri2006theory}.
+choose to look at a family of demand functions of the form
+$q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
+about their properties and usage in modelling demand, see~\cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
-demand functions.
+demand functions, with price constraints $A=[0,1]$.
+In the current section, and in the plots of \Cref{fig:markdown_bellman,fig:bellman_simulation,fig:bellman_det_policy_difference,fig:bellman_det_vals},
+we consider a particular choice of $q_1,q_2$ so that the demand
+function is given by $q(a)=\frac{1}{3}e^{2-3a}$.
+In \Cref{fig:profit_diff_heatmaps} and \Cref{tbl:paramcomparisons} a larger
+range of values for $q_1,q_2$ are considered.
 
 We assume the exogenous disturbance process is a sequence of
 shifted, independent and identically Beta-distributed random
 variables with mean $1$ and variance
 $\gamma^2$. That is, we define $W_t\sim \frac{1}{2}+X$, where
-$X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{
-  A $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
+$X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{A
+  $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
   function on $[0,1]$, given by
   $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$.
   The function $B(\mu,\nu)$ acts as a normalising factor.
 }
 and $\mu=\nu=\frac{1}{8\gamma^2}-\frac{1}{2}$.
+To ensure that $X$ is unimodal, we require that $\gamma^2<1/12$.
 
 Set $\gamma = 5\times 10^{-2}$, $C=1$ and $T=3$.
 The solution to the Bellman equation, and the corresponding optimal
@@ -289,8 +288,8 @@ represents the total profit,
 By sampling from the stochastic process $W=(W_1,\dots,W_T)$, we can
 estimate the random variables $\alpha_t$ and $P(\alpha)$.
 The plots in \Cref{fig:bellman_simulation} show the results of
-simulating the system \num{10000} times.\footnote{
-  Preliminary investigations indicated that \num{1000}
+simulating the system \num{10000} times.\footnote{Preliminary
+   investigations indicated that \num{10000}
   simulations is enough to get a good representation of
   the distributions in this article.
 }
@@ -358,7 +357,7 @@ simulating the system \num{10000} times.\footnote{
     in the simulations.
     As we see, the variance of the prices increases
     in time, reflecting the wider range of realised remaining stock at these times.
-    The right figure is a histogram of the profits over
+    The right figure is a histogram of the total profit over
     the pricing period.
   }\label{fig:bellman_simulation}
 \end{figure}

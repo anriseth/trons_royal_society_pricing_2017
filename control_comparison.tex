@@ -14,21 +14,21 @@ behaviour of the system and optimise the current decision base don
 these simulations.
 We consider a special case called the
 \emph{Certainty Equivalent Control} policy, which uses a point
-estimate of the system \cite[Ch.~6]{bertsekas2005dynamic}.
+estimate of the system~\cite[Ch.~6]{bertsekas2005dynamic}.
 For the example system in this article, it turns out that we can solve
 this approximate problem analytically.
 Numerical comparison experiments between this policy and the optimal
 Bellman policy are
 made using the example pricing problem introduced in
-\Cref{sec:bellman_example_markdown}. We also extend the comparison to
+Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown}. We also extend the comparison to
 cover a much larger range of parameters in the problem, to show that
 the same results hold for a wide range of retail products.
 
 \subsection{The Certainty Equivalent Control policy}
 A popular, tractable, algorithm for solving stochastic optimal control
 problems is the Certainty Equivalent Control (CEC) policy, as it is
-named in \cite{bertsekas2005dynamic}.
-It also known as (deterministic) Model
+named in~\cite{bertsekas2005dynamic}.
+It is also known as (deterministic) Model
 Predictive Control in the engineering community.
 The algorithm is particularly practical, because the optimisation
 problem is reduced to a standard deterministic problem that can
@@ -41,7 +41,7 @@ used, whilst the subsequent decisions are discarded.
 For each decision time $t=0,\dots,T-1$, the CEC algorithm for the pricing
 problem calculates the current price using the following steps:
 \begin{enumerate}
-\item Observe state $s$.
+\item Observe the state $s$.
 \item Take a best estimate $w_{t+1},\dots,w_T$ of ${(W_\tau)}_{t+1}^T$.
 \item Solve the optimization problem
   \begin{equation}
@@ -78,32 +78,29 @@ Then, $a^*=a^C(t,s)$ is given by the policy function
 \end{equation}
 Let $\mathcal P_A$ be the projection operator from $\mathbb R$ onto the interval $A$.
 Let us consider two families of demand functions that are
-popular in the literature, see for example \cite[Ch.~7]{talluri2006theory}.
-If $q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
-the optimal policy $\alpha_t=a^C(t,S_t^\alpha)$ for the deterministic
-problem is given by the function
-\begin{equation}
-  a^C(t,s)=\mathcal P_A \left[ \max\left(
-      \frac{q_1}{q_2}-\frac{s}{q_2(T-t)},\frac{1}{2}\left(\frac{q_1}{q_2}-C
-      \right) \right) \right].
-\end{equation}
+popular in the literature, see for example~\cite[Ch.~7]{talluri2006theory}.
+% If $q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
+% the optimal policy $\alpha_t=a^C(t,S_t^\alpha)$ for the deterministic
+% problem is given by the function
+% \begin{equation}
+%   a^C(t,s)=\mathcal P_A \left[ \max\left(
+%       \frac{q_1}{q_2}-\frac{s}{q_2(T-t)},\frac{1}{2}\left(\frac{q_1}{q_2}-C
+%       \right) \right) \right].
+% \end{equation}
 In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
 \begin{equation}\label{eq:cec_policy}
   a^C(t,s)=\mathcal P_A\left[
     \max\left( \frac{1}{q_2}\log\left( \frac{q_1(T-t)}{s}\right),
       \frac{1}{q_2}-C  \right)\right].
 \end{equation}
-The numerical experiments in the article are
-done with a demand function of the exponential family
-$q(a)=q_1e^{-q_2a}$.
 We start with investigating policy functions for a
 single combination of the  system
 parameters, and then consider make a
 comparison between the Bellman policy and CEC policy for a larger
-range of parameters in \Cref{sec:parameter_comparison}.
+range of parameters Subsection~\ref{sec:suboptimal_approximations}\ref{sec:parameter_comparison}.
 
 \todo[inline]{Can we get error bounds comparing $\widetilde{v}$ and
-  $v$? Maybe using ideas from \cite{bertsekas2005survey}
+  $v$? Maybe using ideas from~\cite{bertsekas2005survey}
   If so, write out explicit expression for $\widetilde{v}$}
 % We know that $\widetilde{v}(T,s)=v(T,s)$, and that by
 % Jensen's inequality, $v(T-1,s)\leq \widetilde{v}(T-1,s)$.
@@ -186,7 +183,7 @@ range of parameters in \Cref{sec:parameter_comparison}.
   }\label{fig:bellman_det_policy_difference}
 \end{figure}
 
-The example system in \Cref{sec:bellman_example_markdown} has a demand
+The example system in Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown} has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
 pricing policy that a CEC algorithm would create.
@@ -346,7 +343,7 @@ combinations of parameters, so the conclusions made in the article
 should be considered as relevant for a wider range of systems.
 \Cref{tbl:paramcomparisons} provides further data to underscore
 the claim that the CEC policy
-outperforms the Bellman policy the
+outperforms the Bellman policy for the
 majority of events, at the expense of a stronger underperformance
 for the remainder of the events. Notably, the CEC policy is better
 more than 50\% of the time for all the parameter
