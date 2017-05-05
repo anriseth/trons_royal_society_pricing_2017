@@ -30,24 +30,11 @@
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
 
-% \author{Asbj{\o}rn Nilsen Riseth\thanks{
-%     This publication is based on work partially supported by the EPSRC
-%     Centre For Doctoral Training in Industrially Focused Mathematical
-%     Modelling (EP/L015803/1) in collaboration with a partner
-%     company.\\
-%     The author would like to thank his supervisors
-%     J.~N.~Dewynne and C.~L.~Farmer for their valuable suggestions.}\\
-%   {\footnotesize\texttt{riseth@maths.ox.ac.uk}}}
-% \affil{Mathematical Institute, University
-%   of Oxford, OX2 6GG.}
-
-
 \begin{document}
 \title{A comparison of control strategies applied to a
   pricing problem in retail}
 
-% TODO: Full names?
-\author{A.~N.~Riseth$^{1}$, C.~L.~Farmer$^{1}$ and J.~N.~Dewynne$^{1}$}
+\author{J.~N.~Dewynne$^{1}$, C.~L.~Farmer$^{1}$ and A.~N.~Riseth$^{1}$}
 \address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG.}
 \corres{Asbj{\o}rn Nilsen Riseth\\
   \email{riseth@maths.ox.ac.uk}}
@@ -64,30 +51,25 @@
 \subfile{abstract}
 \maketitle
 
-% Things I think can improve the paper (and make it more precise)
-% \begin{itemize}
-% \item Only compare Bellman and CEC
-% \item Emphasise that CEC is what is done in the revenue literature
-% \item Emphasise that the models we use are the ones from literature
-%   [or maybe use the GBM model]
-
-% \end{itemize}
-
-
 \subfile{introduction}
 \subfile{bellman_control}
 \subfile{control_comparison}
-%\subfile{model_uncertainty} % TODO: talk to Sam to see how to do this properly?
 \subfile{conclusion}
 
-\dataccess{TODO: make github repository of code and csv files}
-\aucontribute{TODO}
-\competing{The authors declare that they have no competing interests.
-Ask Breward how to do this + Dunnhumby?}
+%\dataccess{TODO: make github repository of code and csv files}
+\aucontribute{A.~N.~Riseth has done all the mathematical
+  research and numerical experiments in this article. J.~N.~Dewynne
+  and C.~L.~Farmer
+  proposed to solve the problem with the different algorithms
+  described in this article, and has contributed with valuable
+  suggestions and feedback.}
+\competing{The authors declare that they have no competing interests.}
 \funding{This publication is based on work partially supported by the EPSRC
 Centre For Doctoral Training in Industrially Focused Mathematical
-Modelling (EP/L015803/1) in collaboration with Dunnhumby Limited.}
-
+Modelling (EP/L015803/1) in collaboration with dunnhumby Limited.}
+\ack{We thank Marco Brambilla from dunnhumby for suggesting a markdown problem
+  of particular interest to retailers, which led to the work
+  in this article.}
 
 % Bibliography:
 %\clearpage
