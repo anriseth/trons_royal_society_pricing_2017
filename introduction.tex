@@ -28,10 +28,10 @@ for both retailers and the environment.
 We are interested in strategies to dynamically set the prices of
 products, and thus
 formulate the problem in a stochastic optimal control framework.
-Let $t$ denote equally spaced, discrete time points.
-Product stock levels $S_t$ are controlled by a pricing process
-$\alpha_t$, and evolve according to a transition function $f$ with random disturbances
-$W_t$:
+Let $t$ denote equally spaced, discrete time points in $\{0,1,\dots,T\}$.
+Product stock levels $S={(S_t)}_{t=0}^T$ are controlled by a pricing process
+$\alpha={(\alpha_t)}_{t=0}^{T-1}$, and evolve according to a transition function $f$ with random disturbance
+$W={(W_t)}_{t=1}^T$:
 \begin{equation}
   S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
 \end{equation}
@@ -47,13 +47,13 @@ expectation is taken with respect to the random variables $W_t$.
 The solution to this problem can be found by solving the associated
 Bellman equation.
 
-In practical applications, it is almost always
-intractable to solve the control problem to optimality.
+In practical applications in retail and other domains, it is almost always
+intractable to solve the control problem to optimality~\cite{farmer2017uncertainty}.
 The modelling of a real system and decision process can become very
 complicated, and  we must  create a very
 large state space in order to make use of the Bellman equation.
 We often have to take into account unobservable
-state variables, like estimated parameters, and constraints
+state variables, such as estimated parameters, and constraints
 that may depend on history. Decision-makers in business may change their mind
 about the objective over the course of the decision period, which should
 be incorporated in the modelling as parameters with corresponding, estimated
@@ -62,7 +62,7 @@ From a software implementation perspective, writing code that can
 solve the Bellman equation efficiently can be much more complicated
 than other methods.
 Finally, the dimensions of the state, policy and exogenous
-information spaces can quickly make a numerical solution to the Bellman
+information spaces, can quickly make a numerical solution to the Bellman
 equation intractable. An explosion of dimensions can happen very
 quickly, even for one-product problems.
 In~\cite{bertsimas2001dynamic}, the authors model a simple
@@ -70,7 +70,7 @@ one-product demand function with uncertainty in the function
 parameters, and present an eight-dimensional dynamic programming
 solution to the problem.
 Much of the focus in the research community has therefore been on
-developing tractable algorithms with comparable performance to the
+developing tractable algorithms with comparable average performance to the
 optimal policies, see for
 example~\cite{powell2011approximate} or~\cite{bertsekas2012dynamic}.
 One can either create explicit policy functions off-line, at the
@@ -78,7 +78,7 @@ start of the decision process, or implicitly through an automated
 search for the best policy on-line for each decision point.
 An advantage of the pre-calculated, explicit policy functions
 is the speed at which we can make our decisions in the
-future. In the classic pricing problems, the dynamics of the
+future. In the classical pricing problems, the dynamics of the
 underlying system do not require instant pricing decisions. Thus,
 suboptimal decision rules that are created as they are needed, are often used
 instead~\cite{talluri2006theory}. Estimation of the system and optimisation of prices are
@@ -102,13 +102,13 @@ Rather surprisingly, we find that, more than half the
 time, using the suboptimal CEC policy
 leads to a higher profit than using the Bellman policy. Of course, the
 Bellman policy performs better on average, but
-this is due the CEC policy generating a larger, lower tail on the
+this is due to the CEC policy generating a larger, lower tail on the
 distribution of profits than the Bellman policy.
 Heuristically, one can say that the CEC policy has a higher risk
 associated to it. We wish to emphasise that this indicates that a
-choice of approximate control policy implicitly is a statement of
+choice of approximate control policy is implicitly a statement of
 risk attitude. Thus, it should be addressed at the same level as a
-description of decision-maker's risk attitude as expressed with
+description of a decision-maker's risk attitude as expressed with
 utility functions or risk measures.
 
 % We find that the optimal policy is more robust to
