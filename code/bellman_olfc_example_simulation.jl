@@ -83,5 +83,5 @@ using JLD
 savefiles = true
 if savefiles == true
     @save "./data/markdown_bellman_olfc_$(now()).jld" bellmanvals olfcvals
-    writecsv("./data/markdown_bellman_olfc_1000.csv", [bellmanvals... olfcvals...])
+    writecsv("./data/markdown_bellman_olfc_vals_1000.csv", [bellmanvals olfcvals])
 end

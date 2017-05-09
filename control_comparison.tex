@@ -370,7 +370,7 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
     $0.5$ & $0.1$ & $2.0$ & $2.67$   & \textbf{-0.9} & \textbf{-0.6} & \textbf{1.9} & \textbf{1.2}\\
     $1.0$ & $0.05$ & $1.33$ & $4.0$  & \textbf{-1.2} & \textbf{-1.1} & \textbf{5.3} & \textbf{2.7}\\
     $1.0$ & $0.1$ & $2.67$ & $2.67$  & \textbf{-1.5} & \textbf{-1.3} & \textbf{5.8} & \textbf{2.9}\\
-    &&&&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$\\
+        &&&&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$&$\times 10^{-2}$\\
     \bottomrule
   \end{tabular}
   \caption{Statistics comparing profits $P(\alpha^B)$ and $P(\alpha^C)$ for six different
@@ -384,6 +384,62 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
     combinations correspond to a grey dot in \Cref{fig:profit_diff_heatmaps}.
   }\label{tbl:paramcomparisons}
 \end{table}
+
+\subsection{Open-Loop Feedback Control Policy}
+TODO:
+\begin{itemize}
+\item Introduce OLFC/SMPC
+\item Describe algorithm
+\item Create histogram comparing white dot with Bellman using 10 and 1000 samples
+\item Reference table
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=0.8]
+    \begin{axis}[
+      xlabel=$P(\alpha^B)-P(\alpha^O)$,
+      ylabel=Count,
+      title={Simulations of Bellman and OLFC policies},
+      ]
+      \addplot[red,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
+      {./data/markdown_bellman_olfc_vals_1000.csv};
+      \draw[dashed] (axis cs:0,-30) -- (axis cs:0,2000);
+      % \draw[<-] (axis cs:0.017,1000) -- (axis cs:0.015,2000)
+      % node[anchor=south] {$\alpha^B$ best};
+      % \draw[<-] (axis cs:-0.003,4000) -- (axis cs:0.005,4000) node[anchor=west] {$\alpha^C$ best};
+    \end{axis}
+  \end{tikzpicture}
+  \todo[inline]{Show relative difference
+    $(P(\alpha^B)-P(\alpha^O))/P(\alpha^B)$ instead?}
+  \caption{This shows the distributions from \num{10000} samples of
+    the profits of following the Bellman and OLFC policies.
+    TODO: write more
+  }\label{fig:bellman_olfc_vals}
+  \todo[inline]{Reference}
+\end{figure}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{llllcccc}
+    $C$ & $\gamma$ & $q_1$ & $q_2$ & $\mathcal Q_{0.05}$
+    &Median & $\mathcal Q_{0.95}$ &$L_2$\\
+    \toprule
+    $0.25$ & $0.05$ & $2.0$ & $4.0$ & $-0.6$ & $0.1$ & $1.2$ & $0.6$ \\
+    $0.25$ & $0.1$ & $1.33$ & $2.67$ & $-2.5$ & $0.4$ & $4.2$ & $2.1$ \\
+    $0.5$ & $0.05$ & $2.67$ & $4.0$ & $-0.5$ & $0.1$ & $1.2$ & $0.6$ \\
+    $0.5$ & $0.1$ & $2.0$ & $2.67$ & $-2.3$ & $0.3$ & $4.6$ & $2.1$ \\
+    $1.0$ & $0.05$ & $1.33$ & $4.0$ & $-0.8$ & $0.0$ & $2.8$ & $1.1$ \\
+    $1.0$ & $0.1$ & $2.67$ & $2.67$ & $-2.2$ & $0.4$ & $5.8$ & $2.4$ \\
+        &&&&$\times 10^{-3}$&$\times 10^{-3}$&$\times 10^{-3}$&$\times 10^{-3}$\\
+    \bottomrule
+  \end{tabular}
+  \caption{TODO. Note that the values are an order of magnitude
+    smaller than in the comparison between Bellman and CEC shown in \Cref{tbl:paramcomparison}}\label{tbl:paramcomparisons_olfc}
+  \todo[inline]{reference}
+\end{table}
+
+
 \biblio
 \end{document}
 
