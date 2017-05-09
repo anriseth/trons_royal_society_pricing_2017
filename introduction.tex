@@ -3,7 +3,6 @@
 \begin{document}
 \listoftodos
 
-\todo[inline]{Run all experiments with $10,000$ simulations?}
 \section{Introduction}
 The process of pricing products in order to control demand and
 maximize revenues has been undertaken for centuries. In recent
@@ -95,9 +94,10 @@ The aim of this article is to highlight the implications suboptimal policy
 choices have on the distribution of the relevant objective, and not
 only marginalised quantities such as the expected value.
 In particular, we consider a one-product pricing problem and
-investigate both the optimal Bellman policy and a popular suboptimal
+investigate the optimal Bellman policy, a popular suboptimal
 policy known as the \emph{Certainty Equivalent Control} (CEC)
-policy.\todo{And OLFC?}
+policy, and a compromise between optimality and practicality known as the
+\emph{Open-Loop Feedback Control} policy.
 Rather surprisingly, we find that, more than half the
 time, using the suboptimal CEC policy
 leads to a higher profit than using the Bellman policy. Of course, the
@@ -111,27 +111,15 @@ risk attitude. Thus, it should be addressed at the same level as a
 description of a decision-maker's risk attitude as expressed with
 utility functions or risk measures.
 
-% We find that the optimal policy is more robust to
-% misspecification of the model uncertainty in the system.
-% Hence, the use of approximations puts more pressure on the
-% demand forecasting process.
-
 The article is organised as follows:
 In \Cref{sec:bellman_optimal_control} we formulate the
 pricing problem mathematically, and describe an algorithm to solve the
 problem via the associated Bellman equation. We also give an example
 of a problem with one product, and present the optimal pricing rules.
-A discussion of the CEC policy follows in
+A discussion of the CEC and OLFC policies follows in
 \Cref{sec:suboptimal_approximations}, where we compare its
 performance to that of
-the optimal policy.\todo{And OLFC?}
-% In \Cref{sec:markdown_miss_specification} we consider the issue of
-% model uncertainty, for the case where the description of the random system
-% disturbance is incorrect. The experiments in that section suggest
-% that the suboptimal policies are less robust to model uncertainty
-% than the optimal policy. Hence, the reduction in the cost
-% of calculating the optimal policies must partially be paid for
-% by improving the model estimation process.
+the optimal policy.
 Finally, we conclude and propose further work in \Cref{sec:conclusion}.
 
 \biblio

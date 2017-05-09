@@ -7,17 +7,19 @@
 \section{Suboptimal
   approximations}\label{sec:suboptimal_approximations}
 \todo[inline]{Update introduction here}
-In this section we will look at a suboptimal policy among the class of
+In this section we will look at two suboptimal policies among the class of
 algorithms that calculate decisions on-line.
 Whenever a decision must be made, these methods simulate the future
 behaviour of the system and optimise the current decision based on
 these simulations.
-We consider a special case called the
+We consider two special cases known as the
 \emph{Certainty Equivalent Control} policy, which uses a point
-estimate of the system~\cite[Ch.~6]{bertsekas2005dynamic}.
-For the example system in this article, it turns out that we can solve
-this approximate problem analytically.
-Numerical comparison experiments between this policy and the optimal
+estimate of the system, and
+the \emph{Open-Loop Feedback Control} policy, which uses more
+information about the  future behaviour of the system~\cite[Ch.~6]{bertsekas2005dynamic}.
+For the example system in this article, it turns out that we can find
+the CEC policy analytically.
+Numerical comparison experiments between these policies and the optimal
 Bellman policy are
 made using the example pricing problem introduced in
 Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown}. We also extend the comparison to
@@ -38,13 +40,13 @@ At each decision time, a deterministic optimization problem for the
 remaining decision horizon is solved. Only the decision for the
 current time step is
 used, whilst the subsequent decisions are discarded.
-For each decision time $t=0,\dots,T-1$, the CEC algorithm for the pricing
+For each decision time $t=0,1\dots,T-1$, the CEC policy for the pricing
 problem calculates the current price using the following steps:
 \begin{enumerate}
 \item Observe the state $s$.
 \item Take a best estimate $w_{t+1},\dots,w_T$ of ${(W_\tau)}_{t+1}^T$.
 \item Solve the optimization problem
-  \begin{equation}
+  \begin{equation}\label{eq:cec_optim_problem}
     \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}\mathbf
       a_\tau Q(S_\tau^{\mathbf a},\mathbf
       a_\tau,w_{\tau+1})-CS_T^{\mathbf a}\right\},
@@ -98,27 +100,6 @@ single combination of the  system
 parameters, and then consider make a
 comparison between the Bellman policy and CEC policy for a larger
 range of parameters Subsection~\ref{sec:suboptimal_approximations}\ref{sec:parameter_comparison}.
-
-\todo[inline]{Can we get error bounds comparing $\widetilde{v}$ and
-  $v$? Maybe using ideas from~\cite{bertsekas2005survey}
-  If so, write out explicit expression for $\widetilde{v}$}
-% We know that $\widetilde{v}(T,s)=v(T,s)$, and that by
-% Jensen's inequality, $v(T-1,s)\leq \widetilde{v}(T-1,s)$.
-% Does this bound hold for $t<T-1$ as well? I'm struggling to prove it
-% \begin{align}
-%   \widetilde{v}(t,s)
-%   &=
-%     \begin{cases}
-%       s& \frac{s}{T-t}\leq \frac{q_1}{e^{q_2}}\\
-%       \frac{1}{q_2}(\log(q_1(T-t))s-s\log s)&
-%       \frac{q_1}{e^{-q_2}}<\frac{s}{T-t}\leq
-%       \frac{q_1e^{{(\frac{1}{q_2}-C)}^+}}{e^{-q_2}}\\
-%       \frac{q_1(T-t)}{e^{-q_2}}\left( {[\frac{1}{q_2}-C]}^++C \right)
-%       e^{{(\frac{1}{q_2}-C)}^+}-Cs&\text{otherwise}
-%     \end{cases}
-% \end{align}
-% \todo[inline]{Is $\widetilde{v}$ concave in $s$? I think we need to
-%   require $q_2\geq 1$ and maybe that $C$ only takes certain values}
 
 \subsubsection{Example system}\label{sec:cec_comparison_example}
 \begin{figure}[htbp]
@@ -385,14 +366,49 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
   }\label{tbl:paramcomparisons}
 \end{table}
 
-\subsection{Open-Loop Feedback Control Policy}
-TODO:
-\begin{itemize}
-\item Introduce OLFC/SMPC
-\item Describe algorithm
-\item Create histogram comparing white dot with Bellman using 10 and 1000 samples
-\item Reference table
-\end{itemize}
+\subsection{Open-Loop Feedback Control policy}
+We finish this article with a quick presentation of the Open-Loop
+Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
+also known as (stochastic) Model
+Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
+similar to the CEC policy, which better takes into account our
+knowledge of the uncertainty in the system.
+%In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
+The OLFC policy works as follows: At each decision time, a stochastic
+optimization problem for the remaining decision horizon is
+solved, based on the most recent knowledge of the uncertainty in the
+system. Only the decision for the current time step is used, whilst
+the subsequent decisions are discarded.
+For each decision time $t=0,1,\dots,T-1$, the OLFC policy for the
+pricing problem calculates the current price using the following steps:
+\begin{enumerate}
+\item Observe the state $s$.
+\item Solve the optimization problem
+  \begin{equation}\label{eq:olfc_optimization_problem}
+    \max_{\mathbf a\in A^{T-t}}\mathbb E_W\left[
+      \sum_{\tau=t}^{T-1}\mathbf a_\tau Q(S_\tau^{\mathbf a},\mathbf
+      a_\tau,w_{\tau+1})-CS_T^{\mathbf a} \bigm\vert S_t^{\mathbf a}=s \right].
+  \end{equation}
+\item Set the price corresponding to a maximizer
+  $\mathbf a_t\in A$ above.
+\end{enumerate}
+For this article, we approximate the expectation operator with
+Monte-Carlo using \num{1000} samples, in the same way the expectation
+in the Bellman policy is computed.
+
+As was done for the CEC policy, we compare the performance of following the
+OLFC policy $\alpha^O$ with the performance of following the Bellman
+policy $\alpha^B$. With the parameters from the example system in
+Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown},
+the empirical distribution of $P(\alpha^B)-P(\alpha^O)$ is shown in
+\Cref{fig:bellman_olfc_vals}. The emprical distribution is generated
+using \num{10000} samples of $W$.
+There are two notable differences in this distribution from the
+distribution of $P(\alpha^B)-P(\alpha^C)$ shown in \Cref{fig:bellman_det_vals}.
+First, the distribution is unimodal and more concentrated around zero. Second,
+the values are an order of magnitude smaller.
+This supports the claim that the OLFC policy better approximates the
+Bellman policy.
 
 \begin{figure}[htbp]
   \centering
@@ -414,31 +430,55 @@ TODO:
     $(P(\alpha^B)-P(\alpha^O))/P(\alpha^B)$ instead?}
   \caption{This shows the distributions from \num{10000} samples of
     the profits of following the Bellman and OLFC policies.
-    TODO: write more
+    The OLFC policy generates profits an order of magnitude closer to
+    the Bellman policy than the CEC policy (\Cref{fig:bellman_det_vals}). This
+    distribution is also unimodal.
   }\label{fig:bellman_olfc_vals}
   \todo[inline]{Reference}
 \end{figure}
 
+For completeness, \Cref{tbl:paramcomparisons_olfc} includes the statistics of the relative
+difference $1-P(\alpha^O)/P(\alpha^B)$ for the same parameters
+that was used to compare the CEC and Bellman policies in \Cref{tbl:paramcomparisons}.
+The distributions of the relative difference indicate a more symmetric
+distribution around the median, with values of an order of magnitude
+smaller than in the CEC comparison.
 \begin{table}[htbp]
   \centering
   \begin{tabular}{llllcccc}
     $C$ & $\gamma$ & $q_1$ & $q_2$ & $\mathcal Q_{0.05}$
-    &Median & $\mathcal Q_{0.95}$ &$L_2$\\
+    &Median & $\mathcal Q_{0.95}$ &$L^2$\\
     \toprule
-    $0.25$ & $0.05$ & $2.0$ & $4.0$ & $-0.6$ & $0.1$ & $1.2$ & $0.6$ \\
-    $0.25$ & $0.1$ & $1.33$ & $2.67$ & $-2.5$ & $0.4$ & $4.2$ & $2.1$ \\
-    $0.5$ & $0.05$ & $2.67$ & $4.0$ & $-0.5$ & $0.1$ & $1.2$ & $0.6$ \\
-    $0.5$ & $0.1$ & $2.0$ & $2.67$ & $-2.3$ & $0.3$ & $4.6$ & $2.1$ \\
-    $1.0$ & $0.05$ & $1.33$ & $4.0$ & $-0.8$ & $0.0$ & $2.8$ & $1.1$ \\
-    $1.0$ & $0.1$ & $2.67$ & $2.67$ & $-2.2$ & $0.4$ & $5.8$ & $2.4$ \\
+    $0.25$ & $0.05$ & $2.0$ & $4.0$
+                                   & \textbf{-0.6} & \textbf{0.1} & \textbf{1.2} & \textbf{0.6} \\
+    $0.25$ & $0.1$ & $1.33$ & $2.67$
+                                   & \textbf{-2.5} & \textbf{0.4} & \textbf{4.2} & \textbf{2.1} \\
+    $0.5$ & $0.05$ & $2.67$ & $4.0$
+                                   & \textbf{-0.5} & \textbf{0.1} & \textbf{1.2} & \textbf{0.6} \\
+    $0.5$ & $0.1$ & $2.0$ & $2.67$
+                                   & \textbf{-2.3} & \textbf{0.3} & \textbf{4.6} & \textbf{2.1} \\
+    $1.0$ & $0.05$ & $1.33$ & $4.0$
+                                   & \textbf{-0.8} & \textbf{0.0} & \textbf{2.8} & \textbf{1.1} \\
+    $1.0$ & $0.1$ & $2.67$ & $2.67$
+                                   & \textbf{-2.2} & \textbf{0.4} & \textbf{5.8} & \textbf{2.4} \\
         &&&&$\times 10^{-3}$&$\times 10^{-3}$&$\times 10^{-3}$&$\times 10^{-3}$\\
     \bottomrule
   \end{tabular}
-  \caption{TODO. Note that the values are an order of magnitude
-    smaller than in the comparison between Bellman and CEC shown in \Cref{tbl:paramcomparison}}\label{tbl:paramcomparisons_olfc}
+  \caption{Statistics comparing the relative profits of $P(\alpha^O)$
+    against $P(\alpha^B)$ for six different
+    parameter combinations. Note that the values are an order of magnitude
+    smaller than in the comparison between Bellman and CEC shown in \Cref{tbl:paramcomparisons}}\label{tbl:paramcomparisons_olfc}
   \todo[inline]{reference}
 \end{table}
 
+Note that the CEC policy is a special case of the OLFC policy, where the
+expectation~\eqref{eq:olfc_optimization_problem} is approximated with~\eqref{eq:cec_optim_problem}, a zeroth-order expansion around
+the estimate $w_{t+1},\dots,w_T$.
+The OLFC policy is thus much more costly than the CEC policy, but will
+also better approximate the optimal Bellman policy. In practice, the
+decision maker can balance the cost-versus-optimality by how
+accurately they
+approximate the expectation~\eqref{eq:olfc_optimization_problem}.
 
 \biblio
 \end{document}

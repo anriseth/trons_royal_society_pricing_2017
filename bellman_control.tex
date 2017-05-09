@@ -139,7 +139,7 @@ A$. Now we can define the dimensionless value function
                                      \hat \alpha_\tau\hat Q(\hat
                                      {S_\tau^\alpha},\hat{\alpha_\tau},\hat
                                      W_{\tau+1})
-                                     - \hat C \hat{S}_{\hat{T}}^\alpha \mid \hat{S}_{\hat{t}}^\alpha =
+                                     - \hat C \hat{S}_{\hat{T}}^\alpha \big\vert \hat{S}_{\hat{t}}^\alpha =
                                      \hat s
                                      \right].
                                      \label{eq:value_function_def_nondim2}
@@ -195,8 +195,10 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
-The expectation above is approximated using Monte-Carlo simulation, and
-we chose to use piecewise linear interpolation for $I[v^K](s)$.
+The expectation above is approximated using Monte-Carlo simulation, in
+this article we use \num{1000} samples. We chose to use piecewice
+linear interpolation for $I[v^K](s)$.
+
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
 In order to investigate the optimal pricing of a specific system, we
