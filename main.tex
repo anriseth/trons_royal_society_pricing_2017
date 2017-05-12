@@ -1,16 +1,17 @@
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "main"
-%%% TeX-command-extra-options: "-shell-escape"
-%%% End:
+\documentclass{rstransa}
 
-\documentclass[a4paper,12pt]{article}
-\pdfoutput=1
-
-\usepackage{mathmacros} % My own macros
-\usepackage{authblk}
-\setcitestyle{square,numbers} % natbib
+\usepackage[l2tabu, orthodox]{nag}
+\usepackage{booktabs}
+\usepackage[group-separator={,}]{siunitx}
+\usepackage{fix-cm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[disable]{todonotes}
+\usepackage{subcaption}
+\usepackage[noabbrev]{cleveref}
 \setlength{\marginparwidth}{3.1cm} % For todonotes
+
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \pgfplotsset{compat=1.13}
 \usetikzlibrary{external}
@@ -18,68 +19,67 @@
 \tikzexternalize
 \tikzsetexternalprefix{figures/}
 \makeatletter
+
+\theoremstyle{definition}
+\newtheorem{mydef}{Definition}[section]
+
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
 \makeatother
-% \usepackage[margin=2.5cm]{geometry}
 \usepackage{breqn}
-% \usepackage{todo}
 
 \usepackage{subfiles}
 \def\biblio{\bibliographystyle{abbrvnat}\bibliography{references}}
 
+\begin{document}
 \title{A comparison of control strategies applied to a
   pricing problem in retail}
-\author{Asbj{\o}rn Nilsen Riseth\thanks{
-    This publication is based on work partially supported by the EPSRC
-    Centre For Doctoral Training in Industrially Focused Mathematical
-    Modelling (EP/L015803/1) in collaboration with a partner
-    company.\\
-    The author would like to thank his supervisors
-    J.~N.~Dewynne and C.~L.~Farmer for their valuable suggestions.}\\
-  {\footnotesize\texttt{riseth@maths.ox.ac.uk}}}
-\affil{Mathematical Institute, University
-  of Oxford, OX2 6GG.}
 
-\date{\today}
+\author{J.~N.~Dewynne$^{1}$, C.~L.~Farmer$^{1}$ and A.~N.~Riseth$^{1}$}
+\address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG.}
+\corres{Asbj{\o}rn Nilsen Riseth\\
+  \email{riseth@maths.ox.ac.uk}}
 
-\begin{document}
-\maketitle
+\subject{applied mathematics, revenue management}
+\keywords{dynamic pricing, stochastic control, approximate dynamic programming}
+
+
 \listoftodos
 
 \def\biblio{}
 \def\listoftodos{}
 
 \subfile{abstract}
-
-\vspace{1em}\noindent
-\textbf{Key words:} Revenue management, dynamic pricing, stochastic
-optimal control,
-approximate dynamic programming.
-
-% Things I think can improve the paper (and make it more precise)
-% \begin{itemize}
-% \item Only compare Bellman and CEC
-% \item Emphasise that CEC is what is done in the revenue literature
-% \item Emphasise that the models we use are the ones from literature
-%   [or maybe use the GBM model]
-
-% \end{itemize}
-
+\maketitle
 
 \subfile{introduction}
 \subfile{bellman_control}
 \subfile{control_comparison}
-%\subfile{model_uncertainty} % TODO: talk to Sam to see how to do this properly?
 \subfile{conclusion}
 
+%\dataccess{TODO: make github repository of code and csv files}
+\aucontribute{A.~N.~Riseth has done all the mathematical
+  research and numerical experiments in this article. J.~N.~Dewynne
+  and C.~L.~Farmer
+  proposed to solve the problem with the different algorithms
+  described in this article, and has contributed with valuable
+  suggestions and feedback.}
+\competing{The authors declare that they have no competing interests.}
+\funding{This publication is based on work partially supported by the EPSRC
+Centre For Doctoral Training in Industrially Focused Mathematical
+Modelling (EP/L015803/1) in collaboration with dunnhumby Limited.}
+\ack{We thank Marco Brambilla from dunnhumby for suggesting a markdown problem
+  of particular interest to retailers, which led to the work
+  in this article.}
+
 % Bibliography:
-\clearpage
-\bibliographystyle{abbrvnat}
+%\clearpage
+\bibliographystyle{rsta}
 \bibliography{references}
 
-
-%\appendix
-%\subfile{appendix_profitdiff}
-
-
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:

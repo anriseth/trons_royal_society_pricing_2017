@@ -1,9 +1,8 @@
-    using DiscreteControl
+using DiscreteControl
 using Optim
 using Distributions
-import Distributions.rand
+import Distributions: rand, mean
 using LaTeXStrings
-using Plots, StatPlots
 
 if !isdefined(:Betashift)
     type Betashift{T} <: Distributions.Distribution{Univariate,Continuous}
@@ -17,17 +16,24 @@ if !isdefined(:Betashift)
     function rand(d::Betashift, dims::Int...)
         d.shift + rand(d.rv, dims...)
     end
+
+    function mean(d::Betashift)
+        d.shift + mean(d.rv)
+    end
 end
 
-type DemandFun{T}
-    q1::T
-    q2::T
+
+if !isdefined(:DemandFun)
+    type DemandFun{T}
+        q1::T
+        q2::T
+    end
 end
 
 (d::DemandFun{T}){T}(a) = d.q1*exp(-d.q2*a)
 q = DemandFun(1.0,1.0)
 
-function main()
+function main(;bellsamples = 1000, olfcsamples = -1)
     # Paramarr
     Carr = [0.25, 0.25, 0.5, 0.5, 1.0, 1.0]
     γarr = [5e-2, 1e-1,5e-2, 1e-1,5e-2, 1e-1]
@@ -42,13 +48,13 @@ function main()
     xarr = collect(linspace(xmin,xmax,K))
     xtup = (xarr,)
     T = 3
-    bellsamples = 500 # Samples per time step
+
     numsimulations = 10000
     x0 = 1.0
 
     srand(0) # For reproducibility
 
-    function createsamples(bellvalarrs, detvalarrs)
+    function createsamples(bellvalarrs, olfcvalarrs)
         counter = 0
 
         for k = 1:length(Carr)
@@ -73,40 +79,55 @@ function main()
             # Value and policy function arrays
             v = zeros(K, T+1)
             α = zeros(K, T)
+            αolfc = copy(α)
 
             @time solvebellman!(v, α, system, xtup, ω)
 
             # Simulations
-            αcec(t,s) = min(amax,max(log(q1*(T-t)./s)/q2,1/q2-C,amin))
-
             bellman = OfflineSystemControl1D(system, x0, xarr, α)
-            deterministic = OfflineSystemControl1D(system,x0,αcec)
 
-            srand(0) # Using same underlying samples each time
+            olfc = OLFCSystem1D(system, x0, olfcsamples)
+            if olfcsamples == -1
+                @time solveolfc!(αolfc,olfc,xtup,ω';
+                                 optimizer=GradientDescent, linesearch = LineSearches.bt3!)
+            else
+                wolfc = rand(ωdist, T, olfcsamples)
+                @time solveolfc!(αolfc,olfc,xtup,wolfc;
+                                 optimizer=GradientDescent, linesearch = LineSearches.bt3!)
+            end
+
+            olfccon = OfflineSystemControl1D(system, x0, xarr, αolfc)
+
+            srand(1) # start with same underlying samples each time
+
             (bellmantrajectories,
-             dettrajectories) = simulatetrajectories([bellman, deterministic],
-                                                     ωdist, x0,
-                                                     numsimulations)
+             olfctrajectories) = simulatetrajectories([bellman, olfccon],
+                                                      ωdist, x0,
+                                                      numsimulations)
 
-            bellvalarrs[:,k] = [traj.value[end] for traj in bellmantrajectories]
-            detvalarrs[:,k] = [traj.value[end] for traj in dettrajectories]
+            bellmanvals = [traj.value[end] for traj in bellmantrajectories]
+            olfcvals = [traj.value[end] for traj in olfctrajectories]
+
+
+            bellvalarrs[:,k] = bellmanvals
+            olfcvalarrs[:,k] = olfcvals
 
         end
     end
 
-    function printtable(bellvalarrs, detvalarrs)
+    function printtable(bellvalarrs, olfcvalarrs)
         numentries = size(bellvalarrs,2)
-        diffarr = 1.0 - detvalarrs./bellvalarrs
-        diffnorms = [norm((detvalarrs-bellvalarrs)[:,k],2)/norm(bellvalarrs[:,k],2)
+        diffarr = 1.0 - olfcvalarrs./bellvalarrs
+        diffnorms = [norm((olfcvalarrs-bellvalarrs)[:,k],2)/norm(bellvalarrs[:,k],2)
                      for k = 1:numentries]
         vals = [quantile(diffarr[:,k], q)
                 for q = [0.05,0.5,0.95], k = 1:numentries]
-        vals = round(100*[vals; diffnorms'], 1) # Show % to nearest 1/1000
+        vals = round(1000*[vals; diffnorms'], 1) # Show % to nearest 1/10000
 
         str = """
 \\begin{tabular}{llllcccc}
   \$C\$ & \$\\gamma\$ & \$q_1\$ & \$q_2\$ & \$\\mathcal Q_{0.05}\$
-  &Median & \$\\mathcal Q_{0.95}\$ &\$L_2\$\\\\
+  &Median & \$\\mathcal Q_{0.95}\$ &\$L^2\$\\\\
   \\toprule
 """
         for k = 1:numentries
@@ -116,22 +137,24 @@ function main()
                 valstrs * "\\\\\n"
         end
         str *= """
-  &&&&\$\\times 10^{-2}\$&\$\\times 10^{-2}\$&\$\\times 10^{-2}\$&\$\\times 10^{-2}\$\\\\
+  &&&&\$\\times 10^{-3}\$&\$\\times 10^{-3}\$&\$\\times 10^{-3}\$&\$\\times 10^{-3}\$\\\\
   \\bottomrule
 \\end{tabular}
 """
     end
 
     bellvalarrs = Array{Float64,2}(numsimulations, length(Carr))
-    detvalarrs = Array{Float64,2}(numsimulations, length(Carr))
-    createsamples(bellvalarrs, detvalarrs)
-    tblstr = printtable(bellvalarrs, detvalarrs)
+    olfcvalarrs = Array{Float64,2}(numsimulations, length(Carr))
+    createsamples(bellvalarrs, olfcvalarrs)
+    tblstr = printtable(bellvalarrs, olfcvalarrs)
 
-    return bellvalarrs, detvalarrs, tblstr
+    return bellvalarrs, olfcvalarrs, tblstr
 end
 
-bellvalarrs, detvalarrs, tblstr = main()
+bellvalarrs, olfcvalarrs, tblstr = main()
 
-function plothistos(bellvalarrs, detvalarrs)
+print(tblstr)
+
+function plothistos(bellvalarrs, olfcvalarrs)
     Base.error("Not finished")
 end

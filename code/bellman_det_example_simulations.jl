@@ -21,14 +21,8 @@ end
 
 srand(0) # For reproducibility
 
-#Q(a) = 1.-a
 q2 = 3; q1 = exp(q2*2/3)/3 # Gives same 0/1st order properties for Q as d(a)=1-a at a = 2/3
 Q(a) = q1*exp(-q2*a)
-#Qhat(a) = Q1*exp(-Q2*a)
-#L(a) = (1+exp(-10a))*(1+exp(10(a-1))) # Discourage extreme pricing values
-#Q(a) = Qhat(a)/L(a)
-#q1 = 1.1; q2 = 2
-#Q(a) = q1*exp(-q2*a)
 
 f(t,x,a,w) = x-min(Q(a)*w,x)
 U(t,x,a,w) = a*min(Q(a)*w,x)
