@@ -27,7 +27,7 @@ cover a much larger range of parameters in the problem, to show that
 the same results hold for a wide range of retail products.
 
 \subsection{The Certainty Equivalent Control policy}
-A popular, tractable, algorithm for solving stochastic optimal control
+An often-used, tractable, algorithm for solving stochastic optimal control
 problems is the Certainty Equivalent Control (CEC) policy, as it is
 named in~\cite{bertsekas2005dynamic}.
 It is also known as (deterministic) Model
@@ -367,16 +367,15 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
 \end{table}
 
 \subsection{Open-Loop Feedback Control policy}
-We finish this article with a quick presentation of the Open-Loop
+We finish this article with the example of the Open-Loop
 Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
-also known as (stochastic) Model
+also known as Stochastic Model
 Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
-similar to the CEC policy, which better takes into account our
-knowledge of the uncertainty in the system.
+similar to the CEC policy, which better takes into account our uncertainty in the system.
 %In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
 The OLFC policy works as follows: At each decision time, a stochastic
 optimization problem for the remaining decision horizon is
-solved, based on the most recent knowledge of the uncertainty in the
+solved, based on the most recent quantification of the uncertainty in the
 system. Only the decision for the current time step is used, whilst
 the subsequent decisions are discarded.
 For each decision time $t=0,1,\dots,T-1$, the OLFC policy for the

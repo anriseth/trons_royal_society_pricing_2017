@@ -10,7 +10,7 @@ decades, data- and model-driven approaches have become increasingly
 popular in order to advise on and automate the process for companies.
 There are several success stories from early adopters, for example in
 the airline industry.
-American Airlines estimated in 1992 that the introduction of yield
+American Airlines estimated in 1992 that the introduction of revenue
 management software had, over the preceding three
 years, contributed \$500 million of additional revenue per year,
 and would continue to do so in the future~\cite{smith1992yield}.
@@ -24,8 +24,8 @@ In addition unsold items add up to thousands of tonnes of waste per year, so
 improving the control of demand for products is advantageous
 for both retailers and the environment.
 
-We are interested in strategies to dynamically set the prices of
-products, and thus
+We are interested in strategies to  set the prices of
+products dynamically, and thus
 formulate the problem in a stochastic optimal control framework.
 Let $t$ denote equally spaced, discrete time points in $\{0,1,\dots,T\}$.
 Product stock levels $S={(S_t)}_{t=0}^T$ are controlled by a pricing process
@@ -34,9 +34,9 @@ $W={(W_t)}_{t=1}^T$:
 \begin{equation}
   S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
 \end{equation}
-The goal is to find $\alpha$ which maximises the expected revenues $U_t$ over a
+The goal is to find an $\alpha$ which maximises the expected revenues $U_t$ over a
 given time horizon $T$, and
-minimises the cost $\overline{U}$ of unsold stock:
+minimises the expected cost $\overline{U}$ of unsold stock:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
     - \overline{U}(S_T)\right].
@@ -85,8 +85,8 @@ normally separated, and constraints are more easily updated at each
 decision point.
 
 There are several proposed approximations in the
-literature, although for revenue management applications, most of the domain knowledge is kept within
-respective commercial organisations.
+literature, although for revenue management applications, much of the domain knowledge is kept within
+respective commercial organisations~\cite[Ch.~9]{talluri2006theory}.
 Many of the suboptimal pricing algorithms are justified on practical
 grounds~\cite{aviv2012dynamic}, or
 from asymptotic results~\cite{gallego1994optimal}.
@@ -94,7 +94,7 @@ The aim of this article is to highlight the implications suboptimal policy
 choices have on the distribution of the relevant objective, and not
 only marginalised quantities such as the expected value.
 In particular, we consider a one-product pricing problem and
-investigate the optimal Bellman policy, a popular suboptimal
+investigate the optimal Bellman policy, an often-used suboptimal
 policy known as the \emph{Certainty Equivalent Control} (CEC)
 policy, and a compromise between optimality and practicality known as the
 \emph{Open-Loop Feedback Control} policy.

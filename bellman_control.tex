@@ -16,13 +16,13 @@
 \listoftodos
 
 \section{The optimal control problem}\label{sec:bellman_optimal_control}
-The overarching goal in the article is to consider solutions to a retail
+We now consider a particular retail
 pricing problem.
 Given some initial amount of stock of a product and a future
 termination time,
 the pricing problem is to
-dynamically set the price
-of the product in order to maximise revenue and minimise the cost of
+set the price
+of the product dynamically, in order to maximise the revenue and minimise the cost of
 unsold stock at the termination time.
 In this section, we define the optimal control pricing problem,
 describe the optimality conditions given by the Bellman equation and
@@ -31,7 +31,8 @@ solve it numerically for an example system.
 Consider a system over discrete, equispaced time points
 $t=0,1,\dots,T$, with state
 $S_t$ and pricing process $\alpha$ such that the $\alpha_t$ that take values in a closed
-interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]\subset\mathbb R_+$.\footnote{In
+interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]$ of the positive real
+line $\mathbb R_+$.\footnote{In
   practice, policy values may have additional constraints that depend
   on the current state,
   in which case we say that $\alpha_t$ must take values
@@ -47,7 +48,7 @@ system, and are
 modelled in a multiplicative fashion by a stochastic process
 $W=(W_1,\dots,W_T)$ taking non-negative values. See, for
 example,~\cite[Ch.~7]{talluri2006theory} for a discussion of
-popular demand models and the modelling of uncertainty.
+demand models and the modelling of uncertainty.
 
 For a given pricing process $\alpha$, the
 system evolves from some initial state $S_0>0$, according to the
@@ -81,11 +82,12 @@ by the \emph{value function} $v$, such that
 This leads us to the following mathematical formulation of the pricing
 problem:
 \begin{mydef}
-  Given an initial stock $S_0>0$ and a cost per unit unsold stock $C\geq
-  0$, the \emph{pricing problem} is to find a pricing process $\alpha\in\mathcal A$ such that
+  Given an initial amount of stock $S_0>0$ and a cost per unit unsold stock $C\geq
+  0$, the \emph{pricing problem} is to find a pricing process $\alpha^*\in\mathcal A$ such that
   \begin{equation}
-    J(0,S_0,\alpha) = v(0,S_0).
+    J(0,S_0,\alpha^*) = v(0,S_0),
   \end{equation}
+  that is, $\alpha^* = \argmax_{\alpha\in\mathcal A}J(0,S_0,\alpha)$.
 \end{mydef}
 We choose to maximise the expected profit over the period, which
 assumes a risk-neutral decision-maker. However, it is still important
