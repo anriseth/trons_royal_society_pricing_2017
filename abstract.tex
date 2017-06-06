@@ -2,39 +2,28 @@
 
 \begin{document}
 \begin{abstract}
-  In this article, we consider a retailer who wishes to
-  dynamically price a product affected by randomness in the demand, in order to
-  maximise their profits.
-  The pricing problem is formulated as a stochastic optimal
-  control problem, where the optimal policy can be found by solving
-  the associated Bellman equation.
-  The aim is to investigate Approximate Dynamic Programming
-  algorithms for this problem.
-  For realistic retail applications, modelling the problem and solving
-  it to optimality is intractable.
-  Thus practitioners make simplifying assumptions and
-  design suboptimal policies,
-  but thorough
-  investigation
-  of the relative performance of these policies is lacking.
-  A challenge for Approximate Dynamic Programming is to better understand
-  such assumptions, to which this article contributes.
-  We simulate the performance of two algorithms on a
-  one-product system.
-  It turns out that for more than \emph{half of the realisations} of
-  the random disturbance,
-  the popular, but approximate, Certainty
-  Equivalent Control policy
-  yields larger profits than an optimal, expected-value maximising
-  policy.
-  However, this approximate algorithm performs significantly worse in
-  the remaining realisations, implying a more risk-seeking attitude by the
-  retailer.
-  Another policy, Open-Loop Feedback Control, is shown to work
-  well as a compromise between the Certainty Equivalent Control
-  and the optimal policy.
-  % However, this approximate algorithm is less robust to model misspecification, and thus
-  % requires that the retailer spends more resources on state estimation.
+  When sales of a product are affected by randomness in demand,
+  retailers use dynamic pricing strategies to maximise their
+  profits. In this article the pricing problem is formulated as a
+  stochastic optimal control problem, where the optimal policy can be
+  found by solving the associated Bellman equation. The aim is to
+  investigate Approximate Dynamic Programming algorithms for this
+  problem. For realistic retail applications, modelling the problem
+  and solving it to optimality is intractable. Thus practitioners make
+  simplifying assumptions and design suboptimal policies, but thorough
+  investigation of the relative performance of these policies is
+  lacking.
+
+  To better understand such assumptions, we simulate the performance
+  of two algorithms on a one-product system. It is found that for more
+  than \emph{half of the realisations} of the random disturbance, the
+  often-used, but approximate, Certainty Equivalent Control
+  policy yields larger profits than an optimal, maximum expected-value
+  policy. However, this approximate algorithm performs significantly
+  worse in the remaining realisations, implying a more risk-seeking
+  attitude by the retailer. Another policy, Open-Loop Feedback
+  Control, is shown to work well as a compromise between the Certainty
+  Equivalent Control and the optimal policy.
 \end{abstract}
 \end{document}
 
