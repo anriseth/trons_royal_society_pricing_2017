@@ -5,7 +5,7 @@
 %%%
 
 \NeedsTeXFormat{LaTeX2e}[2014/16/12]
-\ProvidesClass{rstransa}
+\ProvidesClass{rsproca_new}
               [2014/16/12 v1.0
  Standard LaTeX document class]
 
@@ -403,13 +403,13 @@
 \clearpage\lastpage@putlabel}%
 
 \def\jname#1{\gdef\@jname{#1}}
-\def\@jname{rsta}
+\def\@jname{rspa}
 
 \sodef\stitletrack{}{0.11em}{0.5em}{\z@}
 
 \def\mytrack#1{\kern1pt\fontsize{8}{10}\selectfont\stitletrack{#1}}
 \def\supertitle#1{\def\@supertitle{{\noindent {{#1}}}}\global\@supertitle@providedtrue}
-\def\Journal#1{\gdef\@Journal{#1}}\Journal{Phil. Trans. R. Soc. A\ }
+\def\Journal#1{\gdef\@Journal{#1}}\Journal{Proc R Soc A\ }
 \def\Doi#1{\gdef\@doi{10.1098/\@jname.#1}}\Doi{}
 \def\Year#1{\gdef\@Year{#1}}\Year{}
 \def\Vol#1{\gdef\@Vol{#1}}\Vol{}
@@ -1302,7 +1302,7 @@ at http://dx.doi.org/\@doi\ or via http://\@jname.royalsocietypublishing.org.\pa
 \vspace*{-5.5pc}
 \noindent\begin{minipage}[!t]{50mm}
 \hskip-1pc
-\vbox to 242mm{{\vskip68pt\includegraphics[scale=0.58]{PHILOSOPHICAL_TRANSACTIONS_A_CMYK}\vskip21pt
+\vbox to 242mm{{\vskip68pt\includegraphics[scale=0.58]{PROCEEDINGS_A_RGB}\vskip21pt
 {\fontfamily{\sfdefault}\fontseries{m}\fontshape{n}\fontsize{13.5}{15}\selectfont\raggedright 
 \textcolor{jobcolor}{\@jname.royalsocietypublishing.org}}\vskip10pt
 \if@citearticle@provided
