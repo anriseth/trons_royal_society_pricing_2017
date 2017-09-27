@@ -23,6 +23,7 @@
 \tikzexternalize
 \tikzsetexternalprefix{figures/}
 \usepgfplotslibrary{statistics}
+\graphicspath{{./img/}}
 
 \makeatletter
 
@@ -30,8 +31,9 @@
 \newtheorem{mydef}{Definition}[section]
 
 \renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+
+\def\input@path{{./img/},{./}}
 \makeatother
-\usepackage{breqn}
 
 %\usepackage{subfiles}
 %\def\biblio{\bibliographystyle{RS}\bibliography{references}}
@@ -448,7 +450,7 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
         \addlegendentry{$t=2$};
       \end{axis}
     \end{tikzpicture}
-    % \includegraphics[width=\textwidth]{./img/markdown_value_bellman}
+    % \includegraphics[width=\textwidth]{markdown_value_bellman}
   \end{subfigure}%
   \begin{subfigure}[b]{0.5\textwidth}
     \begin{tikzpicture}[scale=0.8]
@@ -469,7 +471,7 @@ pricing policy is shown in \Cref{fig:markdown_bellman}.
         \addlegendentry{$t=2$};
       \end{axis}
     \end{tikzpicture}
-    % \includegraphics[width=\textwidth]{./img/markdown_controls_bellman}
+    % \includegraphics[width=\textwidth]{markdown_controls_bellman}
   \end{subfigure}
   \caption{The value function and corresponding
     optimal control function for the pricing problem.
@@ -554,7 +556,6 @@ simulating the system \num{10000} times.\footnote{Preliminary
 %%%%%%%%%%%%%%%%%
 \section{Suboptimal
   approximations}\label{sec:suboptimal_approximations}
-\todo[inline]{Update introduction here}
 In this section we will look at two suboptimal policies among the class of
 algorithms that calculate decisions on-line.
 Whenever a decision must be made, these methods simulate the future
@@ -850,7 +851,7 @@ The black region at the bottom right of the plots corresponds to popular,
 low-elasticity products where both policies choose to sell at the
 maximum price $a=1$.
 \begin{figure}[htbp]
-  \includegraphics[width=\textwidth]{./img/profit_diff_heatmaps}
+  \includegraphics[width=\textwidth]{profit_diff_heatmaps}
   \caption{The relative $L^2$ difference
     $\|P(\alpha^B)-P(\alpha^C)\|_2/\|P(\alpha^B)\|_2$ representing
     how different the CEC policy is from the optimal Bellman policy.
