@@ -13,7 +13,7 @@
 %\setlength{\marginparwidth}{3.1cm} % For todonotes
 
 \usepackage{lineno}
-\linenumbers
+%\linenumbers
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 
@@ -120,13 +120,14 @@ $W={(W_t)}_{t=1}^T$:
 \begin{equation}
   S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
 \end{equation}
-The goal is to find an $\alpha$ which maximises the expected revenues $U_t$ over a
-given time horizon $T$, and
-minimises the expected cost $\overline{U}$ of unsold stock:
+The goal is to find an $\alpha$ which maximises the expected net revenues over a
+given time horizon $T$:
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
-    - \overline{U}(S_T)\right].
+    - \overline{U}(S_T)\right],
 \end{equation}
+where $U_t$ denotes the revenue at time $t$, and $\overline{U}$ the
+cost of unsold stock.
 We use the subscript on $\mathbb E_W$ to emphasise that the
 expectation is taken with respect to the random variables $W_t$.
 The solution to this problem can be found by solving the associated
@@ -148,7 +149,7 @@ solve the Bellman equation efficiently can be much more complicated
 than other methods.
 Finally, the dimensions of the state, policy and exogenous
 information spaces, can quickly make a numerical solution to the Bellman
-equation intractable. An explosion of dimensions can happen very
+equation intractable. An increase in the dimension can happen very
 quickly, even for one-product problems.
 In~\cite{bertsimas2001dynamic}, the authors model a simple
 one-product demand function with uncertainty in the function
@@ -176,7 +177,7 @@ respective commercial organisations~\cite[Ch.~9]{talluri2006theory}.
 Many of the suboptimal pricing algorithms are justified on practical
 grounds~\cite{aviv2012dynamic}, or
 from asymptotic results~\cite{gallego1994optimal}.
-The aim of this article is to highlight the implications suboptimal policy
+The aim of this article is to highlight the implications that suboptimal policy
 choices have on the distribution of the relevant objective, and not
 only marginalised quantities such as the expected value.
 In particular, we consider a one-product pricing problem and
@@ -646,9 +647,9 @@ In the case when $q(a)=q_1e^{-q_2a}$, the policy function is
 \end{equation}
 We start with investigating policy functions for a
 single combination of the  system
-parameters, and then consider make a
+parameters, and then provide a
 comparison between the Bellman policy and CEC policy for a larger
-range of parameters Subsection~\ref{sec:suboptimal_approximations}\ref{sec:parameter_comparison}.
+range of parameters in Subsection~\ref{sec:suboptimal_approximations}\ref{sec:parameter_comparison}.
 
 \subsubsection{Example system}\label{sec:cec_comparison_example}
 \begin{figure}[htbp]
@@ -810,10 +811,10 @@ profits in the remaining realisations.
 In the previous sections, our numerical experiments have only shown
 results for a fixed combination of the five parameters
 termination time $T$, unsold items cost $C$, uncertainty $\gamma$, and
-demand function parameters $q_1,q_2$.
+demand function parameters: $q_1,q_2$.
 In this section we explore the differences between the Bellman policy
 and the CEC policy for a larger parameter range.
-The formula for $a^C$ in \Cref{eq:cec_policy} indicates that the
+The formula for $a^C$ in~\eqref{eq:cec_policy} indicates that the
 initial price is largely determined by the relationship between
 $Tq_1$ and $q_2$, and hence we choose to keep $T=3$ fixed whilst
 varying $q_1$ and $q_2$.
@@ -832,12 +833,11 @@ induced by the disturbance $(W_1,W_2,\dots,W_T)$, that is
   =\sqrt{\mathbb E_W\left[{( P(\alpha^B)-P(\alpha^C) )}^2 \right]}.
 \end{equation}
 
-To reduce the number of combinations of parameters, we make the
-simplification to choose only
+To reduce the number of combinations of parameters, we choose only
 four combinations of
 $(C,\gamma)\in\{0.5,1\}\times\{0.05,0.1\}$.
 Then,
-for each combination of $(C,\gamma)$,
+for each combination of\, $(C,\gamma)$,
 we can create a heatmap of the difference between the two policy
 functions by varying the parameters $q_1,q_2$.
 The relative $L^2$ distance between the CEC and Bellman policy outcomes
@@ -864,8 +864,8 @@ maximum price $a=1$.
   }\label{fig:profit_diff_heatmaps}
 \end{figure}
 
-The parameters chosen in this article's numerical experiments
-are $C=1,\gamma=0.05,q_1=e^2/3\approx2.5,q_2=3$. This point lies
+The parameters chosen in our numerical experiments
+are $C=1$, $\gamma=0.05$, $q_1=e^2/3\approx2.5$, and $q_2=3$. This point lies
 in the region where the relative difference is around $0.016$ --- see the
 white dot in the
 bottom, left subfigure in \Cref{fig:profit_diff_heatmaps}.
@@ -881,9 +881,11 @@ more than 50\% of the time for all the parameter
 combinations considered in this article.
 We can also see from the table that the implicit risk-seeking attitude
 of the CEC policy increases with
-the relative $L^2$ distance: The frequency at which the CEC policy
-outperforms Bellman increases, at the expense of a larger
-underperformance in the remaining realisations.
+the relative $L^2$ distance, as its profit distribution widens compared to
+the Bellman policy.
+In particular, the frequency at which the CEC policy
+outperforms the Bellman policy increases, at the expense of a larger
+underperformance, or tail loss, in the remaining realisations.
 The values in \Cref{tbl:paramcomparisons} were approximated using \num{10000} samples
 from $W$, and their corresponding parameter combinations are shown as
 grey dots in \Cref{fig:profit_diff_heatmaps}.
@@ -917,7 +919,7 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
 \end{table}
 
 \subsection{Open-Loop Feedback Control policy}
-We finish this article with the example of the Open-Loop
+We conclude this article with the example of the Open-Loop
 Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
 also known as Stochastic Model
 Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
@@ -942,7 +944,7 @@ pricing problem calculates the current price using the following steps:
   $\mathbf a_t\in A$ above.
 \end{enumerate}
 For this article, we approximate the expectation operator with
-Monte-Carlo using \num{1000} samples, in the same way the expectation
+Monte-Carlo using \num{1000} samples, in the same way that the expectation
 in the Bellman policy is computed.
 
 As was done for the CEC policy, we compare the performance of following the
@@ -988,7 +990,7 @@ Bellman policy.
 
 For completeness, \Cref{tbl:paramcomparisons_olfc} includes the statistics of the relative
 difference $1-P(\alpha^O)/P(\alpha^B)$ for the same parameters
-that was used to compare the CEC and Bellman policies in \Cref{tbl:paramcomparisons}.
+that were used to compare the CEC and Bellman policies in \Cref{tbl:paramcomparisons}.
 The distributions of the relative difference indicate a more symmetric
 distribution around the median, with values of an order of magnitude
 smaller than in the CEC comparison.
