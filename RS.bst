@@ -664,7 +664,7 @@ FUNCTION {incollection}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
-      format.bincvolume output
+      format.bvolume output
       format.number.series output
       format.inpages output
       new.sentence
