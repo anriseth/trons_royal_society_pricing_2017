@@ -46,7 +46,7 @@
   pricing problem in retail}
 
 \author{A.~N.~Riseth$^{1}$, J.~N.~Dewynne$^{1}$, and C.~L.~Farmer$^{1}$}
-\address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG.}
+\address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG, UK.}
 \corres{Asbj{\o}rn Nilsen Riseth\\
   \email{riseth@maths.ox.ac.uk}}
 
@@ -60,14 +60,14 @@
 
 \begin{abstract}
   When sales of a product are affected by randomness in demand,
-  retailers use dynamic pricing strategies to maximise their
+  retailers can use dynamic pricing strategies to maximise their
   profits. In this article the pricing problem is formulated as a
   stochastic optimal control problem, where the optimal policy can be
   found by solving the associated Bellman equation. The aim is to
   investigate Approximate Dynamic Programming algorithms for this
   problem. For realistic retail applications, modelling the problem
   and solving it to optimality is intractable. Thus practitioners make
-  simplifying assumptions and design suboptimal policies, but thorough
+  simplifying assumptions and design suboptimal policies, but a thorough
   investigation of the relative performance of these policies is
   lacking.
 
@@ -76,8 +76,9 @@
   than \emph{half of the realisations} of the random disturbance, the
   often-used, but approximate, Certainty Equivalent Control
   policy yields larger profits than an optimal, maximum expected-value
-  policy. However, this approximate algorithm performs significantly
-  worse in the remaining realisations, implying a more risk-seeking
+  policy. This approximate algorithm, however, performs significantly
+  worse in the remaining realisations, which colloquially can be
+  interpreted as a more risk-seeking
   attitude by the retailer. Another policy, Open-Loop Feedback
   Control, is shown to work well as a compromise between the Certainty
   Equivalent Control and the optimal policy.
@@ -116,12 +117,12 @@ formulate the problem in a stochastic optimal control framework.
 Let $t$ denote equally spaced, discrete time points in $\{0,1,\dots,T\}$.
 Product stock levels $S={(S_t)}_{t=0}^T$ are controlled by a pricing process
 $\alpha={(\alpha_t)}_{t=0}^{T-1}$, and evolve according to a transition function $f$ with random disturbance
-$W={(W_t)}_{t=1}^T$:
+$W={(W_t)}_{t=1}^T$,
 \begin{equation}
   S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
 \end{equation}
 The goal is to find an $\alpha$ which maximises the expected net revenues over a
-given time horizon $T$:
+given time horizon $T$,
 \begin{equation}
   \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
     - \overline{U}(S_T)\right],
@@ -131,7 +132,7 @@ cost of unsold stock.
 We use the subscript on $\mathbb E_W$ to emphasise that the
 expectation is taken with respect to the random variables $W_t$.
 The solution to this problem can be found by solving the associated
-Bellman equation.
+Bellman equation, defined in~\eqref{eq:dynamic_programming_discrete}.
 
 In practical applications in retail and other domains, it is almost always
 intractable to solve the control problem to optimality~\cite{farmer2017uncertainty}.
@@ -158,7 +159,8 @@ solution to the problem.
 Much of the focus in the research community has therefore been on
 developing tractable algorithms with comparable average performance to the
 optimal policies, see for
-example~\cite{powell2011approximate} or~\cite{bertsekas2012dynamic}.
+example~\cite{powell2011approximate} or~\cite{bertsekas2012dynamic}
+for an overview.
 One can either create explicit policy functions off-line, at the
 start of the decision process, or implicitly through an automated
 search for the best policy on-line for each decision point.
@@ -187,14 +189,15 @@ policy, and a compromise between optimality and practicality known as the
 \emph{Open-Loop Feedback Control} policy.
 Rather surprisingly, we find that, more than half the
 time, using the suboptimal CEC policy
-leads to a higher profit than using the Bellman policy. Of course, the
+leads to a higher profit than using the Bellman policy, for a wide
+range of products. Of course, the
 Bellman policy performs better on average, but
 this is due to the CEC policy generating a larger, lower tail on the
 distribution of profits than the Bellman policy.
 Heuristically, one can say that the CEC policy has a higher risk
 associated to it. We wish to emphasise that this indicates that a
 choice of approximate control policy is implicitly a statement of
-risk attitude. Thus, it should be addressed at the same level as a
+risk attitude. Thus, we propose that it should be addressed at the same level as a
 description of a decision-maker's risk attitude as expressed with
 utility functions or risk measures.
 
@@ -216,21 +219,20 @@ Finally, we conclude and propose further work in \Cref{sec:conclusion}.
 \section{The optimal control problem}\label{sec:bellman_optimal_control}
 We now consider a particular retail
 pricing problem.
-Given some initial amount of stock of a product and a future
-termination time,
+Given an initial amount of stock of a product and a future
+termination time $T$,
 the pricing problem is to
 set the price
-of the product dynamically, in order to maximise the revenue and minimise the cost of
+of the product dynamically, in order to both maximise the revenue and minimise the cost of
 unsold stock at the termination time.
 In this section, we define the optimal control pricing problem,
 describe the optimality conditions given by the Bellman equation and
 solve it numerically for an example system.
 
-Consider a system over discrete, equispaced time points
+Consider a system over discrete, equispaced, non-dimensional time points
 $t=0,1,\dots,T$, with state
 $S_t$ and pricing process $\alpha$ such that the $\alpha_t$ that take values in a closed
-interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]$ of the positive real
-line $\mathbb R_+$.\footnote{In
+interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]$ of prices.\footnote{In
   practice, policy values may have additional constraints that depend
   on the current state,
   in which case we say that $\alpha_t$ must take values
@@ -257,13 +259,15 @@ recursion
 The function $Q(s,a,w)=\min(s,q(a)w)$ denotes the unit sales over a
 period at price $a$,
 starting with stock $s$, and with exogenous influences
-characterised by $w$.
+characterised by $w$. The minimum operator is used ensure that the
+amount of product sold over the time period does not exceed the
+current stock level.
 
 The revenue accrued over period $t\to t+1$ is $\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})$.
 The cost of remaining stock at time $T$ is modelled by a cost per unit
 stock $C\geq 0$.\footnote{In some situations, unsold items at time $T$
   may be sold at some ``salvage price'', in which case we could allow
-  $C<0$.}
+  $C<0$. We generally assume $C\geq 0$ in this paper, however.}
 Let $\mathcal A$ denote the set of feasible processes that take values
 in $A$.
 Define the value of having stock $s$ at time $t\leq T$
@@ -288,7 +292,11 @@ problem:
   that is, $\alpha^* = \argmax_{\alpha\in\mathcal A}J(0,S_0,\alpha)$.
 \end{mydef}
 We choose to maximise the expected profit over the period, which
-assumes a risk-neutral decision-maker. However, it is still important
+assumes a risk-neutral decision-maker.\footnote{For characterisations of
+decision-makers and their risk attitude, see for
+example~\cite[App.~G]{bertsekas2005dynamic}.}
+It is still
+important, however,
 to understand the distribution of profits for a given pricing policy
 $\alpha$. Therefore, we simulate the distribution when
 we investigate the performance of algorithms in
@@ -337,7 +345,7 @@ A$. Now we can define the dimensionless value function
   \hat J(\hat t,\hat s,\hat \alpha)&=
                                      \mathbb E_{\hat W}\left[ \sum_{\tau=\hat t}^{\hat T-1}
                                      \hat \alpha_\tau\hat Q(\hat
-                                     {S_\tau^\alpha},\hat{\alpha_\tau},\hat
+                                     {S_\tau^\alpha},\hat{\alpha}_\tau,\hat
                                      W_{\tau+1})
                                      - \hat C \hat{S}_{\hat{T}}^\alpha \big\vert \hat{S}_{\hat{t}}^\alpha =
                                      \hat s
@@ -361,12 +369,12 @@ $\alpha_t(\omega) =
 a(t,S_t^\alpha(\omega))$.
 Then,
 an approach to finding the value function above is to use the Dynamic
-Programming principle, which states that $v$ can be defined
+Programming principle~\cite{bertsekas2005dynamic}, which states that $v$ can be defined
 recursively by
 \begin{equation}\label{eq:dynamic_programming_discrete}
   v(t,s)=\max_{a\in A}\mathbb E_{W}\left[
     aQ(s,a,W_{t+1})
-    +v(t+1,s-Q(s,a,W_{t+1}))\right].
+    +v\bigl(t+1,s-Q(s,a,W_{t+1})\bigr)\right].
 \end{equation}
 Thus, the value function is the solution to the backwards-in-time
 recursive relation~\eqref{eq:dynamic_programming_discrete} with
@@ -376,8 +384,8 @@ The recursion~\eqref{eq:dynamic_programming_discrete} is called the
 \emph{Bellman equation}, and a discussion
 of its validity can be found, for example, in~\cite{bertsekas2005dynamic}.
 Analytical solutions to Bellman equations are only available in very
-rare cases, and thus numerical approaches are normally needed to
-solve the equation.
+rare cases, and  numerical approaches are normally needed to
+approximate the solutions.
 
 We implement the following algorithm to solve the optimal control
 problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
@@ -395,9 +403,13 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
-The expectation above is approximated using Monte-Carlo simulation, in
-this article we use \num{1000} samples. We chose to use piecewise
-linear interpolation for $I[v^K](s)$.
+The expectation above is approximated using Monte--Carlo simulation,
+for which the variance of the approximation error decreases by one over the
+number of samples used~\cite{caflisch1998monte}.
+In this article we use \num{1000} samples for the approximation of the
+expectation in step~(iv)(a).
+We choose to use piecewise
+linear interpolation for $I[v^K](s)$ in step~(iv)(c).
 
 
 \subsection{Example system}\label{sec:bellman_example_markdown}
@@ -407,7 +419,8 @@ $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
 about their properties and usage in modelling demand, see~\cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
 demand functions, with price constraints $A=[0,1]$.
-In the current section, and in the plots of \Cref{fig:markdown_bellman,fig:bellman_simulation,fig:bellman_det_policy_difference,fig:bellman_det_vals},
+In the current section, and in
+\Cref{fig:markdown_bellman,fig:bellman_simulation,fig:bellman_det_policy_difference,fig:bellman_det_vals},
 we consider a particular choice of $q_1,q_2$ so that the demand
 function is given by $q(a)=\frac{1}{3}e^{2-3a}$.
 In \Cref{fig:profit_diff_heatmaps} and \Cref{tbl:paramcomparisons} a larger
@@ -421,14 +434,15 @@ $X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{A
   $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
   function on $[0,1]$, given by
   $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$.
-  The function $B(\mu,\nu)$ is the normalising factor.
+  The function $B(\mu,\nu)$ is the normalising factor, and we require
+  that $\mu,\nu>1$.
 }
 and $\mu=\nu=\frac{1}{8\gamma^2}-\frac{1}{2}$.
 To ensure that $X$ is unimodal, we require that $\gamma^2<1/12$.
 
 Set $\gamma = 5\times 10^{-2}$, $C=1$ and $T=3$.
 The numerical solution to the Bellman equation, and the corresponding optimal
-pricing policy is shown in \Cref{fig:markdown_bellman}.
+pricing policy, is shown in \Cref{fig:markdown_bellman}.
 \begin{figure}[htbp]
   \centering
   \begin{subfigure}[b]{0.5\textwidth}
@@ -485,7 +499,7 @@ Let us now investigate the behaviour of the optimal pricing policy
 $\alpha$ and
 the outcome of following this policy.
 Define a random variable $P(\alpha)$, which for each realisation
-represents the total profit,
+represents the total profit, is
 \begin{equation}
   P(\alpha) = \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1}) - CS_T^\alpha.
 \end{equation}
@@ -733,7 +747,7 @@ the distribution of the profits $P(\alpha^B)$ and $P(\alpha^C)$.
 We remind the reader that
 $P(\alpha) =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
-From the opitimality of the Bellman policy function, we should have
+From the optimality of the Bellman policy function, we should have
 that $\mathbb E_W[P(\alpha^B)]\geq \mathbb E_W[P(\alpha^C)]$.
 However, marginalising a random variable with the expectation operator
 loses a lot of information which can be of interest.
@@ -811,7 +825,7 @@ profits in the remaining realisations.
 In the previous sections, our numerical experiments have only shown
 results for a fixed combination of the five parameters
 termination time $T$, unsold items cost $C$, uncertainty $\gamma$, and
-demand function parameters: $q_1,q_2$.
+demand function parameters $q_1$ and $q_2$.
 In this section we explore the differences between the Bellman policy
 and the CEC policy for a larger parameter range.
 The formula for $a^C$ in~\eqref{eq:cec_policy} indicates that the
@@ -944,7 +958,7 @@ pricing problem calculates the current price using the following steps:
   $\mathbf a_t\in A$ above.
 \end{enumerate}
 For this article, we approximate the expectation operator with
-Monte-Carlo using \num{1000} samples, in the same way that the expectation
+Monte--Carlo using \num{1000} samples, in the same way that the expectation
 in the Bellman policy is computed.
 
 As was done for the CEC policy, we compare the performance of following the
