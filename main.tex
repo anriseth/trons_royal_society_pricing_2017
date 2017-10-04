@@ -92,7 +92,7 @@
 
 \section{Introduction}
 The process of pricing products in order to control demand and
-maximize revenues has been undertaken for centuries. In recent
+maximise revenues has been undertaken for centuries. In recent
 decades, data- and model-driven approaches have become increasingly
 popular in order to advise on and automate the process for companies.
 There are several success stories from early adopters, for example in
@@ -492,7 +492,8 @@ pricing policy, is shown in \Cref{fig:markdown_bellman}.
     optimal control function for the pricing problem.
     The regions where the value function moves from a linear to a
     nonlinear regime
-    corresponds to when the pricing policy hits the upper bound 1.
+    corresponds to when the pricing policy moves from the upper bound
+    \num{1} to less than \num{1}.
   }\label{fig:markdown_bellman}
 \end{figure}
 Let us now investigate the behaviour of the optimal pricing policy
@@ -600,7 +601,7 @@ The algorithm is particularly practical, because the optimisation
 problem is reduced to a standard deterministic problem that can
 be solved with existing, commercial or open-source solvers which
 handle very large systems.
-At each decision time, a deterministic optimization problem for the
+At each decision time, a deterministic optimisation problem for the
 remaining decision horizon is solved. Only the decision for the
 current time step is
 used, whilst the subsequent decisions are discarded.
@@ -609,18 +610,20 @@ problem calculates the current price using the following steps:
 \begin{enumerate}
 \item Observe the state $s$.
 \item Take a best estimate $w_{t+1},\dots,w_T$ of ${(W_\tau)}_{t+1}^T$.
-\item Solve the optimization problem
+\item Solve the optimisation problem
   \begin{equation}\label{eq:cec_optim_problem}
     \max_{\mathbf a\in A^{T-t}}\left\{\sum_{\tau=t}^{T-1}\mathbf
       a_\tau Q(S_\tau^{\mathbf a},\mathbf
       a_\tau,w_{\tau+1})-CS_T^{\mathbf a}\right\},
-    \quad \text{s.t.}\quad S_t^{\mathbf a}=s.
+    \quad \text{s.t.}\quad S_t^{\mathbf a}=s,
   \end{equation}
-\item Set the price corresponding to a maximizer
-  $\mathbf a_t\in A$ above.
+  where $A^{T-t}$ is the $T-t$ times Cartesian product $A\times
+  \cdots\times A$.
+\item Set the price corresponding to the element
+  $\mathbf{a}_t\in A$ of a maximiser to~\eqref{eq:cec_optim_problem}.
 \end{enumerate}
 
-For the one-product pricing problem, we can simplify the optimization
+For the one-product pricing problem, we can simplify the optimisation
 problem and in some cases obtain analytical solutions for the policy function.
 First, let us consider the expected value estimate $w_\tau=\mathbb E
 [W_\tau]=1$ for $\tau=t+1,\dots T$.
@@ -747,9 +750,11 @@ the distribution of the profits $P(\alpha^B)$ and $P(\alpha^C)$.
 We remind the reader that
 $P(\alpha) =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
-From the optimality of the Bellman policy function, we should have
-that $\mathbb E_W[P(\alpha^B)]\geq \mathbb E_W[P(\alpha^C)]$.
-However, marginalising a random variable with the expectation operator
+From the optimality of the Bellman policy function, we must have
+that $\mathbb E_W[P(\alpha^B)]\geq \mathbb
+E_W[P(\alpha^C)]$. Violations of this result can happen due to
+numerical errors in approximating $\alpha^B$ and the expectations.
+Marginalising a random variable with the expectation operator, however,
 loses a lot of information which can be of interest.
 An approximation of the distributions of $P(\alpha^B), P(\alpha^C)$
 and their difference
@@ -799,7 +804,11 @@ profits in the remaining realisations.
       xlabel=$P(\alpha^B)-P(\alpha^C)$,
       ylabel=Count,
       title={Simulations of Bellman and CEC policies},
-      ]
+      every x tick scale label/.style={font=\boldmath\large,
+        at={(xticklabel
+           cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
+      }
+     ]
       \addplot[red,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
       {./data/markdown_bellman_det_vals.csv};
       \draw[dashed] (axis cs:0,-30) -- (axis cs:0,6000);
@@ -816,6 +825,7 @@ profits in the remaining realisations.
     10^{-3}$, confirms that Bellman is better on average, as it should be.
     Importantly, however, in more than half the samples the suboptimal policy
     outperforms the Bellman policy.
+    The distribution of $P(\alpha^B)-P(\alpha^C)$ appears to be bimodal.
   }\label{fig:bellman_det_vals}
 \end{figure}
 
@@ -849,7 +859,7 @@ induced by the disturbance $(W_1,W_2,\dots,W_T)$, that is
 
 To reduce the number of combinations of parameters, we choose only
 four combinations of
-$(C,\gamma)\in\{0.5,1\}\times\{0.05,0.1\}$.
+$(C,\gamma)\in\{(0.5,0.05),(0.5,0.1),(1,0.05),(1,0.1)\}$.
 Then,
 for each combination of\, $(C,\gamma)$,
 we can create a heatmap of the difference between the two policy
@@ -862,7 +872,7 @@ the standard deviation $\gamma$ is doubled. The cost $C$ plays a large
 role, both in terms of the shape of the difference surface and its
 magnitude.
 The black region at the bottom right of the plots corresponds to popular,
-low-elasticity products where both policies choose to sell at the
+low-elasticity products where both policies suggest to sell at the
 maximum price $a=1$.
 \begin{figure}[htbp]
   \includegraphics[width=\textwidth]{profit_diff_heatmaps}
@@ -878,11 +888,12 @@ maximum price $a=1$.
   }\label{fig:profit_diff_heatmaps}
 \end{figure}
 
-The parameters chosen in our numerical experiments
-are $C=1$, $\gamma=0.05$, $q_1=e^2/3\approx2.5$, and $q_2=3$. This point lies
+The parameters used to generate \Cref{fig:bellman_det_vals}
+were $C=1$, $\gamma=0.05$, $q_1=e^2/3\approx2.5$, and
+$q_2=\nobreak3$. This corresponds to a point
 in the region where the relative difference is around $0.016$ --- see the
 white dot in the
-bottom, left subfigure in \Cref{fig:profit_diff_heatmaps}.
+bottom, left frame in \Cref{fig:profit_diff_heatmaps}.
 This difference is in the middle of that seen for all the
 combinations of parameters, so the conclusions made in the article
 can be considered as relevant for a wider range of systems.
@@ -937,10 +948,10 @@ We conclude this article with the example of the Open-Loop
 Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
 also known as Stochastic Model
 Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
-similar to the CEC policy, which better takes into account our uncertainty in the system.
+similar to the CEC policy, but which better takes into account the uncertainty in the system.
 %In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
 The OLFC policy works as follows: At each decision time, a stochastic
-optimization problem for the remaining decision horizon is
+optimisation problem for the remaining decision horizon is
 solved, based on the most recent quantification of the uncertainty in the
 system. Only the decision for the current time step is used, whilst
 the subsequent decisions are discarded.
@@ -948,14 +959,14 @@ For each decision time $t=0,1,\dots,T-1$, the OLFC policy for the
 pricing problem calculates the current price using the following steps:
 \begin{enumerate}
 \item Observe the state $s$.
-\item Solve the optimization problem
-  \begin{equation}\label{eq:olfc_optimization_problem}
+\item Solve the optimisation problem
+  \begin{equation}\label{eq:olfc_optimisation_problem}
     \max_{\mathbf a\in A^{T-t}}\mathbb E_W\left[
       \sum_{\tau=t}^{T-1}\mathbf a_\tau Q(S_\tau^{\mathbf a},\mathbf
       a_\tau,w_{\tau+1})-CS_T^{\mathbf a} \bigm\vert S_t^{\mathbf a}=s \right].
   \end{equation}
-\item Set the price corresponding to a maximizer
-  $\mathbf a_t\in A$ above.
+\item Set the price corresponding to the element
+  $\mathbf{a}_t\in A$ of a maximiser to~\eqref{eq:olfc_optimisation_problem}.
 \end{enumerate}
 For this article, we approximate the expectation operator with
 Monte--Carlo using \num{1000} samples, in the same way that the expectation
@@ -970,7 +981,7 @@ the empirical distribution of $P(\alpha^B)-P(\alpha^O)$ is shown in
 using \num{10000} samples of $W$.
 There are two notable differences in this distribution from the
 distribution of $P(\alpha^B)-P(\alpha^C)$ shown in \Cref{fig:bellman_det_vals}.
-First, the distribution is unimodal and more concentrated around zero. Second,
+First, the distribution appears to be unimodal and more concentrated around zero. Second,
 the values are an order of magnitude smaller.
 This supports the claim that the OLFC policy better approximates the
 Bellman policy.
@@ -982,6 +993,10 @@ Bellman policy.
       xlabel=$P(\alpha^B)-P(\alpha^O)$,
       ylabel=Count,
       title={Simulations of Bellman and OLFC policies},
+      every x tick scale label/.style={font=\boldmath\large,
+        at={(xticklabel
+           cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
+      }
       ]
       \addplot[red,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
       {./data/markdown_bellman_olfc_vals_1000.csv};
@@ -997,7 +1012,7 @@ Bellman policy.
     the profits of following the Bellman and OLFC policies.
     The OLFC policy generates profits an order of magnitude closer to
     the Bellman policy than the CEC policy (\Cref{fig:bellman_det_vals}). This
-    distribution is also unimodal.
+    distribution appears to be unimodal.
   }\label{fig:bellman_olfc_vals}
   \todo[inline]{Reference}
 \end{figure}
@@ -1038,13 +1053,13 @@ smaller than in the CEC comparison.
 \end{table}
 
 Note that the CEC policy is a special case of the OLFC policy, where the
-expectation~\eqref{eq:olfc_optimization_problem} is approximated with~\eqref{eq:cec_optim_problem}, a zeroth-order expansion around
+expectation~\eqref{eq:olfc_optimisation_problem} is approximated with~\eqref{eq:cec_optim_problem}, a zeroth-order expansion around
 the estimate $w_{t+1},\dots,w_T$.
 The OLFC policy is thus much more costly than the CEC policy, but will
 also better approximate the optimal Bellman policy. In practice, the
 decision maker can balance the cost-versus-optimality by how
 accurately they
-approximate the expectation~\eqref{eq:olfc_optimization_problem}.
+approximate the expectation~\eqref{eq:olfc_optimisation_problem}.
 
 %%%%%%
 % Conclusion
@@ -1059,17 +1074,18 @@ optimal policy.
 Pricing problems are often formulated as an expected value
 maximisation, but different algorithms may induce different
 distributions of the profits.
-So even though the expected values of suboptimal policies are not better
-than the optimal policy, they may have a higher profit for some
+Even though the \emph{expected values} of suboptimal policies are not better
+than the optimal policy, they may have a higher profit for many
 realisations of the underlying probability distribution.
 We found in \Cref{sec:suboptimal_approximations} that there are a
 large number of
 reasonable system parameters for which
 the suboptimal Certainty Equivalent Control policy resulted in a higher profit
 than the optimal policy in more than half of the realisations.
-However, in the remaining realisations, the CEC policy resulted in
+In the remaining realisations, however, the CEC policy resulted in
 much smaller profits. We interpret these results as an indication that
-the suboptimal policy is more risk-seeking than the optimal policy.
+the suboptimal policy is more risk-seeking than the optimal policy, in
+a colloquial sense of the term.
 The results in this article underscore the importance of looking at
 the impact of
 different suboptimal algorithms have on the distribution of
