@@ -114,23 +114,23 @@ for both retailers and the environment.
 We are interested in strategies to  set the prices of
 products dynamically, and thus
 formulate the problem in a stochastic optimal control framework.
-Let $t$ denote equally spaced, discrete time points in $\{0,1,\dots,T\}$.
-Product stock levels $S={(S_t)}_{t=0}^T$ are controlled by a pricing process
-$\alpha={(\alpha_t)}_{t=0}^{T-1}$, and evolve according to a transition function $f$ with random disturbance
-$W={(W_t)}_{t=1}^T$,
+Let $t$ denote equally spaced, discrete, dimensionless time points in $\{0,1,\dots,T\}$.
+Product stock levels $\hat{S}={(\hat{S}_t)}_{t=0}^T$ are controlled by a pricing process
+$\hat{\alpha}={(\hat{\alpha}_t)}_{t=0}^{T-1}$, and evolve according to a transition function $\hat{f}$ with random disturbance
+$\hat{W}={(\hat{W}_t)}_{t=1}^T$,
 \begin{equation}
-  S_{t+1}=f(t,S_t,\alpha_t,W_{t+1}).
+  \hat{S}_{t+1}=\hat{f}(t,\hat{S}_t,\hat{\alpha}_t,\hat{W}_{t+1}).
 \end{equation}
-The goal is to find an $\alpha$ which maximises the expected net revenues over a
+The goal is to find an $\hat{\alpha}$ which maximises the expected net revenues over a
 given time horizon $T$,
 \begin{equation}
-  \max_{\alpha}\mathbb E_W\left[ \sum_{t=0}^TU_t(S_t,\alpha_t,W_{t+1})
-    - \overline{U}(S_T)\right],
+  \max_{\hat{\alpha}}\mathbb E_{\hat{W}}\left[ \sum_{t=0}^T\hat{U}_t(\hat{S}_t,\hat{\alpha}_t,\hat{W}_{t+1})
+    - \hat{\overline{U}}(\hat{S}_T)\right],
 \end{equation}
-where $U_t$ denotes the revenue at time $t$, and $\overline{U}$ the
+where $\hat{U}_t$ denotes the revenue at time $t$, and $\hat{\overline{U}}$ the
 cost of unsold stock.
-We use the subscript on $\mathbb E_W$ to emphasise that the
-expectation is taken with respect to the random variables $W_t$.
+We use the subscript on $\mathbb{E}_{\hat{W}}$ to emphasise that the
+expectation is taken with respect to the random variables $\hat{W}_t$.
 The solution to this problem can be found by solving the associated
 Bellman equation, defined in~\eqref{eq:dynamic_programming_discrete}.
 
@@ -229,76 +229,76 @@ In this section, we define the optimal control pricing problem,
 describe the optimality conditions given by the Bellman equation and
 solve it numerically for an example system.
 
-Consider a system over discrete, equispaced, non-dimensional time points
+Consider a system over discrete, equispaced, dimensionless time points
 $t=0,1,\dots,T$, with state
-$S_t$ and pricing process $\alpha$ such that the $\alpha_t$ that take values in a closed
-interval $A=[a_{\mathrm{min}},a_{\mathrm{max}}]$ of prices.\footnote{In
+$\hat{S}_t$ and pricing process $\hat{\alpha}$ such that the $\hat{\alpha}_t$ that take values in a closed
+interval $\hat{A}=\nobreak[\hat{a}_{\mathrm{min}},\hat{a}_{\mathrm{max}}]$ of prices.\footnote{In
   practice, policy values may have additional constraints that depend
   on the current state,
-  in which case we say that $\alpha_t$ must take values
-  in a set $A(S_t)$.
+  in which case we say that $\hat{\alpha}_t$ must take values
+  in a set $\hat{A}(\hat{S}_t)$.
 }
-The state $S_t$ is the stock of a product at time $t$, and
-$\alpha_t$ the price for the product in the time period from $t$ to
+The state $\hat{S}_t$ is the stock of a product at time $t$, and
+$\hat{\alpha}_t$ the price for the product in the time period from $t$ to
 $t+1$. We model the amount of product sold over each time period according
 to a forecast demand
-function $q:A\to\mathbb R_+$, which is bounded, continuous and decreasing.
+function $\hat{q}:\hat{A}\to\mathbb R_+$, which is bounded, continuous and decreasing.
 Exogenous influences on demand are considered as randomness in the
 system, and are
-modelled in a multiplicative fashion by a stochastic process
+modelled in a multiplicative and dimensionless fashion by a stochastic process
 $W=(W_1,\dots,W_T)$ taking non-negative values. See, for
 example,~\cite[Ch.~7]{talluri2006theory} for a discussion of
 demand models and the modelling of uncertainty.
 
-For a given pricing process $\alpha$, the
-system evolves from some initial state $S_0>0$, according to the
+For a given pricing process $\hat{\alpha}$, the
+system evolves from some initial state $\hat{S}_0>0$, according to the
 recursion
 \begin{equation}\label{eq:stock_dynamics}
-  S_{t+1}^\alpha=S_t^\alpha-\min(S_t^\alpha,q(\alpha_t)W_{t+1}),\qquad t=0,\dots,T-1.
+  \hat{S}_{t+1}^{\hat{\alpha}}=\hat{S}_t^{\hat{\alpha}}-\min(\hat{S}_t^{\hat{\alpha}},\hat{q}(\hat{\alpha}_t)W_{t+1}),\qquad t=0,\dots,T-1.
 \end{equation}
-The function $Q(s,a,w)=\min(s,q(a)w)$ denotes the unit sales over a
-period at price $a$,
-starting with stock $s$, and with exogenous influences
+The function $\hat{Q}(\hat{s},\hat{a},w)=\min(\hat{s},\hat{q}(\hat{a})w)$ denotes the unit sales over a
+period at price $\hat{a}$,
+starting with stock $\hat{s}$, and with exogenous influences
 characterised by $w$. The minimum operator is used ensure that the
 amount of product sold over the time period does not exceed the
 current stock level.
 
-The revenue accrued over period $t\to t+1$ is $\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})$.
+The revenue accrued over period $t\to t+1$ is $\hat{\alpha}_t\hat{Q}(\hat{S}_t^{\hat{\alpha}},\hat{\alpha}_t,W_{t+1})$.
 The cost of remaining stock at time $T$ is modelled by a cost per unit
-stock $C\geq 0$.\footnote{In some situations, unsold items at time $T$
+stock $\hat{C}\geq 0$.\footnote{In some situations, unsold items at time $T$
   may be sold at some ``salvage price'', in which case we could allow
-  $C<0$. We generally assume $C\geq 0$ in this paper, however.}
-Let $\mathcal A$ denote the set of feasible processes that take values
-in $A$.
-Define the value of having stock $s$ at time $t\leq T$
-by the \emph{value function} $v$, such that
+  $\hat{C}<0$. We assume $\hat{C}\geq 0$ in this paper.}
+Let $\hat{\mathcal{A}}$ denote the set of feasible processes $\hat{\alpha}$ that take values
+in $\hat{A}$.
+Define the value of having stock $\hat{s}$ at time $t\leq T$
+by the value function $\hat{v}$, such that
 \begin{align}\label{eq:value_function_def}
-  v(t,s)&=\max_{\alpha\in\mathcal A} J(t,s,\alpha),\quad\text{where}\\
-  J(t,s,\alpha)&=
-                 \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
-                 \alpha_\tau Q(S_\tau^\alpha,\alpha_\tau,W_{\tau+1})
-                 - CS_T^\alpha \mid S_t^\alpha = s
-                 \right].
-                 \label{eq:value_function_def2}
+  \hat{v}(t,\hat{s})&=\max_{\hat{\alpha}\in\hat{\mathcal{A}}} \hat{J}(t,\hat{s},\hat{\alpha}),\quad\text{where}\\
+  \hat{J}(t,\hat{s},\hat{\alpha})&=
+                                   \mathbb E_{W}\left[ \sum_{\tau=t}^{T-1}
+                                   \hat{\alpha}_\tau \hat{Q}(\hat{S}_\tau^{\hat{\alpha}},\hat{\alpha}_\tau,W_{\tau+1})
+                                   - \hat{C}\hat{S}_T^{\hat{\alpha}} \mid \hat{S}_t^{\hat{\alpha}} = \hat{s}
+                                   \right].
+                                   \label{eq:value_function_def2}
 \end{align}
 This leads us to the following mathematical formulation of the pricing
 problem:
 \begin{mydef}
-  Given an initial amount of stock $S_0>0$ and a cost per unit unsold stock $C\geq
-  0$, the \emph{pricing problem} is to find a pricing process $\alpha^*\in\mathcal A$ such that
+  Given an initial amount of stock $\hat{S}_0>0$ and a cost per unit unsold stock $\hat{C}\geq
+  0$, the \emph{pricing problem} is to find a pricing process $\hat{\alpha}^*\in\hat{\mathcal{A}}$ such that
   \begin{equation}
-    J(0,S_0,\alpha^*) = v(0,S_0),
+    \hat{J}(0,\hat{S}_0,\hat{\alpha}^*) = \hat{v}(0,\hat{S}_0),
   \end{equation}
-  that is, $\alpha^* = \argmax_{\alpha\in\mathcal A}J(0,S_0,\alpha)$.
+  that is, $\hat{\alpha}^* = \argmax_{\hat{\alpha}\in\hat{\mathcal{A}}}\hat{J}(0,\hat{S}_0,\hat{\alpha})$.
 \end{mydef}
 We choose to maximise the expected profit over the period, which
 assumes a risk-neutral decision-maker.\footnote{For characterisations of
-decision-makers and their risk attitude, see for
-example~\cite[App.~G]{bertsekas2005dynamic}.}
+  decision-makers and their risk attitude, see for
+  example~\cite[App.~G]{bertsekas2005dynamic}.}
 It is still
 important, however,
 to understand the distribution of profits for a given pricing policy
-$\alpha$. Therefore, we simulate the distribution when
+$\hat{\alpha}$. Therefore, we simulate the distribution when
 we investigate the performance of algorithms in
 \Cref{sec:suboptimal_approximations}. %,sec:markdown_miss_specification}.
 If we assume that the random variables $W_t$ are independent, this
@@ -309,55 +309,55 @@ Programming principle, also known as the Bellman equation.
 \subsection{Non-dimensionalisation of the system}
 We will now consider a non-dimensionalised
 representation of the system.
-The unit of time is already scaled such that
-the difference between two time points is $1$.
+% The unit of time is already scaled such that
+% the difference between two time points is $1$.
 The units of stock will be  scaled with
 respect to
-the initial stock $S_0$, and units of money will be scaled with respect to
+the initial stock $\hat{S}_0$, and units of money will be scaled with respect to
 the upper bound on
-price, $a_{\mathrm{max}}$.
-Let the corresponding dimensionless quantities be defined with hats.
+price, $\hat{a}_{\mathrm{max}}$.
+Let the corresponding dimensionless quantities be defined without hats.
 Then we set
 \begin{align}
-  \hat s
-  &= \frac{s}{S_0},
-  &\hat a
-  &=\frac{a}{a_{\mathrm{max}}},
-  &\hat C&=\frac{C}{a_{\mathrm{max}}},
-  &\hat t &= t,
-  &\hat W_{\hat t}&=W_{t}.
+  s
+  &= \frac{\hat{s}}{\hat{S}_0},
+  & a
+  &=\frac{\hat{a}}{\hat{a}_{\mathrm{max}}},
+  &C&=\frac{\hat{C}}{\hat{a}_{\mathrm{max}}}.%,
+  % &\hat t &= t,
+  % &\hat W_{\hat t}&=W_{t}.
 \end{align}
-To be precise, the dimensional time $t$ should be divided by $1$ unit of time.
-The dimensionless functions $\hat q(\hat a)$ and $\hat Q(\hat s,\hat
-a, \hat w)$,
+% To be precise, the dimensional time $t$ should be divided by $1$ unit of time.
+The dimensionless functions $q(a)$ and $Q(s,a,w)$,
 for forecasted demand
 and realised sales respectively, are
 \begin{align}
-  \hat q(\hat a)&= \frac{q(\hat a\cdot a_{\max})}{S_0},
-  &\hat Q(\hat s,\hat a, \hat w)&= \min(\hat s, \hat q(\hat a)\hat w).
+  q(a)&= \frac{\hat{q}(a\cdot \hat{a}_{\max})}{\hat{S}_0},
+  &Q(s,a, w)&= \min(s, q(a) w).
 \end{align}
-The collection of pricing policies $\hat{\mathcal A}$ contains all
-the processes $\alpha_t/a_{\mathrm{max}}$, where $\alpha\in \mathcal
-A$. Now we can define the dimensionless value function
+The collection of pricing policies $\mathcal{A}$ contains all
+the processes $\hat{\alpha}_t/\hat{a}_{\mathrm{max}}$, where
+$\hat{\alpha}\in \hat{\mathcal{A}}$.
+Now we can define the dimensionless value function
 \begin{align}\label{eq:value_function_def_nondim}
-  \hat v(\hat t,\hat s)&=\max_{\hat \alpha\in\hat{\mathcal A}}
-                         \hat J(\hat t,\hat s,\hat \alpha),\quad\text{where}\\
-  \hat J(\hat t,\hat s,\hat \alpha)&=
-                                     \mathbb E_{\hat W}\left[ \sum_{\tau=\hat t}^{\hat T-1}
-                                     \hat \alpha_\tau\hat Q(\hat
-                                     {S_\tau^\alpha},\hat{\alpha}_\tau,\hat
-                                     W_{\tau+1})
-                                     - \hat C \hat{S}_{\hat{T}}^\alpha \big\vert \hat{S}_{\hat{t}}^\alpha =
-                                     \hat s
-                                     \right].
-                                     \label{eq:value_function_def_nondim2}
+  v(t,s)&=\max_{\alpha\in\mathcal{A}}
+          J(t,s,\alpha),\quad\text{where}\\
+  J(t,s,\alpha)&=
+                 \mathbb{E}_{W}\left[ \sum_{\tau=t}^{T-1}
+                 \alpha_\tau Q(
+                 {S}_\tau^\alpha,\alpha_\tau,
+                 W_{\tau+1})
+                 - C S_{T}^\alpha \big\vert S_{t}^\alpha =
+                 s
+                 \right].
+                 \label{eq:value_function_def_nondim2}
 \end{align}
 Finally, the dimensionless optimal control problem
-is to find $\hat \alpha^*\in\hat{\mathcal A}$, such that
-$\hat J(0,1,\hat \alpha^*)=\hat v(0,1)$.
+is to find $\alpha^*\in{\mathcal A}$, such that
+$J(0,1,\alpha^*)=v(0,1)$.
 For the remainder of this article, we work with the
-non-dimensionalised system, and drop the hats from the
-dimensionless quantities.
+non-dimensionalised system.%, and drop the hats from the
+%dimensionless quantities.
 
 \subsection{The Bellman equation}
 We choose $\mathcal A$ to be the set of Markovian policies for the
