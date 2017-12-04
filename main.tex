@@ -1,62 +1,94 @@
 \RequirePackage{xcolor}
-\documentclass{rsproca_new}
 
+
+%%% Set flag for Royal Society submission. Default to arXiv
+\newif\ifrspa
+%%% Set flag for generating pgfplots(with tikzexternal) vs. using
+%%% includegraphics on the generated figures
+\newif\ifpgfgen
+
+\rspatrue % Enable/disable RSPA commands
+\pgfgenfalse % Enable/disable pgfgeneration
+
+\ifrspa
+\documentclass{rsproca_new}
+\jname{rspa}
+\Journal{Proc R Soc A\ }
+\else
+\documentclass[a4paper]{article}
+%%%%%%%%%%%%%% arXiV macros
+\setlength{\marginparwidth}{3.1cm} % For todonotes
+\usepackage{fullpage}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{url}
+\providecommand{\keywords}[1]{\noindent\textit{Keywords}: #1}
+\providecommand{\subject}[1]{\noindent\textit{Subject areas}: #1}
+\providecommand{\aucontribute}[1]{\paragraph*{Authors' contributions.} #1}
+\providecommand{\funding}[1]{\paragraph*{Funding.} #1}
+\providecommand{\competing}[1]{\paragraph*{Competing interests.} #1}
+
+% https://tex.stackexchange.com/questions/4170/multiple-thanks-that-refer-to-same-text
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+\fi
+
+\usepackage{microtype}
 \usepackage[l2tabu, orthodox]{nag}
 \usepackage{booktabs}
 \usepackage[group-separator={,}]{siunitx}
 \usepackage{fix-cm}
-\usepackage{tikz}
-\usepackage{pgfplots}
 \usepackage[disable]{todonotes}
 \usepackage{subcaption}
-\usepackage[noabbrev]{cleveref}
-% \setlength{\marginparwidth}{3.1cm} % For todonotes
+\usepackage[capitalize,noabbrev]{cleveref}
 
-\usepackage{lineno}
-% \linenumbers
-
-\DeclareMathOperator*{\argmax}{arg\,max}
-
+\ifpgfgen
+\usepackage{tikz}
+\usepackage{pgfplots}
 \pgfplotsset{compat=1.13}
 \usetikzlibrary{external}
 \usetikzlibrary{pgfplots.statistics}
 \tikzexternalize
 \tikzsetexternalprefix{figures/}
 \usepgfplotslibrary{statistics}
-\graphicspath{{./img/}}
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+\else %%%%%%%%%% For publishing submissions
+\usepackage{graphicx}
+\usepackage{tikzexternal}
+\tikzexternalize[prefix=figures/]
+\fi
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \makeatletter
 
 \theoremstyle{definition}
 \newtheorem{mydef}{Definition}[section]
 
-\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
-
 \def\input@path{{./img/},{./}}
 \makeatother
 
-% \usepackage{subfiles}
-% \def\biblio{\bibliographystyle{RS}\bibliography{references}}
-
-\jname{rspa}
-\Journal{Proc R Soc A\ }
+\graphicspath{{./img/}{./figures/}{.}}
 
 \begin{document}
 \title{A comparison of control strategies applied to a
   pricing problem in retail}
 
+\ifrspa
 \author{A.~N.~Riseth$^{1}$, J.~N.~Dewynne$^{1}$, and C.~L.~Farmer$^{1}$}
 \address{$^{1}$Mathematical Institute, University of Oxford, OX2 6GG, UK.}
 \corres{Asbj{\o}rn Nilsen Riseth\\
   \email{riseth@maths.ox.ac.uk}}
-
-\subject{applied mathematics, revenue management}
-\keywords{dynamic pricing, stochastic control, approximate dynamic programming}
+\else
+\author{A.~N.~Riseth\thanks{Mathematical Institute, University of
+    Oxford, OX2 6GG, UK.},\hspace{0.1em}\thanks{Corresponding author, \texttt{r
+      iseth@maths.ox.ac.uk}.}
+  \ J.~N.~Dewynne\samethanks[1], and C.~L.~Farmer\samethanks[1]}
+\maketitle
+\fi
 
 % \listoftodos
-
-% \def\biblio{}
-% \def\listoftodos{}
 
 \begin{abstract}
   When sales of a product are affected by randomness in demand,
@@ -84,7 +116,15 @@
   Equivalent Control and the optimal policy.
 \end{abstract}
 
+\ifrspa
+\subject{applied mathematics, revenue management}
+\keywords{dynamic pricing, stochastic control, approximate dynamic programming}
 \maketitle
+\else
+\subject{Applied mathematics, Revenue management}
+
+\keywords{Dynamic pricing, Stochastic control, Approximate dynamic programming}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Intro
@@ -357,7 +397,7 @@ is to find $\alpha^*\in{\mathcal A}$, such that
 $J(0,1,\alpha^*)=v(0,1)$.
 For the remainder of this article, we work with the
 non-dimensionalised system.%, and drop the hats from the
-%dimensionless quantities.
+% dimensionless quantities.
 
 \subsection{The Bellman equation}
 We choose $\mathcal A$ to be the set of Markovian policies for the
@@ -412,13 +452,14 @@ We choose to use piecewise
 linear interpolation for $I[v^K](s)$ in step~(iv)(c).
 
 
-\subsection{Example system}\label{sec:bellman_example_markdown}
+\subsection{Example system}\label{subsec:bellman_example_markdown}
 In order to investigate the optimal pricing of a specific system, we
 choose to look at a family of demand functions of the form
 $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
 about their properties and usage in modelling demand, see~\cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
-demand functions, with price constraints $A=[0,1]$.
+demand functions, with price constraints $A=[0,1]$.\todo{If
+  $A=[0,\infty)$, we can rescale $a$ s.t. $q_2=1$.}
 In the current section, and in
 \Cref{fig:markdown_bellman,fig:bellman_simulation,fig:bellman_det_policy_difference,fig:bellman_det_vals},
 we consider a particular choice of $q_1,q_2$ so that the demand
@@ -587,7 +628,10 @@ the CEC policy analytically.
 Numerical comparison experiments between these policies and the optimal
 Bellman policy are
 made using the example pricing problem introduced in
-Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown}. We also extend the comparison to
+Subsection~\ifrspa
+\ref{sec:bellman_optimal_control}% % RSPA only references the subsection letter
+\fi
+\ref{subsec:bellman_example_markdown}. We also extend the comparison to
 cover a much larger range of parameters in the problem, to show that
 the same results hold for a wide range of retail products.
 
@@ -666,9 +710,12 @@ We start with investigating policy functions for a
 single combination of the  system
 parameters, and then provide a
 comparison between the Bellman policy and CEC policy for a larger
-range of parameters in Subsection~\ref{sec:suboptimal_approximations}\ref{sec:parameter_comparison}.
+range of parameters in Subsection~\ifrspa
+\ref{sec:suboptimal_approximations}%
+\fi
+\ref{sec:parameter_comparison}.
 
-\subsubsection{Example system}\label{sec:cec_comparison_example}
+\subsubsection{Example system}\label{subsec:cec_comparison_example}
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
@@ -731,7 +778,11 @@ range of parameters in Subsection~\ref{sec:suboptimal_approximations}\ref{sec:pa
   }\label{fig:bellman_det_policy_difference}
 \end{figure}
 
-The example system in Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown} has a demand
+The example system in Subsection~\ifrspa
+\ref{sec:bellman_optimal_control}%
+\fi
+\ref{subsec:bellman_example_markdown}
+has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
 pricing policy that a CEC algorithm would imply.
@@ -806,9 +857,9 @@ profits in the remaining realisations.
       title={Simulations of Bellman and CEC policies},
       every x tick scale label/.style={font=\boldmath\large,
         at={(xticklabel
-           cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
+          cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
       }
-     ]
+      ]
       \addplot[red,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
       {./data/markdown_bellman_det_vals.csv};
       \draw[dashed] (axis cs:0,-30) -- (axis cs:0,6000);
@@ -949,7 +1000,7 @@ Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
 also known as Stochastic Model
 Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
 similar to the CEC policy, but which better takes into account the uncertainty in the system.
-%In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
+% In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
 The OLFC policy works as follows: At each decision time, a stochastic
 optimisation problem for the remaining decision horizon is
 solved, based on the most recent quantification of the uncertainty in the
@@ -975,7 +1026,10 @@ in the Bellman policy is computed.
 As was done for the CEC policy, we compare the performance of following the
 OLFC policy $\alpha^O$ with the performance of following the Bellman
 policy $\alpha^B$. With the parameters from the example system in
-Subsection~\ref{sec:bellman_optimal_control}\ref{sec:bellman_example_markdown},
+Subsection~\ifrspa
+\ref{sec:bellman_optimal_control}%
+\fi
+\ref{subsec:bellman_example_markdown},
 the empirical distribution of $P(\alpha^B)-P(\alpha^O)$ is shown in
 \Cref{fig:bellman_olfc_vals}. The empirical distribution is generated
 using \num{10000} samples of $W$.
@@ -995,7 +1049,7 @@ Bellman policy.
       title={Simulations of Bellman and OLFC policies},
       every x tick scale label/.style={font=\boldmath\large,
         at={(xticklabel
-           cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
+          cs:0.98,5pt)},yshift=0em,left,inner sep=0pt,
       }
       ]
       \addplot[red,hist={bins=30}] table [y expr = {(\thisrowno{0}-\thisrowno{1})},col sep=comma]
@@ -1115,11 +1169,11 @@ in real-life problems.
   final preparation of the manuscript.}
 \competing{The authors declare that they have no competing interests.}
 \funding{This publication is based on work partially supported by the EPSRC
-Centre For Doctoral Training in Industrially Focused Mathematical
-Modelling (EP/L015803/1) in collaboration with dunnhumby Limited.}
+  Centre For Doctoral Training in Industrially Focused Mathematical
+  Modelling (EP/L015803/1) in collaboration with dunnhumby Limited.}
 
 % Bibliography:
-%\clearpage
+% \clearpage
 \bibliographystyle{RS}
 \bibliography{references}
 
