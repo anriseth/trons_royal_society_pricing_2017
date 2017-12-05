@@ -1,6 +1,5 @@
 \RequirePackage{xcolor}
 
-
 %%% Set flag for Royal Society submission. Default to arXiv
 \newif\ifrspa
 %%% Set flag for generating pgfplots(with tikzexternal) vs. using
@@ -427,7 +426,7 @@ Analytical solutions to Bellman equations are only available in very
 rare cases, and  numerical approaches are normally needed to
 approximate the solutions.
 
-We implement the following algorithm to solve the optimal control
+We implement the following algorithm to approximately solve the optimal control
 problem, using the Bellman equation:\todo{Decorate with some algorithm environment?}
 \begin{enumerate}
 \item Create a grid of equispaced points $0=s_1<s_2<\cdots<s_K=S_0$, and arrays $v^K\in\mathbb R^{K\times(T+1)}$,
@@ -449,12 +448,18 @@ number of samples used~\cite{caflisch1998monte}.
 In this article we use \num{1000} samples for the approximation of the
 expectation in step~(iv)(a).
 We choose to use piecewise
-linear interpolation for $I[v^K](s)$ in step~(iv)(c).
+linear interpolation for $I[v^K](s)$ in step~(iv)(c) with a grid of
+$K=201$ points.
+The calculation of the Bellman policy is only
+approximate. Tests, not included here, show that our choice of grid points and Monte--Carlo samples
+in the numerical examples yield high accuracy approximations.
+We therefore refer to the calculated policy as the solution to the
+Bellman equation from now on.
 
 
-\subsection{Example system}\label{subsec:bellman_example_markdown}
+\subsection{A one-product example system}\label{subsec:bellman_example_markdown}
 In order to investigate the optimal pricing of a specific system, we
-choose to look at a family of demand functions of the form
+choose to look at a family of commonly used demand functions of the form
 $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
 about their properties and usage in modelling demand, see~\cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
@@ -666,6 +671,10 @@ problem calculates the current price using the following steps:
 \item Set the price corresponding to the element
   $\mathbf{a}_t\in A$ of a maximiser to~\eqref{eq:cec_optim_problem}.
 \end{enumerate}
+The decision maker decides what a ``best estimate'' in step two
+means. It can, for example, be
+derived from a data assimilation procedure, or the
+mean or mode of the $W_\tau$.
 
 For the one-product pricing problem, we can simplify the optimisation
 problem and in some cases obtain analytical solutions for the policy function.
@@ -768,7 +777,7 @@ range of parameters in Subsection~\ifrspa
   \caption{Comparison of the CEC and Bellman policy functions $a^C$ and
     $a^B$.
     The CEC function sets
-    higher prices than the Bellman function for large $s$.
+    higher prices than the Bellman function for most of the values of $s$.
     % Observe the spikes in the difference plot for $t<T-1$:
     % In a small interval, $a^B(t,s)\geq a^C(t,s)$, before both functions
     % reach the boundary price $a_{\mathrm{max}}=1$. This sudden, relative increase in
@@ -786,9 +795,10 @@ has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
 pricing policy that a CEC algorithm would imply.
-Denote the Bellman policy function by $a^B$, and consider
-$a^B(t,s)-a^C(t,s)$ for each $t=0,\dots,T-1$. The plot in
-\Cref{fig:bellman_det_policy_difference} shows this difference.
+Denote the Bellman policy function by $a^B$.
+The plot in
+\Cref{fig:bellman_det_policy_difference} shows the functions
+$a^B(t,\cdot)$, $a^C(t,\cdot)$ for each $t=0,\dots,T-1$.
 Both of the policy functions reach the upper bound in $A$ for small values
 of $s$, but most of the time, the Bellman policy is pricing the products
 lower than the CEC policy.
@@ -917,7 +927,7 @@ we can create a heatmap of the difference between the two policy
 functions by varying the parameters $q_1,q_2$.
 The relative $L^2$ distance between the CEC and Bellman policy outcomes
 is shown in \Cref{fig:profit_diff_heatmaps}. The norms were approximated
-with $1000$ samples from $(W_1,W_2,\dots,W_T)$.
+with \num{1000} samples from $(W_1,W_2,\dots,W_T)$.
 Comparing the left and right column, we see that the relative difference doubles as
 the standard deviation $\gamma$ is doubled. The cost $C$ plays a large
 role, both in terms of the shape of the difference surface and its
@@ -1022,6 +1032,8 @@ pricing problem calculates the current price using the following steps:
 For this article, we approximate the expectation operator with
 Monte--Carlo using \num{1000} samples, in the same way that the expectation
 in the Bellman policy is computed.
+Note that good approximations for the expectation in step two can be
+prohibitively expensive for real-world systems.
 
 As was done for the CEC policy, we compare the performance of following the
 OLFC policy $\alpha^O$ with the performance of following the Bellman
