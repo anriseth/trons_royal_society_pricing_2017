@@ -812,9 +812,9 @@ We remind the reader that
 $P(\alpha) =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
 From the optimality of the Bellman policy function, we must have
-that $\mathbb E_W[P(\alpha^B)]\geq \mathbb
-E_W[P(\alpha^C)]$. Violations of this result can happen due to
-numerical errors in approximating $\alpha^B$ and the expectations.
+that $\mathbb E_W[P(\alpha^B)]\geq
+\mathbb{E}_W[P(\alpha^C)]$. Violations of this result can happen due
+to numerical errors in approximating $\alpha^B$ and the expectations.
 Marginalising a random variable with the expectation operator, however,
 loses a lot of information which can be of interest.
 An approximation of the distributions of $P(\alpha^B), P(\alpha^C)$
@@ -829,8 +829,8 @@ policy $\alpha^B$. What we can take from this experiment is that
 the CEC policy induces a more risk-seeking pricing strategy than
 $\alpha^B$: It results in slightly larger profits for a majority of the
 realisations of $W$, but at a cost of taking a more significant
-reduction in
-profits in the remaining realisations.
+reduction in profits in the remaining realisations.
+
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[scale=0.8]
@@ -857,9 +857,8 @@ profits in the remaining realisations.
       \draw[<-] (axis cs:0.62,220) --
       (axis cs:0.605,600) node[anchor=south] {Fatter lower tail};
     \end{axis}
-  \end{tikzpicture}
+  \end{tikzpicture}\\[1em]
 
-  \vspace{1em}
   \begin{tikzpicture}[scale=0.8]
     \begin{axis}[
       xlabel=$P(\alpha^B)-P(\alpha^C)$,
@@ -886,11 +885,10 @@ profits in the remaining realisations.
     10^{-3}$, confirms that Bellman is better on average, as it should be.
     Importantly, however, in more than half the samples the suboptimal policy
     outperforms the Bellman policy.
-    The distribution of $P(\alpha^B)-P(\alpha^C)$ appears to be bimodal.
+    The distribution of $P(\alpha^B)-P(\alpha^C)$ appears to be
+    bimodal.
   }\label{fig:bellman_det_vals}
 \end{figure}
-
-\todo[inline]{Add OLFC section here with table similar to \Cref{tbl:paramcomparisons}?}
 
 \subsection{Bellman and CEC parameter comparisons}\label{sec:parameter_comparison}
 In the previous sections, our numerical experiments have only shown
@@ -1080,7 +1078,6 @@ Bellman policy.
     the Bellman policy than the CEC policy (\Cref{fig:bellman_det_vals}). This
     distribution appears to be unimodal.
   }\label{fig:bellman_olfc_vals}
-  \todo[inline]{Reference}
 \end{figure}
 
 For completeness, \Cref{tbl:paramcomparisons_olfc} includes the statistics of the relative
@@ -1114,8 +1111,8 @@ smaller than in the CEC comparison.
   \caption{Statistics comparing the relative profits of $P(\alpha^O)$
     against $P(\alpha^B)$ for six different
     parameter combinations. Note that the values are an order of magnitude
-    smaller than in the comparison between Bellman and CEC shown in \Cref{tbl:paramcomparisons}}\label{tbl:paramcomparisons_olfc}
-  \todo[inline]{reference}
+    smaller than in the comparison between Bellman and CEC shown in
+    \Cref{tbl:paramcomparisons}}\label{tbl:paramcomparisons_olfc}
 \end{table}
 
 Note that the CEC policy is a special case of the OLFC policy, where the
@@ -1157,6 +1154,11 @@ the impact of
 different suboptimal algorithms have on the distribution of
 an objective, and not only the impact of
 marginalised statistics such as the expected value.
+\citet{riseth2017dynamic} investigates a similar pricing problem in
+continuous time and finds the same shape of the profit
+difference distribution as \Cref{fig:bellman_det_vals}, which
+indicates that the results in this article are also relevant when the
+frequency of price changes increases.
 
 The model problem in this article is fairly simple, and
 we propose two specific lines for future research that
