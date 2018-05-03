@@ -187,8 +187,8 @@ probability distributions.
 From a software implementation perspective, writing code that can
 solve the Bellman equation efficiently can be much more complicated
 than other methods.
-Finally, the dimensions of the state, policy and exogenous
-information spaces, can quickly make a numerical solution to the Bellman
+Finally, the dimensions of the state, policy, and exogenous
+information spaces can quickly make a numerical solution to the Bellman
 equation intractable. An increase in the dimension can happen very
 quickly, even for one-product problems.
 In~\cite{bertsimas2001dynamic}, the authors model a simple
@@ -213,7 +213,7 @@ normally separated, and constraints are more easily updated at each
 decision point.
 
 There are several proposed approximations in the
-literature, although for revenue management applications, much of the domain knowledge is kept within
+literature, although for revenue management applications much of the domain knowledge is kept within
 respective commercial organisations~\cite[Ch.~9]{talluri2006theory}.
 Many of the suboptimal pricing algorithms are justified on practical
 grounds~\cite{aviv2012dynamic}, or
@@ -270,7 +270,7 @@ solve it numerically for an example system.
 
 Consider a system over discrete, equispaced, dimensionless time points
 $t=0,1,\dots,T$, with state
-$\hat{S}_t$ and pricing process $\hat{\alpha}$ such that the $\hat{\alpha}_t$ that take values in a closed
+$\hat{S}_t$ and pricing process $\hat{\alpha}$ such that the $\hat{\alpha}_t$ take values in a closed
 interval $\hat{A}=\nobreak[\hat{a}_{\mathrm{min}},\hat{a}_{\mathrm{max}}]$ of prices.\footnote{In
   practice, policy values may have additional constraints that depend
   on the current state,
@@ -411,7 +411,7 @@ an approach to finding the value function above is to use the Dynamic
 Programming principle~\cite{bertsekas2005dynamic}, which states that $v$ can be defined
 recursively by
 \begin{equation}\label{eq:dynamic_programming_discrete}
-  v(t,s)=\max_{a\in A}\mathbb E_{W}\left[
+  v(t,s)=\max_{a\in A}\mathbb E_{W_{t+1}}\left[
     aQ(s,a,W_{t+1})
     +v\bigl(t+1,s-Q(s,a,W_{t+1})\bigr)\right].
 \end{equation}
@@ -422,7 +422,7 @@ function $a(t,s)$ is given by the argmax for each $(t,s)$.
 The recursion~\eqref{eq:dynamic_programming_discrete} is called the
 \emph{Bellman equation}, and a discussion
 of its validity can be found, for example, in~\cite{bertsekas2005dynamic}.
-Analytical solutions to Bellman equations are only available in very
+Analytical solutions to Bellman equations are only available in
 rare cases, and  numerical approaches are normally needed to
 approximate the solutions.
 
@@ -637,7 +637,7 @@ Subsection~\ifrspa
 \ref{sec:bellman_optimal_control}% % RSPA only references the subsection letter
 \fi
 \ref{subsec:bellman_example_markdown}. We also extend the comparison to
-cover a much larger range of parameters in the problem, to show that
+cover a much larger range of parameters in the problem, in order to show that
 the same results hold for a wide range of retail products.
 
 \subsection{The Certainty Equivalent Control policy}
@@ -678,7 +678,7 @@ mean or mode of the $W_\tau$.
 
 For the one-product pricing problem, we can simplify the optimisation
 problem and in some cases obtain analytical solutions for the policy function.
-First, let us consider the expected value estimate $w_\tau=\mathbb E
+Consider the expected value estimate $w_\tau=\mathbb{E}
 [W_\tau]=1$ for $\tau=t+1,\dots T$.
 Then we can rewrite the maximisation problem to find
 the certainty equivalent value function,
@@ -699,8 +699,8 @@ Then, $a^*=a^C(t,s)$ is given by the policy function
   % ,\quad\text{s.t.}\quad q(a)\leq \frac{s}{T-t}.
 \end{equation}
 Let $\mathcal P_A$ be the projection operator from $\mathbb R$ onto the interval $A$.
-Let us consider two families of demand functions that are
-popular in the literature, see for example~\cite[Ch.~7]{talluri2006theory}.
+% Let us consider two families of demand functions that are
+% popular in the literature, see for example~\cite[Ch.~7]{talluri2006theory}.
 % If $q$ is of the form $a\mapsto q_1-q_2a$, with $q_1,q_2> 0$, then
 % the optimal policy $\alpha_t=a^C(t,S_t^\alpha)$ for the deterministic
 % problem is given by the function
@@ -968,7 +968,7 @@ of the CEC policy increases with
 the relative $L^2$ distance, as its profit distribution widens compared to
 the Bellman policy.
 In particular, the frequency at which the CEC policy
-outperforms the Bellman policy increases, at the expense of a larger
+outperforms the Bellman policy increases at the expense of a larger
 underperformance, or tail loss, in the remaining realisations.
 The values in \Cref{tbl:paramcomparisons} were approximated using \num{10000} samples
 from $W$, and their corresponding parameter combinations are shown as
