@@ -450,6 +450,9 @@ expectation in step~(iv)(a).
 We choose to use piecewise
 linear interpolation for $I[v^K](s)$ in step~(iv)(c) with a grid of
 $K=201$ points.
+All numerical optimisation procedures in this article
+use the package Optim.jl~\cite{mogensen2018optim} from the Julia
+programming language~\cite{bezanson2017julia}.
 The calculation of the Bellman policy is only
 approximate. Tests, not included here, show that our choice of grid points and Monte--Carlo samples
 in the numerical examples yield high accuracy approximations.
@@ -1154,7 +1157,7 @@ the impact of
 different suboptimal algorithms have on the distribution of
 an objective, and not only the impact of
 marginalised statistics such as the expected value.
-\citet{riseth2017dynamic} investigates a similar pricing problem in
+Riseth~\cite{riseth2017dynamic} investigates a similar pricing problem in
 continuous time and finds the same shape of the profit
 difference distribution as \Cref{fig:bellman_det_vals}, which
 indicates that the results in this article are also relevant when the
