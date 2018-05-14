@@ -89,11 +89,11 @@ function main(;bellsamples = 1000, olfcsamples = -1)
             olfc = OLFCSystem1D(system, x0, olfcsamples)
             if olfcsamples == -1
                 @time solveolfc!(αolfc,olfc,xtup,ω';
-                                 optimizer=GradientDescent, linesearch = LineSearches.bt3!)
+                                 optimizer=OACCEL())
             else
                 wolfc = rand(ωdist, T, olfcsamples)
                 @time solveolfc!(αolfc,olfc,xtup,wolfc;
-                                 optimizer=GradientDescent, linesearch = LineSearches.bt3!)
+                                 optimizer=OACCEL())
             end
 
             olfccon = OfflineSystemControl1D(system, x0, xarr, αolfc)

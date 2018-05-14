@@ -54,7 +54,7 @@ v = zeros(K, T+1)
 # Simulations
 
 x0 = xarr[end]
-αcec(t,s) = min(amax,max(log(q1*(T-t)./s)/q2,1/q2-C,amin))
+αcec(t,s) = min.(amax,max.(log.(q1*(T-t)./s)/q2,1/q2-C,amin))
 vcec(t,s) = (T-t)*(αcec(t,s)+C).*min(Q(αcec(t,s)),s/(T-t))-C*s
 
 vcecarr = zeros(v)

@@ -64,7 +64,7 @@ bellman = OfflineSystemControl1D(system, x0, xarr, α)
 olfc = OLFCSystem1D(system, x0, -1)
 #olfcw = fill(mean(ωdist),T,1)
 @time solveolfc!(αolfc,olfc,xtup,ω';
-                 optimizer=GradientDescent, linesearch = LineSearches.bt3!)
+                 optimizer=OACCEL())
 
 olfccon = OfflineSystemControl1D(system, x0, xarr, αolfc)
 
