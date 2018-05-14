@@ -298,7 +298,7 @@ recursion
 The function $\hat{Q}(\hat{s},\hat{a},w)=\min(\hat{s},\hat{q}(\hat{a})w)$ denotes the unit sales over a
 period at price $\hat{a}$,
 starting with stock $\hat{s}$, and with exogenous influences
-characterised by $w$. The minimum operator is used ensure that the
+characterised by $w$. The minimum operator is used to ensure that the
 amount of product sold over the time period does not exceed the
 current stock level.
 
@@ -443,7 +443,8 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
 The expectation above is approximated using Monte--Carlo simulation,
-for which the variance of the approximation error decreases by one over the
+for which the variance of the approximation error decreases by the
+reciprocal of the
 number of samples used~\cite{caflisch1998monte}.
 In this article we use \num{1000} samples for the approximation of the
 expectation in step~(iv)(a).
@@ -466,7 +467,7 @@ choose to look at a family of commonly used demand functions of the form
 $q(a)=q_1e^{-q_2a}$, where $q_1,q_2>0$. For a discussion
 about their properties and usage in modelling demand, see~\cite[Ch.~7]{talluri2006theory}.
 All the numerical experiments in this article use this family of exponential
-demand functions, with price constraints $A=[0,1]$.\todo{If
+demand functions, with price constraint interval $A=[0,1]$.\todo{If
   $A=[0,\infty)$, we can rescale $a$ s.t. $q_2=1$.}
 In the current section, and in
 \Cref{fig:markdown_bellman,fig:bellman_simulation,fig:bellman_det_policy_difference,fig:bellman_det_vals},
@@ -966,7 +967,7 @@ majority of events, at the expense of a stronger underperformance
 for the remainder of the events. Notably, the CEC policy is better
 more than 50\% of the time for all the parameter
 combinations considered in this article.
-We can also see from the table that the implicit risk-seeking attitude
+We can also see from the table that the implicit risk-seeking nature
 of the CEC policy increases with
 the relative $L^2$ distance, as its profit distribution widens compared to
 the Bellman policy.
@@ -1121,7 +1122,7 @@ smaller than in the CEC comparison.
 Note that the CEC policy is a special case of the OLFC policy, where the
 expectation~\eqref{eq:olfc_optimisation_problem} is approximated with~\eqref{eq:cec_optim_problem}, a zeroth-order expansion around
 the estimate $w_{t+1},\dots,w_T$.
-The OLFC policy is thus much more costly than the CEC policy, but will
+The OLFC policy is thus much more costly to compute than the CEC policy, but will
 also better approximate the optimal Bellman policy. In practice, the
 decision maker can balance the cost-versus-optimality by how
 accurately they
