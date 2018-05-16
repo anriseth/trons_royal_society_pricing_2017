@@ -180,7 +180,7 @@ complicated, and  we must  create a very
 large state space in order to make use of the Bellman equation.
 We often have to take into account unobservable
 state variables, such as estimated parameters, and constraints
-that may depend on history. Decision-makers in business may change their mind
+that may depend on history. Decision-makers may change their mind
 about the objective over the course of the decision period, which should
 be incorporated in the modelling as parameters with corresponding, estimated
 probability distributions.
@@ -190,7 +190,7 @@ than other methods.
 Finally, the dimensions of the state, policy, and exogenous
 information spaces can quickly make a numerical solution to the Bellman
 equation intractable. An increase in the dimension can happen very
-quickly, even for one-product problems.
+quickly, even for one-product problems:
 In~\cite{bertsimas2001dynamic}, the authors model a simple
 one-product demand function with uncertainty in the function
 parameters, and present an eight-dimensional dynamic programming
@@ -206,8 +206,8 @@ search for the best policy on-line for each decision point.
 An advantage of the pre-calculated, explicit policy functions
 is the speed at which we can make our decisions in the
 future. In the classical pricing problems, the dynamics of the
-underlying system do not require instant pricing decisions. Thus,
-suboptimal decision rules that are created as they are needed, are often used
+underlying system do not require instant pricing decisions. Thus
+suboptimal decision rules that are created as they are needed are often used
 instead~\cite{talluri2006theory}. Estimation of the system and optimisation of prices are
 normally separated, and constraints are more easily updated at each
 decision point.
@@ -225,7 +225,7 @@ In particular, we consider a one-product pricing problem and
 investigate the optimal Bellman policy, an often-used suboptimal
 policy known as the \emph{Certainty Equivalent Control} (CEC)
 policy, and a compromise between optimality and practicality known as the
-\emph{Open-Loop Feedback Control} policy.
+\emph{Open-Loop Feedback Control} (OLFC) policy.
 Rather surprisingly, we find that, more than half the
 time, using the suboptimal CEC policy
 leads to a higher profit than using the Bellman policy, for a wide
@@ -240,7 +240,7 @@ risk attitude. Thus, we propose that it should be addressed at the same level as
 description of a decision-maker's risk attitude as expressed with
 utility functions or risk measures.
 
-The article is organised as follows:
+The article is organised as follows.
 In \Cref{sec:bellman_optimal_control} we formulate the
 pricing problem mathematically, and describe an algorithm to solve the
 problem via the associated Bellman equation. We also give an example
@@ -255,7 +255,7 @@ Finally, we conclude and propose further work in \Cref{sec:conclusion}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bellman
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The optimal control problem}\label{sec:bellman_optimal_control}
+\section{The pricing problem}\label{sec:bellman_optimal_control}
 We now consider a particular retail
 pricing problem.
 Given an initial amount of stock of a product and a future
@@ -306,7 +306,7 @@ The revenue accrued over period $t\to t+1$ is $\hat{\alpha}_t\hat{Q}(\hat{S}_t^{
 The cost of remaining stock at time $T$ is modelled by a cost per unit
 stock $\hat{C}\geq 0$.\footnote{In some situations, unsold items at time $T$
   may be sold at some ``salvage price'', in which case we could allow
-  $\hat{C}<0$. We assume $\hat{C}\geq 0$ in this paper.}
+  $\hat{C}<0$. We assume $\hat{C}\geq 0$ in this article.}
 Let $\hat{\mathcal{A}}$ denote the set of feasible processes $\hat{\alpha}$ that take values
 in $\hat{A}$.
 Define the value of having stock $\hat{s}$ at time $t\leq T$
@@ -323,7 +323,7 @@ by the value function $\hat{v}$, such that
 This leads us to the following mathematical formulation of the pricing
 problem:
 \begin{mydef}
-  Given an initial amount of stock $\hat{S}_0>0$ and a cost per unit unsold stock $\hat{C}\geq
+  Given an initial amount of stock $\hat{S}_0>0$ and a constant cost per unit unsold stock $\hat{C}\geq
   0$, the \emph{pricing problem} is to find a pricing process $\hat{\alpha}^*\in\hat{\mathcal{A}}$ such that
   \begin{equation}
     \hat{J}(0,\hat{S}_0,\hat{\alpha}^*) = \hat{v}(0,\hat{S}_0),
@@ -442,7 +442,7 @@ problem, using the Bellman equation:\todo{Decorate with some algorithm environme
   \end{enumerate}
 \item Return $v^K,\alpha^K$.
 \end{enumerate}
-The expectation above is approximated using Monte--Carlo simulation,
+The expectation above is approximated using Monte Carlo simulation,
 for which the variance of the approximation error decreases by the
 reciprocal of the
 number of samples used~\cite{caflisch1998monte}.
@@ -455,7 +455,8 @@ All numerical optimisation procedures in this article
 use the package Optim.jl~\cite{mogensen2018optim} from the Julia
 programming language~\cite{bezanson2017julia}.
 The calculation of the Bellman policy is only
-approximate. Tests, not included here, show that our choice of grid points and Monte--Carlo samples
+approximate. Tests, not included here, show that our choice of grid
+points and Monte Carlo samples
 in the numerical examples yield high accuracy approximations.
 We therefore refer to the calculated policy as the solution to the
 Bellman equation from now on.
@@ -484,8 +485,7 @@ $X\sim \mathrm{Beta}(\mu,\nu)$,\footnote{A
   $\mathrm{Beta}(\mu,\nu)$ random variable has probability density
   function on $[0,1]$, given by
   $p(x)=\frac{x^{\mu-1}{(1-x)}^{\nu-1}}{B(\mu,\nu)}$.
-  The function $B(\mu,\nu)$ is the normalising factor, and we require
-  that $\mu,\nu>1$.
+  The function $B(\mu,\nu)$ is the normalising factor.
 }
 and $\mu=\nu=\frac{1}{8\gamma^2}-\frac{1}{2}$.
 To ensure that $X$ is unimodal, we require that $\gamma^2<1/12$.
@@ -605,12 +605,12 @@ simulating the system \num{10000} times.\footnote{Preliminary
   \caption{Simulations of the pricing system, started at $S_0=1$
     and controlled by the optimal policy $\alpha$ shown in
     \Cref{fig:markdown_bellman}.
-    The left figure is a box plot
+    The left frame is a box plot
     that shows the median, the quartiles and the extremal prices observed
     in the simulations.
     As we see, the variance of the prices increases
     in time, reflecting the wider range of realised remaining stock at these times.
-    The right hand figure is a histogram of the total profit over
+    The right hand frame is a histogram of the total profit over
     the pricing period.
   }\label{fig:bellman_simulation}
 \end{figure}
@@ -628,9 +628,9 @@ Whenever a decision must be made, these methods simulate the future
 behaviour of the system and optimise the current decision based on
 these simulations.
 We consider two special cases known as the
-\emph{Certainty Equivalent Control} policy, which uses a point
+\emph{Certainty Equivalent Control} (CEC) policy, which uses a point
 estimate of the system, and
-the \emph{Open-Loop Feedback Control} policy, which uses more
+the \emph{Open-Loop Feedback Control} (OLFC) policy, which uses more
 information about the  future behaviour of the system~\cite[Ch.~6]{bertsekas2005dynamic}.
 For the example system in this article, it turns out that we can find
 the CEC policy analytically.
@@ -645,14 +645,15 @@ cover a much larger range of parameters in the problem, in order to show that
 the same results hold for a wide range of retail products.
 
 \subsection{The Certainty Equivalent Control policy}
-An often-used, tractable, algorithm for solving stochastic optimal control
-problems is the Certainty Equivalent Control (CEC) policy, as it is
+An often-used, tractable, algorithm for approximating the solution of
+stochastic optimal control
+problems is the Certainty Equivalent Control policy, as it is
 named in~\cite{bertsekas2005dynamic}.
 It is also known as (deterministic) Model
 Predictive Control in the engineering community.
 The algorithm is particularly practical, because the optimisation
 problem is reduced to a standard deterministic problem that can
-be solved with existing, commercial or open-source solvers which
+be solved with existing solvers which
 handle very large systems.
 At each decision time, a deterministic optimisation problem for the
 remaining decision horizon is solved. Only the decision for the
@@ -670,7 +671,7 @@ problem calculates the current price using the following steps:
       a_\tau,w_{\tau+1})-CS_T^{\mathbf a}\right\},
     \quad \text{s.t.}\quad S_t^{\mathbf a}=s,
   \end{equation}
-  where $A^{T-t}$ is the $T-t$ times Cartesian product $A\times
+  where $A^{T-t}$ is the $(T-t)$ times Cartesian product $A\times
   \cdots\times A$.
 \item Set the price corresponding to the element
   $\mathbf{a}_t\in A$ of a maximiser to~\eqref{eq:cec_optim_problem}.
@@ -798,7 +799,7 @@ The example system in Subsection~\ifrspa
 has a demand
 function of the form $q(a)=q_1e^{-q_2a}$, where $q_1=e^2/3$ and
 $q_2=3$. We can therefore compare the optimal Bellman policy with the
-pricing policy that a CEC algorithm would imply.
+pricing policy that the CEC algorithm above implies.
 Denote the Bellman policy function by $a^B$.
 The plot in
 \Cref{fig:bellman_det_policy_difference} shows the functions
@@ -808,8 +809,8 @@ of $s$, but most of the time, the Bellman policy is pricing the products
 lower than the CEC policy.
 
 What is more important than how the policy function works, is how it
-impacts the goal of the decision-process. Thus, we would like to see
-how the two policy processes $\alpha^B$ and $\alpha^C$ perform.
+impacts the distribution of realisable profit. Thus, we would like to
+see how the two policy processes $\alpha^B$ and $\alpha^C$ perform.
 One way to evaluate their performance is to look at
 the distribution of the profits $P(\alpha^B)$ and $P(\alpha^C)$.
 We remind the reader that
@@ -817,16 +818,16 @@ $P(\alpha) =
 \sum_{t=0}^{T-1}\alpha_tQ(S_t^\alpha,\alpha_t,W_{t+1})-CS_T^\alpha$.
 From the optimality of the Bellman policy function, we must have
 that $\mathbb E_W[P(\alpha^B)]\geq
-\mathbb{E}_W[P(\alpha^C)]$. Violations of this result can happen due
-to numerical errors in approximating $\alpha^B$ and the expectations.
+\mathbb{E}_W[P(\alpha^C)]$, violations of this result can happen because
+of numerical errors in approximating $\alpha^B$ and the expectations.
 Marginalising a random variable with the expectation operator, however,
 loses a lot of information which can be of interest.
 An approximation of the distributions of $P(\alpha^B), P(\alpha^C)$
 and their difference
 $P(\alpha^B)-P(\alpha^C)$, based on \num{10000} realisations of the
 underlying $W$, can be seen in \Cref{fig:bellman_det_vals}.
-Indeed in the experiment, the average value of following the
-Bellman policy is higher than following the CEC policy.
+In the experiment, the average value of following the
+Bellman policy is higher than following the CEC policy, as expected.
 However, from the bottom figure we see that
 in more than half of the cases, the CEC policy outperforms the optimal
 policy $\alpha^B$. What we can take from this experiment is that
@@ -903,7 +904,7 @@ In this section we explore the differences between the Bellman policy
 and the CEC policy for a larger parameter range.
 The formula for $a^C$ in~\eqref{eq:cec_policy} indicates that the
 initial price is largely determined by the relationship between
-$Tq_1$ and $q_2$, and hence we choose to keep $T=3$ fixed whilst
+$\log(Tq_1)$ and $1/q_2$, and hence we choose to keep $T=3$ fixed whilst
 varying $q_1$ and $q_2$.
 We are interested in the difference between the profit following
 a Bellman policy $\alpha^B$ and a CEC policy $\alpha^C$.
@@ -916,8 +917,8 @@ In particular, the difference between the two policies is measured
 using the $L^2$-norm with respect to the probability distribution
 induced by the disturbance $(W_1,W_2,\dots,W_T)$, that is
 \begin{equation}
-  \left\|P(\alpha^B)-P(\alpha^C)\right\|_2
-  =\sqrt{\mathbb E_W\left[{( P(\alpha^B)-P(\alpha^C) )}^2 \right]}.
+  {\left\|P(\alpha^B)-P(\alpha^C)\right\|}_2^2
+  =\mathbb E_W\left[{( P(\alpha^B)-P(\alpha^C) )}^2 \right].
 \end{equation}
 
 To reduce the number of combinations of parameters, we choose only
@@ -1006,12 +1007,12 @@ grey dots in \Cref{fig:profit_diff_heatmaps}.
   }\label{tbl:paramcomparisons}
 \end{table}
 
-\subsection{Open-Loop Feedback Control policy}
-We conclude this article with the example of the Open-Loop
-Feedback Control (OLFC) policy~\cite[Ch.~6]{bertsekas2005dynamic},
+\subsection{Open-Loop Feedback Control (OLFC) policy}
+We conclude this article with the example of the OLFC
+policy~\cite[Ch.~6]{bertsekas2005dynamic},
 also known as Stochastic Model
 Predictive Control~\cite{farmer2017uncertainty}. This is another suboptimal policy,
-similar to the CEC policy, but which better takes into account the uncertainty in the system.
+similar to the CEC policy, but which takes into account the uncertainty in the system.
 % In fact, one can think of CEC as a zeroth-order approximation to OLFC.\@
 The OLFC policy works as follows: At each decision time, a stochastic
 optimisation problem for the remaining decision horizon is
@@ -1032,7 +1033,7 @@ pricing problem calculates the current price using the following steps:
   $\mathbf{a}_t\in A$ of a maximiser to~\eqref{eq:olfc_optimisation_problem}.
 \end{enumerate}
 For this article, we approximate the expectation operator with
-Monte--Carlo using \num{1000} samples, in the same way that the expectation
+Monte Carlo using \num{1000} samples, in the same way that the expectation
 in the Bellman policy is computed.
 Note that good approximations for the expectation in step two can be
 prohibitively expensive for real-world systems.
@@ -1183,7 +1184,7 @@ in real-life problems.
 \aucontribute{JND and CLF contributed to specifying the problems and
   choosing the types of algorithms to study. ANR devised the method
   for comparing algorithms, performed all the calculations, and drafted
-  the first version of the paper. All authors were responsible for the
+  the first version of the article. All authors were responsible for the
   final preparation of the manuscript.}
 \competing{The authors declare that they have no competing interests.}
 \funding{This publication is based on work partially supported by the EPSRC
